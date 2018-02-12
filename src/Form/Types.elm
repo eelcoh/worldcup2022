@@ -7,6 +7,7 @@ module Form.Types
         , FormInfoMsg(..)
         , SubmitMsgType(..)
         , SubmitState(..)
+        , Flags
         )
 
 import Bets.Types exposing (AnswerID, Bet, Group, Round)
@@ -16,6 +17,11 @@ import Form.QuestionSets.Types as QuestionSets
 import Form.Questions.Types as Questions
 import Html exposing (Html)
 import Http
+
+
+type alias Flags =
+    { formId : Maybe String
+    }
 
 
 type Card

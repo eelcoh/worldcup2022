@@ -8,9 +8,9 @@ import Form.Questions.Types as Q
 import Form.QuestionSets.Types as QSet
 
 
-init : Maybe String -> ( Model Msg, Cmd Msg )
-init mFormId =
-    ( { initModel | formId = mFormId }, Cmd.none )
+init : Flags -> ( Model Msg, Cmd Msg )
+init flags =
+    ( { initModel | formId = flags.formId }, Cmd.none )
 
 
 initModel : Model Msg
