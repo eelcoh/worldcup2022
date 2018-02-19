@@ -1,15 +1,18 @@
 module Form.Questions.Topscorer exposing (Msg, update, view)
 
 import Html exposing (..)
-import Html.Events exposing (onClick)
 import List.Extra
 import Bets.Bet exposing (setTopscorer)
 import Bets.Types exposing (Bet, Answer, AnswerT(..), AnswerID, Team, Topscorer, Player, TeamData, TeamDatum)
+import UI.Text
+import UI.Style
 import Bets.Types.Topscorer as TS
 import Bets.Types.Team exposing (initTeamData)
 import Form.Questions.Types exposing (QState)
-import UI.Grid as UI
 import UI.Team exposing (viewTeam)
+import UI.Button
+import Element
+import Element.Attributes exposing (width, px, spacing, padding)
 
 
 type Msg
@@ -103,26 +106,40 @@ viewTopscorer bet answerId topscorer =
                         ( t, NotSelected )
 
         forGroup teams =
-            UI.container UI.Leftside [] (List.map (mkTeamButton (SelectTeam answerId)) teams)
+            Element.row UI.Style.None [ spacing 7, padding 10, width (px 600) ] (List.map (mkTeamButton (SelectTeam answerId)) teams)
 
         headertext =
-            "Wie wordt de topscorer"
-
-        introtext =
-            """
-        Voorspel de topscorer. Kies eerst het land, dan de speler. 9 punten als je het goed hebt.
-        Let op: dit zijn de voorlopige selecties.
-      """
+            UI.Text.displayHeader "Wie wordt de topscorer?"
     in
-        div []
-            [ h1 [] [ text headertext ]
-            , p [] [ text introtext, Html.b [] [ text "Spelers kunnen nog afvallen, of al afgevallen zijn!" ] ]
-            , viewPlayers bet answerId topscorer teamData
-            , section [] (List.map forGroup groups)
-            ]
+        Element.column UI.Style.None
+            []
+            ([ headertext
+             , introduction
+             , viewPlayers bet answerId topscorer teamData
+             ]
+                ++ (List.map forGroup groups)
+            )
+            |> Element.layout UI.Style.stylesheet
 
 
-viewPlayers : Bet -> AnswerID -> Topscorer -> TeamData -> Html Msg
+introduction : Element.Element UI.Style.Style variation msg
+introduction =
+    Element.paragraph UI.Style.Introduction
+        [ width (px 600), spacing 7 ]
+        [ UI.Text.simpleText """
+    Voorspel de topscorer. Kies eerst het land, dan de speler. 9 punten als je het goed hebt.
+    Let op: dit zijn de voorlopige selecties.
+  """
+        , UI.Text.boldText "Spelers kunnen nog afvallen, of al afgevallen zijn!"
+        ]
+
+
+viewPlayers :
+    a
+    -> AnswerID
+    -> Topscorer
+    -> b
+    -> Element.Element UI.Style.Style variation Msg
 viewPlayers bet answerId topscorer teamData =
     let
         isSelectedTeam teamDatum =
@@ -154,50 +171,58 @@ viewPlayers bet answerId topscorer teamData =
     in
         case selectedTeam of
             Nothing ->
-                div [] []
+                Element.empty
 
             Just teamWP ->
-                UI.container UI.Leftside [] (List.map (mkPlayerButton (SelectPlayer answerId)) (players teamWP))
+                Element.wrappedRow UI.Style.None
+                    [ width (px 600), padding 10, spacing 7 ]
+                    (List.map (mkPlayerButton (SelectPlayer answerId)) (players teamWP))
 
 
-mkTeamButton : (Team -> Msg) -> ( TeamDatum, IsSelected ) -> Html Msg
+mkTeamButton :
+    (Team -> a)
+    -> ( { b | team : Team }, IsSelected )
+    -> Element.Element UI.Style.Style variation a
 mkTeamButton act ( teamDatum, isSelected ) =
     let
         c =
             case isSelected of
                 Selected ->
-                    UI.Selected
+                    UI.Style.TBSelected
 
                 _ ->
-                    UI.Potential
+                    UI.Style.TBPotential
 
         team =
             .team teamDatum
 
-        handler =
-            onClick (act team)
+        msg =
+            act team
 
         contents =
             [ viewTeam (Just team) ]
     in
-        UI.button UI.XS c [ handler ] contents
+        UI.Button.teamButton c msg team
 
 
-mkPlayerButton : (Player -> Msg) -> ( Player, IsSelected ) -> Html Msg
+mkPlayerButton :
+    (String -> a)
+    -> ( String, IsSelected )
+    -> Element.Element UI.Style.Style variation a
 mkPlayerButton act ( player, isSelected ) =
     let
         c =
             case isSelected of
                 Selected ->
-                    UI.Selected
+                    UI.Style.Selected
 
                 _ ->
-                    UI.Potential
+                    UI.Style.Potential
 
-        handler =
-            onClick (act player)
+        msg =
+            act player
 
         contents =
-            [ text player ]
+            player
     in
-        UI.pill c [ handler ] contents
+        UI.Button.pill c msg player

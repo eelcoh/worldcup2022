@@ -2,10 +2,13 @@ module Form.Questions.Bracket exposing (Msg, update, view)
 
 import Bets.Bet exposing (setTeam)
 import Bets.Types exposing (Answer, AnswerT(..), AnswerID, Team, Bet, Answer, Bracket(..), Slot, Winner(..), Qualifier)
+import Element
+import Element.Attributes exposing (spacing, width)
+import UI.Style
+import UI.Button
 import Bets.Types.Bracket as B
 import Form.Questions.Types exposing (QState)
 import Html exposing (..)
-import Html.Events exposing (onClick)
 import UI.Grid as UI exposing (container, Color(..), Size(..), cell, Align(..))
 import UI.Team exposing (viewTeam)
 
@@ -107,8 +110,9 @@ viewBracket bet answer bracket =
        mn51 = MatchNode "m51" None mn49 mn50 -- "2016/06/15 15:00" saintdenis Nothing
     -}
     let
-        v =
-            viewMatchWinner bet answer
+        v mb =
+            viewMatchWinner bet answer mb
+                |> Element.layout UI.Style.stylesheet
 
         final =
             B.get bracket "m51"
@@ -179,7 +183,11 @@ viewBracket bet answer bracket =
             ]
 
 
-viewMatchWinner : Bet -> Answer -> Maybe Bracket -> Html Msg
+viewMatchWinner :
+    a
+    -> ( AnswerID, a2 )
+    -> Maybe Bracket
+    -> Element.Element UI.Style.Style variation Msg
 viewMatchWinner bet answer mBracket =
     case mBracket of
         Just (MatchNode slot winner home away rd _) ->
@@ -193,43 +201,47 @@ viewMatchWinner bet answer mBracket =
                 dash =
                     text " - "
             in
-                UI.cell2 M
-                    Irrelevant
-                    []
-                    [ container Center [] [ homeButton, awayButton ]
-                    ]
+                Element.row UI.Style.None [ spacing 7 ] [ homeButton, awayButton ]
 
         _ ->
-            p [] []
+            Element.empty
 
 
-mkButton : Answer -> Winner -> Slot -> IsWinner -> Bracket -> Html Msg
+mkButton :
+    ( AnswerID, a2 )
+    -> Winner
+    -> Slot
+    -> IsWinner
+    -> Bracket
+    -> Element.Element UI.Style.Style variation Msg
 mkButton answer wnnr slot isSelected bracket =
     let
         s =
             case isSelected of
                 Yes ->
-                    Selected
+                    UI.Style.TBSelected
 
                 No ->
-                    Potential
+                    UI.Style.TBPotential
 
                 Undecided ->
-                    Potential
+                    UI.Style.TBPotential
 
         answerId =
             Tuple.first answer
 
-        handler =
-            onClick (SetWinner answerId slot wnnr)
+        msg =
+            SetWinner answerId slot wnnr
 
         attrs =
             []
+
+        team =
+            B.qualifier bracket
     in
-        UI.button2 XL s [ handler ] [ viewTeam (B.qualifier bracket) ]
+        UI.Button.maybeTeamButton s msg team
 
 
-mkButtonChamp : Maybe Bracket -> Html Msg
 mkButtonChamp mBracket =
     let
         mTeam =
@@ -239,12 +251,13 @@ mkButtonChamp mBracket =
         s =
             case mTeam of
                 Just t ->
-                    Selected
+                    UI.Style.TBSelected
 
                 Nothing ->
-                    Potential
+                    UI.Style.TBPotential
 
         attrs =
             []
     in
-        UI.button2 XL s [] [ viewTeam mTeam ]
+        UI.Button.maybeTeamBadge s mTeam
+            |> Element.layout UI.Style.stylesheet

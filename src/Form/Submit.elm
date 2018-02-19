@@ -11,10 +11,11 @@ import Bets.Types exposing (Bet)
 import Form.QuestionSets.Types as QS
 import Form.Questions.Types as Q
 import Form.Types exposing (Model, Card(..), Info(..), SubmitMsgType(..), SubmitState(..))
-import Html exposing (Html, div, h1, p, section, span, text)
-import Html.Attributes exposing (class, href)
-import Html.Events exposing (onClick)
-import UI.Grid as UI exposing (Align(..), Color(..), Size(..), container)
+import UI.Button
+import Element
+import Html exposing (Html, div, h1, p, section, span)
+import UI.Style
+import UI.Text
 
 
 type alias Msg =
@@ -67,71 +68,63 @@ view bet submittable submitted =
                 SubmitCard ->
                     True
 
-        ( introText, button ) =
+        ( introText, semantics, msg, buttonText ) =
             case ( submittable, submitted ) of
                 ( True, Dirty ) ->
-                    ( introSubmittable, mkButton Active (onClick PlaceBet) "inzenden" )
+                    ( introSubmittable, UI.Style.Active, PlaceBet, "inzenden" )
 
                 ( False, Dirty ) ->
-                    ( introNotReady, mkButton Inactive (onClick NoOp) "inzenden" )
+                    ( introNotReady, UI.Style.Inactive, NoOp, "inzenden" )
 
                 ( _, Clean ) ->
-                    ( introNotReady, mkButton Inactive (onClick NoOp) "inzenden" )
+                    ( introNotReady, UI.Style.Inactive, NoOp, "inzenden" )
 
                 ( _, Sent ) ->
-                    ( introSubmitting, mkButton Inactive (onClick NoOp) "inzenden" )
+                    ( introSubmitting, UI.Style.Inactive, NoOp, "inzenden" )
 
                 ( _, Done ) ->
-                    ( introSubmitted, mkButton Right (onClick Again) "opnieuw" )
+                    ( introSubmitted, UI.Style.Right, Again, "opnieuw" )
 
                 ( _, Error ) ->
-                    ( introSubmittedErr, mkButton Inactive (onClick NoOp) "inzenden" )
+                    ( introSubmittedErr, UI.Style.Inactive, NoOp, "inzenden" )
 
                 ( _, Reset ) ->
-                    ( introSubmitted, mkButton Inactive (onClick Again) "opnieuw" )
-
-        mkButton buttonState handler txt =
-            UI.button M
-                buttonState
-                [ handler ]
-                [ div [ class "inzenden" ] [ text txt ] ]
+                    ( introSubmitted, UI.Style.Inactive, Again, "opnieuw" )
     in
-        section []
-            [ container Leftside [] [ introText ]
-            , container Leftside [] [ button ]
+        Element.column UI.Style.None
+            []
+            [ introText
+            , UI.Button.submit semantics msg buttonText
             ]
+            |> Element.layout UI.Style.stylesheet
 
 
-header : Html Msg
-header =
-    h1 [] [ text "Afronden" ]
-
-
-introSubmittable : Html Msg
+introSubmittable : Element.Element UI.Style.Style variation msg
 introSubmittable =
-    p [] [ text "Het formulier is compleet. Klik op inzenden om het in te sturen" ]
+    Element.paragraph UI.Style.None [] [ UI.Text.simpleText "Het formulier is compleet. Klik op inzenden om het in te sturen" ]
 
 
-introSubmitting : Html Msg
+introSubmitting : Element.Element UI.Style.Style variation msg
 introSubmitting =
-    p [] [ text "Het formulier is compleet. Klik op inzenden om het in te sturen. Verzenden...." ]
+    Element.paragraph UI.Style.None [] [ UI.Text.simpleText "Het formulier is compleet. Klik op inzenden om het in te sturen. Verzenden...." ]
 
 
-introNotReady : Html Msg
+introNotReady : Element.Element UI.Style.Style variation msg
 introNotReady =
-    p [] [ text "Het formulier is nog niet helemaal ingevuld. Je kunt het nog niet insturen. Kijk op de 'tabs' bovenin welke er nog niet groengekleurd zijn." ]
+    Element.paragraph UI.Style.None [] [ UI.Text.simpleText "Het formulier is nog niet helemaal ingevuld. Je kunt het nog niet insturen. Kijk op de 'tabs' bovenin welke er nog niet groengekleurd zijn." ]
 
 
-introSubmitted : Html Msg
+introSubmitted : Element.Element UI.Style.Style variation msg
 introSubmitted =
-    p []
-        [ text "Dank voor het meedoen! Neem contact op met Arnaud of Eelco over het overmaken dan wel inleveren van de 5 euro inlegkosten."
-        , text "Misschien wil je nog een keer meedoen? Vul dan gewoon het "
-        , Html.a [ class "button-like right clickable", href "/voetbalpool/formulier" ] [ text "formulier" ]
-        , text " opnieuw in."
+    Element.paragraph UI.Style.None
+        []
+        [ UI.Text.simpleText "Dank voor het meedoen! Neem contact op met Arnaud of Eelco over het overmaken dan wel inleveren van de 5 euro inlegkosten."
+        , UI.Text.simpleText "Misschien wil je nog een keer meedoen? Vul dan gewoon het "
+        , Element.link "/voetbalpool/formulier" <| Element.el UI.Style.Link [] (Element.text "formulier")
+        , UI.Text.simpleText "opnieuw in."
         ]
 
 
-introSubmittedErr : Html Msg
+introSubmittedErr : Element.Element UI.Style.Style variation msg
 introSubmittedErr =
-    p [] [ text "Whoops! Daar ging iets niet goed. " ]
+    Element.paragraph UI.Style.None [] [ UI.Text.simpleText "Whoops! Daar ging iets niet goed. " ]

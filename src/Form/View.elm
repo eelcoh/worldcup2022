@@ -11,6 +11,10 @@ import Form.QuestionSet
 import Form.QuestionSets.Types as QTS
 import UI.Grid as UI exposing (..)
 import Html.Attributes exposing (class)
+import Element
+import Element.Attributes exposing (padding, spacing)
+import UI.Style
+import UI.Button
 
 
 -- View
@@ -72,13 +76,13 @@ viewCard model i card =
                 map SubmitMsg (Form.Submit.view model.bet submittable model.submitted)
 
 
-viewPill : Model Msg -> Int -> ( Int, Card ) -> Html Msg
+viewPill : Model Msg -> Int -> ( Int, Card ) -> Element.Element UI.Style.Style variation Msg
 viewPill model idx ( i, card ) =
     let
-        pillModel =
+        semantics =
             case card of
                 IntroCard intro ->
-                    Perhaps
+                    UI.Style.Perhaps
 
                 QuestionCard qModel ->
                     mkpillModel (QT.isComplete model.bet qModel) (i == idx)
@@ -87,24 +91,24 @@ viewPill model idx ( i, card ) =
                     mkpillModel (QTS.isComplete model.bet qsModel) (i == idx)
 
                 SubmitCard ->
-                    Perhaps
+                    UI.Style.Perhaps
 
         mkpillModel complete current =
             case ( complete, current ) of
                 ( True, True ) ->
-                    Selected
+                    UI.Style.Selected
 
                 ( True, False ) ->
-                    Active
+                    UI.Style.Active
 
                 ( False, True ) ->
-                    Right
+                    UI.Style.Right
 
                 ( False, False ) ->
-                    Potential
+                    UI.Style.Potential
 
-        handler =
-            onClick (NavigateTo i)
+        msg =
+            NavigateTo i
 
         contents =
             case card of
@@ -120,7 +124,9 @@ viewPill model idx ( i, card ) =
                 SubmitCard ->
                     "Insturen"
     in
-        UI.pill pillModel [ handler ] [ text contents ]
+        UI.Button.pill semantics
+            msg
+            contents
 
 
 viewCardChrome : Model Msg -> Html Msg -> Int -> Html Msg
@@ -132,17 +138,20 @@ viewCardChrome model card i =
         prev =
             Basics.max (i - 1) 0
 
-        backButton =
-            UI.button XXXS Potential [ onClick (NavigateTo prev) ] [ text "terug" ]
-
-        nextButton =
-            UI.button XXXS Potential [ onClick (NavigateTo next) ] [ text "volgende" ]
-
         pills =
             List.map (viewPill model i) (List.indexedMap (,) model.cards)
+                |> Element.wrappedRow UI.Style.None [ spacing 7, padding 10 ]
+                |> Element.layout UI.Style.stylesheet
+
+        nav =
+            [ UI.Button.pill UI.Style.Potential (NavigateTo prev) "terug"
+            , UI.Button.pill UI.Style.Potential (NavigateTo next) "volgende"
+            ]
+                |> Element.wrappedRow UI.Style.None [ spacing 7, padding 10 ]
+                |> Element.layout UI.Style.stylesheet
     in
         wrapper []
-            [ container Leftside [] pills
+            [ pills
             , card
-            , div [ class "nav-buttons container left " ] [ backButton, nextButton ]
+            , nav
             ]

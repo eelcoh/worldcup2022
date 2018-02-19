@@ -1,12 +1,15 @@
 module Form.Questions.GroupBestThirds exposing (Msg, update, view)
 
-import Bets.Bet exposing (setTeam, getAnswer, candidates)
-import Bets.Types exposing (Answer, AnswerT(..), AnswerID, Team, Pos(..), Candidates, Bet, Group)
-import Html exposing (..)
-import Html.Events exposing (onClick)
+import Bets.Bet exposing (candidates, getAnswer, setTeam)
+import Bets.Types exposing (Answer, AnswerID, AnswerT(..), Bet, Candidates, Group, Pos(..), Team)
+import Element exposing (layout)
+import Element.Attributes exposing (padding, spacing, width, px)
 import Form.Questions.Types exposing (QState)
-import UI.Grid as UI exposing (..)
+import Html exposing (..)
+import UI.Button
+import UI.Style
 import UI.Team exposing (viewTeam)
+import UI.Text
 
 
 type Msg
@@ -45,48 +48,61 @@ view bet qState =
             candidates bet answr
 
         header =
-            h1 [] [ text "Wat worden de beste nummers 3? " ]
+            UI.Text.displayHeader "Wat worden de beste nummers 3?"
 
         body =
             case mAnswer of
                 Just (( answerId, AnswerGroupBestThirds bestThirds _ ) as answer) ->
-                    List.map (displayTeam (act answerId)) (cs answer)
+                    let
+                        rowItems =
+                            List.map (displayTeam (act answerId)) (cs answer)
+                    in
+                        Element.row UI.Style.GroupPosition
+                            [ padding 10, spacing 7 ]
+                            rowItems
 
                 _ ->
-                    [ cell XS Perhaps [] [ text "WHOOPS" ] ]
+                    Element.empty
 
         contents =
-            [ header
-            , introduction
-            , container Leftside [] body
-            ]
+            Element.column UI.Style.None
+                [ width (px 600) ]
+                [ header
+                , introduction
+                , body
+                ]
     in
-        div [] contents
+        Element.layout UI.Style.stylesheet contents
 
 
-introduction : Html Msg
+introduction : Element.Element UI.Style.Style variation msg
 introduction =
-    p [] [ text "Van de zes beste nummers 3 gaan er vier door. Welke zijn dat? Voor elk land dat je juist hebt voorspeld voor de tweede ronde krijg je 1 punt." ]
+    Element.paragraph UI.Style.Introduction
+        [ width (px 600), spacing 7 ]
+        [ Element.text "Van de zes beste nummers 3 gaan er vier door. Welke zijn dat? Voor elk land dat je juist hebt voorspeld voor de tweede ronde krijg je 1 punt." ]
 
 
-displayTeam : (Group -> Team -> Msg) -> ( Group, Team, Pos ) -> Html Msg
+displayTeam :
+    (a -> Team -> b)
+    -> ( a, Team, Pos )
+    -> Element.Element UI.Style.Style variation b
 displayTeam act ( grp, team, pos ) =
     let
         c =
             case pos of
                 TopThird ->
-                    Selected
+                    UI.Style.TBSelected
 
                 Third ->
-                    Potential
+                    UI.Style.TBPotential
 
                 _ ->
-                    Inactive
+                    UI.Style.TBInactive
 
-        handler =
-            onClick (act grp team)
+        msg =
+            (act grp team)
 
         contents =
             [ viewTeam (Just team) ]
     in
-        UI.button XS c [ handler ] contents
+        UI.Button.teamButton c msg team
