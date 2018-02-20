@@ -6,7 +6,10 @@ module Form.Info
         )
 
 import Form.Types exposing (Info(..), FormInfoMsg(..))
-import Html exposing (div, text, h1, Html, section, p, ul, li)
+import UI.Style
+import Element
+import Element.Attributes exposing (px, spacing, padding, paddingTop, paddingBottom, width, height)
+import UI.Text
 import Bets.Types exposing (Bet)
 
 
@@ -21,58 +24,65 @@ update act bet =
             ( bet, Cmd.none )
 
 
-view : Info -> Html Msg
+view : Info -> Element.Element UI.Style.Style variation msg
 view info =
     let
         cardContents =
             case info of
                 Intro ->
-                    section []
-                        [ h1 [] [ text "Hier is de voetbalpool weer!" ]
-                        , p [] [ text "Welkom op het formulier voor de voetbalpool. Vul achtereenvolgens de volgende vragen in:" ]
-                        , ul []
-                            [ li [] [ text "Uitslagen van de wedstrijden voor iedere poule." ]
-                            , li [] [ text "De landen die de volgende ronde halen. Het is wat ingewikkeld. Eerst moet je de nummers 1 2 en 3 in de eindstand van een poule voorspellen. De nummers 1 en 2 gaan door. Van de zes nummers 3 gaan er maar vier door. Die moet je ook nog even voorspellen." ]
-                            , li [] [ text "Klik vervolgens het schema volledig bij elkaar." ]
-                            , li [] [ text "Selecteer je topscorer." ]
-                            , li [] [ text "En vertel ons wie je bent" ]
-                            ]
-                        , p []
-                            [ text "Als voorgaande jaren is de inleg "
-                            , Html.b [] [ text "vijf euro" ]
-                            , text ", en de verdeling 50%, 30% en 20% voor de winnaar, nummer 2 en nummer 3. Bij gelijke stand wordt de opbrengst gedeeld."
-                            ]
-                        ]
+                    Element.column UI.Style.None [] introduction
 
                 FirstRoundIntro ->
-                    div [] [ text "Hello FirstRoundIntro" ]
+                    UI.Text.simpleText "Hello FirstRoundIntro"
 
                 GroupIntro group ->
-                    div [] [ text ("Hello GroupIntro " ++ (toString group)) ]
+                    UI.Text.simpleText ("Hello GroupIntro " ++ (toString group))
 
                 GroupStandingsIntro group ->
-                    div [] [ text ("Hello GroupStandingsIntro " ++ (toString group)) ]
+                    UI.Text.simpleText ("Hello GroupStandingsIntro " ++ (toString group))
 
                 BestThirdIntro ->
-                    div [] [ text "Hello BestThirdIntro" ]
+                    UI.Text.simpleText "Hello BestThirdIntro"
 
                 BracketIntro ->
-                    div [] [ h1 [] [ text "Hello BracketIntro" ] ]
+                    UI.Text.displayHeader "Hello BracketIntro"
 
                 BracketView ->
-                    div [] [ text "Hello BracketView" ]
+                    UI.Text.simpleText "Hello BracketView"
 
                 BracketRoundIntro round ->
-                    div [] [ text ("Hello BracketRoundIntro " ++ (toString round)) ]
+                    UI.Text.simpleText ("Hello BracketRoundIntro " ++ (toString round))
 
                 TopscorerIntro ->
-                    div [] [ text "Hello TopscorerIntro" ]
+                    UI.Text.simpleText "Hello TopscorerIntro"
 
                 AboutYouIntro ->
-                    div [] [ text "Hello AboutYouIntro" ]
+                    UI.Text.simpleText "Hello AboutYouIntro"
 
                 ThankYou ->
-                    div [] [ text "Hello ThankYou" ]
+                    UI.Text.simpleText "Hello ThankYou"
     in
-        div []
-            [ cardContents ]
+        cardContents
+
+
+introduction : List (Element.Element UI.Style.Style variation msg)
+introduction =
+    [ UI.Text.displayHeader "Hier is de voetbalpool weer!"
+    , Element.paragraph UI.Style.Introduction
+        [ width (px 600), spacing 7 ]
+        [ Element.text "Welkom op het formulier voor de voetbalpool. Vul achtereenvolgens de volgende vragen in:" ]
+    , Element.column UI.Style.None
+        [ width (px 600), spacing 7, paddingTop 10, paddingBottom 10 ]
+        [ UI.Text.bulletText "Uitslagen van de wedstrijden voor iedere poule."
+        , UI.Text.bulletText "De landen die de volgende ronde halen. Het is wat ingewikkeld. Eerst moet je de nummers 1 2 en 3 in de eindstand van een poule voorspellen. De nummers 1 en 2 gaan door. Van de zes nummers 3 gaan er maar vier door. Die moet je ook nog even voorspellen."
+        , UI.Text.bulletText "Klik vervolgens het schema volledig bij elkaar."
+        , UI.Text.bulletText "Selecteer je topscorer."
+        , UI.Text.bulletText "En vertel ons wie je bent"
+        ]
+    , Element.paragraph UI.Style.Introduction
+        [ width (px 600), spacing 7 ]
+        [ UI.Text.simpleText "Als voorgaande jaren is de inleg "
+        , UI.Text.boldText "vijf euro"
+        , UI.Text.simpleText ", en de verdeling 50%, 30% en 20% voor de winnaar, nummer 2 en nummer 3. Bij gelijke stand wordt de opbrengst gedeeld."
+        ]
+    ]

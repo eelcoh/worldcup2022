@@ -1,17 +1,19 @@
 module Form.QuestionSets.MatchScoreQuestions exposing (Msg, update, view)
 
-import Bets.Types exposing (Bet, Answer, AnswerID, AnswerT(..), Answers, Group, Team, Match, Score)
+import Bets.Bet exposing (setMatchScore)
+import Bets.Types exposing (Answer, AnswerID, AnswerT(..), Answers, Bet, Group, Match, Score, Team)
+import Bets.Types.Group as G
 import Bets.Types.Match as M
 import Bets.Types.Score as S
-import Bets.Types.Group as G
-import Bets.Bet exposing (setMatchScore)
-import Form.QuestionSets.Types exposing (Model, ChangeCursor(..), updateCursor)
-import UI.Grid as UI exposing (container, row, Color(..), Size(..), Align(..))
+import Element
+import Element.Attributes as Attributes exposing (center, height, padding, px, spacing, verticalCenter, width)
+import Element.Events
+import Element.Input as Input
+import Form.QuestionSets.Types exposing (ChangeCursor(..), Model, updateCursor)
+import UI.Button
+import UI.Style
 import UI.Team exposing (viewTeam, viewTeamLarge)
-import Html exposing (..)
-import Html.Events exposing (onClick, on, targetValue)
-import Html.Attributes exposing (id, value, placeholder, class)
-import String
+import UI.Text
 
 
 type Msg
@@ -41,30 +43,38 @@ update action model bet =
             ( bet, model, Cmd.none )
 
 
-view : Model -> Bet -> Maybe Answer -> Answers -> Html Msg
+view :
+    { a | cursor : AnswerID }
+    -> b
+    -> Maybe ( AnswerID, AnswerT )
+    -> List ( AnswerID, AnswerT )
+    -> Element.Element UI.Style.Style variation Msg
 view model bet mAnswer answers =
     case mAnswer of
         Just (( answerId, AnswerGroupMatch g match mScore points ) as answer) ->
-            div []
+            Element.column UI.Style.Page
+                [ width (px 650) ]
                 [ displayHeader g
                 , introduction
                 , displayMatches model.cursor answers
                 , viewInput model answer (M.homeTeam match) (M.awayTeam match) mScore
-                , viewKeyboard_ model answer
+                , viewKeyboard model answer
                 ]
 
         _ ->
-            div [] []
+            Element.empty
 
 
-displayHeader : Group -> Html Msg
+displayHeader : Group -> Element.Element UI.Style.Style variation msg
 displayHeader grp =
-    h1 [] [ text ("Voorspel de uitslagen in group " ++ (G.toString grp)) ]
+    UI.Text.displayHeader ("Voorspel de uitslagen in group " ++ (G.toString grp))
 
 
-introduction : Html Msg
+introduction : Element.Element UI.Style.Style variation msg
 introduction =
-    p [] [ text "Voorspel de uitslagen door op de knop met de gewenste score te klikken. Voor een juiste uitslag krijg je 3 punten. Heb je enkel de toto goed levert je dat 1 punt op." ]
+    Element.paragraph UI.Style.Introduction
+        [ width (px 600), spacing 7 ]
+        [ Element.text "Voorspel de uitslagen door op de knop met de gewenste score te klikken. Voor een juiste uitslag krijg je 3 punten. Heb je enkel de toto goed levert je dat 1 punt op." ]
 
 
 row0 : List ( Int, Int )
@@ -152,7 +162,13 @@ indexedScores scoreList =
         |> List.indexedMap (,)
 
 
-viewInput : Model -> Answer -> Maybe Team -> Maybe Team -> Maybe Score -> Html Msg
+viewInput :
+    a
+    -> Answer
+    -> Maybe Team
+    -> Maybe Team
+    -> Maybe Score
+    -> Element.Element UI.Style.Style variation Msg
 viewInput model answer homeTeam awayTeam mScore =
     let
         makeAction act val =
@@ -164,13 +180,18 @@ viewInput model answer homeTeam awayTeam mScore =
                     NoOp
 
         inputField v act =
-            div [ class "inp" ]
-                [ input
-                    [ value v
-                    , Html.Events.onInput (makeAction act)
-                    ]
-                    []
-                ]
+            let
+                inp =
+                    { onChange = (makeAction act)
+                    , value = v
+                    , label = Input.hiddenLabel ".."
+                    , options = []
+                    }
+            in
+                Input.text UI.Style.ScoreInput [ width (px 20) ] inp
+
+        wrap fld =
+            Element.el UI.Style.Wrapper [ width (px 24), center, verticalCenter ] fld
 
         extractScore extractor =
             mScore
@@ -180,18 +201,20 @@ viewInput model answer homeTeam awayTeam mScore =
 
         homeInput =
             inputField (extractScore S.homeScore) (UpdateHome answer)
+                |> wrap
 
         awayInput =
             inputField (extractScore S.awayScore) (UpdateAway answer)
+                |> wrap
 
         homeBadge =
-            UI.button2 M Active [ (id "home") ] [ viewTeamLarge homeTeam ]
+            UI.Team.viewTeamFull homeTeam
 
         awayBadge =
-            UI.button2 M Active [ (id "away") ] [ viewTeamLarge awayTeam ]
+            UI.Team.viewTeamFull awayTeam
     in
-        container Center
-            [ class "score-input center container" ]
+        Element.row UI.Style.ActiveMatch
+            [ center, padding 20, spacing 7 ]
             [ homeBadge
             , homeInput
             , awayInput
@@ -199,53 +222,54 @@ viewInput model answer homeTeam awayTeam mScore =
             ]
 
 
-viewKeyboard_ : Model -> Answer -> Html Msg
-viewKeyboard_ model answer =
+viewKeyboard : a -> Answer -> Element.Element UI.Style.Style variation Msg
+viewKeyboard model answer =
     let
         toButton ( _, ( h, a, t ) ) =
-            scoreButton_ Potential answer h a t
+            scoreButton UI.Style.SBPotential answer h a t
 
         toRow scoreList =
-            row Center [] (List.map toButton scoreList)
+            Element.row UI.Style.ScoreRow
+                [ center, spacing 2, verticalCenter ]
+                (List.map toButton scoreList)
     in
-        container Center [] (List.map toRow scores)
+        Element.column UI.Style.ScoreColumn
+            [ spacing 2 ]
+            (List.map toRow scores)
 
 
-scoreButton_ : Color -> Answer -> Int -> Int -> String -> Html Msg
-scoreButton_ c answer home away t =
+scoreButton : UI.Style.ScoreButtonSemantics -> Answer -> Int -> Int -> String -> Element.Element UI.Style.Style variation Msg
+scoreButton c answer home away t =
     let
-        handler =
-            onClick (Update answer home away)
+        msg =
+            Update answer home away
     in
-        UI.scoreButton c [ handler ] [ span [] [ text t ] ]
+        UI.Button.scoreButton c msg t
 
 
-
-{-
-   scoreButton : Msg -> Int -> Button.Instance Mdl Msg
-   scoreButton action i =
-     Button.instance i MDL Button.flat (Button.model True)
-       [ Button.fwdClick action ]
--}
-
-
-displayMatches : AnswerID -> Answers -> Html Msg
+displayMatches :
+    AnswerID
+    -> List ( AnswerID, AnswerT )
+    -> Element.Element UI.Style.Style variation Msg
 displayMatches cursor answers =
     let
         display =
             displayMatch cursor
     in
-        container Justified [] (List.map display answers)
+        --
+        Element.wrappedRow UI.Style.Matches
+            [ padding 10, spacing 7, center, width (px 600) ]
+            (List.filterMap display answers)
 
 
-displayMatch : AnswerID -> Answer -> Html Msg
+displayMatch : AnswerID -> ( AnswerID, AnswerT ) -> Maybe (Element.Element UI.Style.Style variation Msg)
 displayMatch cursor ( answerId, answer ) =
     let
-        colors =
+        semantics =
             if cursor == answerId then
-                Active
+                UI.Style.Active
             else
-                Potential
+                UI.Style.Potential
 
         disp match mScore =
             let
@@ -261,22 +285,27 @@ displayMatch cursor ( answerId, answer ) =
                             13
 
                 handler =
-                    onClick (SelectMatch answerId)
+                    Element.Events.onClick (SelectMatch answerId)
+
+                home =
+                    UI.Team.viewTeamEl (M.homeTeam match)
+
+                away =
+                    UI.Team.viewTeamEl (M.awayTeam match)
+
+                sc =
+                    displayScore mScore
             in
-                UI.score L
-                    colors
-                    [ handler ]
-                    [ viewTeam (M.homeTeam match)
-                    , displayScore mScore
-                    , viewTeam (M.awayTeam match)
-                    ]
+                Element.row (UI.Style.MatchRow semantics)
+                    [ handler, center, verticalCenter, padding 10, spacing 7, width (px 150), height (px 70) ]
+                    [ home, sc, away ]
     in
         case answer of
             AnswerGroupMatch g match mScore _ ->
-                disp match mScore
+                Just <| disp match mScore
 
             _ ->
-                p [] []
+                Nothing
 
 
 scoreString : a -> b -> String
@@ -284,15 +313,15 @@ scoreString h a =
     List.foldr (++) "" [ " ", (toString h), "-", (toString a), " " ]
 
 
-displayScore : Maybe Score -> Html Msg
+displayScore : Maybe Score -> Element.Element UI.Style.Style variation msg
 displayScore mScore =
     let
-        contents =
+        txt =
             case mScore of
                 Just score ->
-                    (text (S.asString score))
+                    (S.asString score)
 
                 Nothing ->
-                    text " _-_ "
+                    " _-_ "
     in
-        UI.txt [ "dash" ] L Irrelevant [] [ contents ]
+        Element.el UI.Style.Score [ verticalCenter ] (Element.text (txt))

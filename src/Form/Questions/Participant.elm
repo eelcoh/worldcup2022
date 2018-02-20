@@ -7,10 +7,12 @@ module Form.Questions.Participant
 
 import Bets.Bet exposing (setParticipant)
 import Bets.Types exposing (Answer, AnswerID, AnswerT(..), Bet, Participant)
+import UI.Text
+import Element
+import UI.Style
+import Element.Attributes exposing (width, height, px, spacing, padding)
+import Element.Input
 import Form.Questions.Types exposing (QState)
-import Html exposing (..)
-import Html.Attributes exposing (id, placeholder, value)
-import Html.Events exposing (on, onClick, onInput, targetValue)
 
 
 type Attr
@@ -74,7 +76,7 @@ update msg bet qState =
                 ( bet, { qState | next = Nothing }, Cmd.none )
 
 
-view : Bet -> QState -> Html Msg
+view : Bet -> QState -> Element.Element UI.Style.Style variation Msg
 view bet qState =
     let
         mAnswer =
@@ -91,25 +93,29 @@ view bet qState =
                 _ ->
                     [ "", "", "", "", "", "" ]
 
-        inputLine ( k, v ) =
-            div []
-                [ input
-                    [ value (Tuple.first v)
-                    , placeholder (Tuple.second v)
-                    , onInput (\val -> (Set (k val) qState.answerId))
-                    ]
-                    []
-                ]
+        inputField ( k, v ) =
+            let
+                inp =
+                    { onChange = (\val -> (Set (k val) qState.answerId))
+                    , value = (Tuple.second v)
+                    , label = Element.Input.hiddenLabel "k"
+                    , options = []
+                    }
+            in
+                Element.Input.text UI.Style.TextInput [ width (px 260), height (px 36) ] inp
 
         lines =
             List.map2 (,) values [ "Naam", "Adres", "Woonplaats", "Email", "Telefoonnummer", "Waar ken je ons van?" ]
                 |> List.map2 (,) keys
-                |> List.map inputLine
+                |> List.map inputField
 
         header =
-            h1 [] [ text ("Wie ben jij") ]
+            UI.Text.displayHeader "Wie ben jij"
 
-        introtext =
-            p [] [ text "Graag volledig invullen, zodat wij je goed kunnen bereiken als je gewonnen hebt." ]
+        introduction =
+            Element.paragraph UI.Style.Introduction
+                [ width (px 600), spacing 7 ]
+                [ UI.Text.simpleText """Graag volledig invullen, zodat wij je goed kunnen bereiken als je gewonnen hebt."""
+                ]
     in
-        div [] (header :: introtext :: lines)
+        Element.column UI.Style.None [ spacing 7 ] (header :: introduction :: lines)

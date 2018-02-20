@@ -2,10 +2,12 @@ module Bets.Types.Team
     exposing
         ( team
         , display
+        , displayFull
         , mdisplay
         , mdisplayFull
         , log
         , flag
+        , flagUrl
         , initTeamData
         , isComplete
         , decode
@@ -60,24 +62,21 @@ display team =
     team.teamID
 
 
+displayFull : Team -> String
+displayFull team =
+    team.teamName
+
+
 mdisplayFull : Maybe Team -> String
 mdisplayFull mteam =
-    case mteam of
-        Nothing ->
-            ""
-
-        Just team ->
-            team.teamName
+    Maybe.map displayFull mteam
+        |> Maybe.withDefault ""
 
 
 mdisplay : Maybe Team -> String
 mdisplay mteam =
-    case mteam of
-        Nothing ->
-            ""
-
-        Just team ->
-            display team
+    Maybe.map display mteam
+        |> Maybe.withDefault ""
 
 
 log : Team -> String
@@ -100,6 +99,23 @@ flag mteam =
 
             Just t ->
                 img [ (src (uri t)) ] []
+
+
+flagUrl : Maybe Team -> String
+flagUrl mteam =
+    let
+        uri team =
+            (flagUri 2) ++ team.teamID ++ ".png"
+
+        default =
+            team "xyz" ""
+    in
+        case mteam of
+            Nothing ->
+                uri default
+
+            Just t ->
+                uri t
 
 
 flagUri : Int -> String

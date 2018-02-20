@@ -19,9 +19,6 @@ type alias Model =
 type QuestionType
     = QBracket
     | QGroupBestThirds
-    | QGroupPosition
-    | QMatchScore
-    | QMatchWinner
     | QParticipant
     | QTopscorer
 
@@ -39,21 +36,6 @@ qBracket answerId =
 qGroupBestThirds : AnswerID -> QState
 qGroupBestThirds answerId =
     question QGroupBestThirds answerId
-
-
-qGroupPosition : AnswerID -> QState
-qGroupPosition answerId =
-    question QGroupPosition answerId
-
-
-qMatchScore : AnswerID -> QState
-qMatchScore answerId =
-    question QMatchScore answerId
-
-
-qMatchWinner : AnswerID -> QState
-qMatchWinner answerId =
-    question QMatchWinner answerId
 
 
 qParticipant : AnswerID -> QState

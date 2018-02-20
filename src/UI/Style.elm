@@ -1,112 +1,308 @@
-module UI.Style
-    exposing
-        ( std
-        , small
-        , smallBlock
-        , grid
-        , Colour(..)
-        , Cell
-        )
+module UI.Style exposing (..)
 
-import Array
-import Html exposing (Html, text, Attribute)
-import Material.Color as Color
-import Material.Grid as Grid exposing (cell)
-import Material.Style as S exposing (css, styled, attribute)
+import Color exposing (..)
+import Style exposing (..)
+import Style.Color as Color
+import Style.Font as Font
+import Style.Scale as Scale
 
 
-type alias Cell =
-    Grid.Cell
+type Style
+    = Button ButtonSemantics
+    | ScoreButton ScoreButtonSemantics
+    | TeamButton TeamButtonSemantics
+    | MatchRow ButtonSemantics
+    | Matches
+    | ActiveMatch
+    | TeamNameFull
+    | Flag
+    | FlagImage
+    | TeamName
+    | TeamBox
+    | Score
+    | ScoreRow
+    | ScoreColumn
+    | ScoreInput
+    | Introduction
+    | Header1
+    | Page
+    | Emphasis
+    | Wrapper
+    | GroupBadge
+    | GroupPosition
+    | GroupPositions
+    | None
+    | Bullet
+    | TextInput
+    | Link
 
 
-type alias Style =
-    S.Style
+type ScoreButtonSemantics
+    = SBPotential
+    | SBSelected
 
 
-type Colour
+type TeamButtonSemantics
+    = TBPotential
+    | TBSelected
+    | TBInactive
+
+
+type ButtonSemantics
     = Active
     | Inactive
     | Wrong
     | Right
-    | Unknown
+    | Perhaps
+    | Irrelevant
+    | Potential
     | Selected
 
 
-colour : Colour -> Style
-colour c =
-    case c of
-        Active ->
-            color 1
-
-        Inactive ->
-            color 2
-
-        Wrong ->
-            color 3
-
-        Right ->
-            color 4
-
-        Unknown ->
-            color 5
-
-        Selected ->
-            color 6
+grey : Color
+grey =
+    rgb 96 125 139
 
 
-grid =
-    Grid.grid
+brownGrey : Color
+brownGrey =
+    rgb 215 204 200
 
 
-color : Int -> Style
-color k =
-    Array.get ((k + 0) % Array.length Color.hues) Color.hues
-        |> Maybe.withDefault Color.Teal
-        |> flip Color.color Color.S500
-        |> Color.background
+white : Color
+white =
+    rgb 255 255 255
 
 
-mycell : Int -> List Style -> List Html -> Cell
-mycell k styling =
-    cell <| List.concat [ stijle k, styling ]
+orange : Color
+orange =
+    rgb 230 74 25
 
 
-smallBlock : Attribute -> Colour -> List ( String, String ) -> List Html -> Cell
-smallBlock handler c styles contents =
-    let
-        blockStyles =
-            List.append styles [ ( "margin", "0 auto" ), ( "width", "100%" ), ( "align", "center" ), ( "cursor", "pointer" ) ]
-                |> toStyle
-    in
-        small
-            [ Grid.size Grid.All 2, colour c, attribute handler ]
-            [ S.div blockStyles contents
+green : Color
+green =
+    rgb 0 150 136
+
+
+scale : Int -> Float
+scale =
+    Scale.modular 16 1.618
+
+
+stylesheet : StyleSheet Style variation
+stylesheet =
+    Style.styleSheet
+        [ style Header1
+            [ Font.size (scale 2)
+            , Color.text orange
             ]
+        , style Introduction
+            [ Font.size (scale 1)
+            ]
+        , style Page
+            []
+        , style (Button Active)
+            [ Color.background green
+            , Color.text white
+            , hover [ cursor "pointer" ]
+            ]
+        , style (Button Inactive)
+            [ Color.background <| rgb 121 85 72
+            , Color.text white
+            , Font.lineHeight 1.0
+            , hover [ cursor "not-allowed" ]
+            ]
+        , style (Button Wrong)
+            [ Color.background <| rgb 233 30 99
+            , Color.text white
+            , hover [ cursor "pointer" ]
+            ]
+        , style (Button Right)
+            [ Color.background green
+            , Color.text white
+            , hover [ cursor "pointer" ]
+            ]
+        , style (Button Perhaps)
+            [ Color.background green
+            , Color.text white
+            , hover [ cursor "pointer" ]
+            ]
+        , style (Button Irrelevant)
+            [ Color.background <| rgb 200 200 200
+            , Color.text white
+            , hover [ cursor "pointer" ]
+            ]
+        , style (Button Potential)
+            [ Color.background brownGrey
+            , Color.text white
+            , hover [ cursor "pointer" ]
+            ]
+        , style (Button Selected)
+            [ Color.background <| rgb 0 150 136
+            , Color.text white
+            , hover [ cursor "pointer" ]
+            ]
+        , style (ScoreButton SBPotential)
+            [ Color.background brownGrey
+            , Color.text white
+            , Font.lineHeight 1.0
+            , Font.center
+            , Font.size 15
+            , hover [ cursor "pointer" ]
+            ]
+        , style (ScoreButton SBSelected)
+            [ Color.background green
+            , Color.text white
+            , Font.lineHeight 1.0
+            , Font.center
+            , Font.size 15
+            , hover [ cursor "pointer" ]
+            ]
+        , style (TeamButton TBPotential)
+            [ Color.background brownGrey
+            , Color.text grey
+            , Font.lineHeight 1.0
+            , Font.center
+            , Font.size 15
+            , hover [ cursor "pointer" ]
+            ]
+        , style (TeamButton TBSelected)
+            [ Color.background green
+            , Color.text white
+            , Font.lineHeight 1.0
+            , Font.center
+            , Font.size 15
+            ]
+        , style (TeamButton TBSelected)
+            [ Color.background grey
+            , Color.text white
+            , Font.lineHeight 1.0
+            , Font.center
+            , Font.size 15
+            , hover [ cursor "pointer" ]
+            ]
+        , style Flag
+            []
+        , style FlagImage
+            []
+        , style TeamName
+            [ Font.center
+            ]
+        , style TeamBox
+            []
+        , style ScoreRow
+            []
+        , style ScoreColumn
+            []
+        , style ScoreInput
+            []
+        , style Score
+            [ Font.center
+            ]
+        , style Matches
+            []
+        , style ActiveMatch
+            []
+        , style (MatchRow Active)
+            [ Color.background orange
+            , Color.text brownGrey
+            , Font.size (scale 1)
+            , Font.center
+            , hover [ cursor "pointer" ]
+            ]
+        , style (MatchRow Selected)
+            [ Color.background <| rgb 0 150 136
+            , Color.text brownGrey
+            , Font.size (scale 1)
+            , Font.center
+            , hover [ cursor "pointer" ]
+            ]
+        , style (MatchRow Potential)
+            [ Color.background green
+            , Color.text white
+            , Font.size (scale 1)
+            , Font.center
+            , hover [ cursor "pointer" ]
+            ]
+        , style TeamNameFull
+            [ Font.size (scale 1)
+            , Font.center
+            ]
+        , style TeamBox
+            [ Color.background orange
+            , Color.text white
+            , Font.size (scale 1)
+            , Font.center
+            ]
+        , style Emphasis
+            [ Color.text orange
+            , Font.weight 700
+            ]
+        , style Wrapper
+            []
+        , style GroupBadge
+            []
+        , style GroupPosition
+            []
+        , style GroupPositions
+            []
+        , style None
+            []
+        , style Bullet
+            [ Color.background orange ]
+        , style TextInput
+            []
+        , style Link
+            [ Color.text orange
+            , hover [ cursor "pointer" ]
+            ]
+        ]
 
 
-small : List Style -> List Html -> Cell
-small =
-    mycell 100
+
+{-
 
 
-std : List Style -> List Html -> Cell
-std =
-    mycell 400
+   .xxl {
+       height: 250px; width: 100%}
+   .xl {
+       height: 76px; width: 40%}
+   .l {
+       height: 76px; width: 30%}
+   .m {
+       height: 76px; width: 24%}
+   .s {
+       height: 150px; width: 16.66666%}
+   .xs {
+       height: 76px; width: 10%}
 
+   .xxs {
+       height: 40px; width: auto; line-height: 1.0;}
 
-stijle : Int -> List Style
-stijle h =
-    [ css "text-sizing" "border-box"
-    , css "background-color" "#BDBDBD"
-    , css "height" (toString h ++ "px")
-    , css "padding" "8px"
-      --, css "padding" "4px"
-    , css "color" "white"
-    , css "overflow" "hidden"
-    , css "cursor" "pointer"
-    ]
+   .xxxs {
+       height: 30px;
+       width: auto;
+       line-height: 1.0;
+       font-size: 0.750rem;
+       margin: 2px;
+       padding: 10px;
+     }
 
+   .scoreButton {
+       height: 28px; width: 48px; line-height: 1.0;}
 
-toStyle : List ( String, String ) -> List Style
-toStyle stylz =
-    List.map (\( k, v ) -> css k v) stylz
+   .scoreButton > span {
+     display: block;
+     margin: auto;
+     text-align: center;
+   }
+
+   .teamButtonBracket {
+     flex-grow: 1;
+     flex: none;
+     align-self: flex-start;
+     padding: 5px 1px;
+     margin: 1px
+   }
+
+-}

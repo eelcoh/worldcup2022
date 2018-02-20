@@ -1,13 +1,15 @@
 module Form.Questions.Bracket exposing (Msg, update, view)
 
 import Bets.Bet exposing (setTeam)
-import Bets.Types exposing (Answer, AnswerT(..), AnswerID, Team, Bet, Answer, Bracket(..), Slot, Winner(..), Qualifier)
+import Bets.Types exposing (Answer, AnswerID, AnswerT(..), Bet, Bracket(..), Qualifier, Slot, Team, Winner(..))
+import UI.Text
 import Bets.Types.Bracket as B
+import Element
+import Element.Attributes exposing (alignRight, center, px, spacing, paddingXY, spread, width)
 import Form.Questions.Types exposing (QState)
 import Html exposing (..)
-import Html.Events exposing (onClick)
-import UI.Grid as UI exposing (container, Color(..), Size(..), cell, Align(..))
-import UI.Team exposing (viewTeam)
+import UI.Button
+import UI.Style
 
 
 type Msg
@@ -52,14 +54,14 @@ update msg bet qState =
                 ( newBet, { qState | next = Nothing }, Cmd.none )
 
 
-view : Bet -> QState -> Html Msg
+view : Bet -> QState -> Element.Element UI.Style.Style variation Msg
 view bet qQState =
     let
         mAnswer =
             Bets.Bet.getAnswer bet qQState.answerId
 
         header =
-            h1 [] [ text "Klik je een weg door het schema" ]
+            UI.Text.displayHeader "Klik je een weg door het schema"
 
         introtext =
             """Dit is het schema voor de tweede ronde en verder. In het midden staat de finale,
@@ -68,23 +70,22 @@ view bet qQState =
          kampioen 13 punten."""
 
         introduction =
-            p [] [ text introtext ]
+            Element.paragraph UI.Style.None [] [ UI.Text.simpleText introtext ]
     in
         case mAnswer of
             Just (( answerId, AnswerBracket bracket _ ) as answer) ->
-                div []
+                Element.column UI.Style.None
+                    []
                     [ header
-                    , section []
-                        [ introduction
-                        , section [] [ (viewBracket bet answer bracket) ]
-                        ]
+                    , introduction
+                    , (viewBracket bet answer bracket)
                     ]
 
             _ ->
-                div [] [ text "WHOOPS" ]
+                Element.empty
 
 
-viewBracket : Bet -> Answer -> Bracket -> Html Msg
+viewBracket : Bet -> Answer -> Bracket -> Element.Element UI.Style.Style variation Msg
 viewBracket bet answer bracket =
     {-
        mn37 = MatchNode "m37" None tnra tnrc -- "2016/06/15 15:00" saintetienne (Just "W37")
@@ -107,8 +108,8 @@ viewBracket bet answer bracket =
        mn51 = MatchNode "m51" None mn49 mn50 -- "2016/06/15 15:00" saintdenis Nothing
     -}
     let
-        v =
-            viewMatchWinner bet answer
+        v mb =
+            viewMatchWinner bet answer mb
 
         final =
             B.get bracket "m51"
@@ -158,28 +159,26 @@ viewBracket bet answer bracket =
         m37 =
             v <| B.get bracket "m37"
 
-        champBtn =
-            mkButtonChamp final
-
         champion =
-            UI.cell2 M
-                Irrelevant
-                []
-                [ container Center [] [ champBtn ]
-                ]
+            mkButtonChamp final
     in
-        section []
-            [ container Justified [] [ m37, m39, m38, m42 ]
-            , container Spaced [] [ m45, m46 ]
-            , container Spaced [] [ m49 ]
-            , container Rightside [] [ m51, champion ]
-            , container Spaced [] [ m50 ]
-            , container Spaced [] [ m47, m48 ]
-            , container Justified [] [ m41, m43, m40, m44 ]
+        Element.column UI.Style.None
+            [ spacing 10, width (px 600) ]
+            [ Element.row UI.Style.None [ spread ] [ m37, m39, m38, m42 ]
+            , Element.row UI.Style.None [ spread, paddingXY 76 0 ] [ m45, m46 ]
+            , Element.row UI.Style.None [ center ] [ m49 ]
+            , Element.row UI.Style.None [ alignRight, spacing 44 ] [ m51, champion ]
+            , Element.row UI.Style.None [ center ] [ m50 ]
+            , Element.row UI.Style.None [ spread, paddingXY 76 0 ] [ m47, m48 ]
+            , Element.row UI.Style.None [ spread ] [ m41, m43, m40, m44 ]
             ]
 
 
-viewMatchWinner : Bet -> Answer -> Maybe Bracket -> Html Msg
+viewMatchWinner :
+    a
+    -> ( AnswerID, a2 )
+    -> Maybe Bracket
+    -> Element.Element UI.Style.Style variation Msg
 viewMatchWinner bet answer mBracket =
     case mBracket of
         Just (MatchNode slot winner home away rd _) ->
@@ -193,43 +192,48 @@ viewMatchWinner bet answer mBracket =
                 dash =
                     text " - "
             in
-                UI.cell2 M
-                    Irrelevant
-                    []
-                    [ container Center [] [ homeButton, awayButton ]
-                    ]
+                Element.row UI.Style.None [ spacing 7 ] [ homeButton, awayButton ]
 
         _ ->
-            p [] []
+            Element.empty
 
 
-mkButton : Answer -> Winner -> Slot -> IsWinner -> Bracket -> Html Msg
+mkButton :
+    ( AnswerID, a2 )
+    -> Winner
+    -> Slot
+    -> IsWinner
+    -> Bracket
+    -> Element.Element UI.Style.Style variation Msg
 mkButton answer wnnr slot isSelected bracket =
     let
         s =
             case isSelected of
                 Yes ->
-                    Selected
+                    UI.Style.TBSelected
 
                 No ->
-                    Potential
+                    UI.Style.TBPotential
 
                 Undecided ->
-                    Potential
+                    UI.Style.TBPotential
 
         answerId =
             Tuple.first answer
 
-        handler =
-            onClick (SetWinner answerId slot wnnr)
+        msg =
+            SetWinner answerId slot wnnr
 
         attrs =
             []
+
+        team =
+            B.qualifier bracket
     in
-        UI.button2 XL s [ handler ] [ viewTeam (B.qualifier bracket) ]
+        UI.Button.maybeTeamButton s msg team
 
 
-mkButtonChamp : Maybe Bracket -> Html Msg
+mkButtonChamp : Maybe Bracket -> Element.Element UI.Style.Style variation msg
 mkButtonChamp mBracket =
     let
         mTeam =
@@ -239,12 +243,12 @@ mkButtonChamp mBracket =
         s =
             case mTeam of
                 Just t ->
-                    Selected
+                    UI.Style.TBSelected
 
                 Nothing ->
-                    Potential
+                    UI.Style.TBPotential
 
         attrs =
             []
     in
-        UI.button2 XL s [] [ viewTeam mTeam ]
+        UI.Button.maybeTeamBadge s mTeam

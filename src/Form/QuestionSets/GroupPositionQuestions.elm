@@ -1,13 +1,14 @@
 module Form.QuestionSets.GroupPositionQuestions exposing (Msg, update, view)
 
-import Bets.Bet exposing (setTeam, candidates)
-import Bets.Types exposing (Answer, AnswerT(..), AnswerID, Answers, Team, Group, Pos(..), Bet)
+import Bets.Bet exposing (candidates, setTeam)
+import Bets.Types exposing (Answer, AnswerID, AnswerT(..), Answers, Bet, Group, Pos(..), Team)
+import UI.Text
 import Bets.Types.Group as G
-import UI.Team exposing (viewTeam)
-import Form.QuestionSets.Types exposing (QuestionType(..), Model, ChangeCursor(..), updateCursor)
-import Html exposing (Html, h1, h2, text, p, section, div)
-import Html.Events exposing (onClick)
-import UI.Grid as UI exposing (Color(..), Size(..), Align(..))
+import Element
+import Element.Attributes exposing (px, spacing, padding, width, height, center, verticalCenter)
+import Form.QuestionSets.Types exposing (ChangeCursor(..), Model, QuestionType(..), updateCursor)
+import UI.Button
+import UI.Style
 
 
 type Msg
@@ -25,39 +26,48 @@ update msg model bet =
             ( bet, updateCursor model bet (Explicit answerId), Cmd.none )
 
 
-view : Model -> Bet -> Maybe Answer -> Answers -> Html Msg
+view :
+    { a | questionType : QuestionType }
+    -> Bet
+    -> b
+    -> List ( AnswerID, AnswerT )
+    -> Element.Element UI.Style.Style variation Msg
 view model bet mAnswer answers =
-    Html.div []
-        [ displayHeader model.questionType
-        , introduction
-        , section [] (List.map (viewAnswer model bet) answers)
-        ]
-
-
-displayHeader : QuestionType -> Html Msg
-displayHeader qT =
-    case qT of
+    case model.questionType of
         GroupPosition grp ->
-            h1 [] [ text ("Voorspel de eindstand van poule " ++ (G.toString grp)) ]
+            Element.column UI.Style.Page
+                []
+                [ displayHeader grp
+                , introduction
+                , Element.column UI.Style.GroupPositions [] (List.filterMap (viewAnswer model bet) answers)
+                ]
 
         _ ->
-            p [] []
+            Element.empty
 
 
-introduction : Html Msg
+displayHeader : Group -> Element.Element UI.Style.Style variation msg
+displayHeader grp =
+    UI.Text.displayHeader ("Voorspel de eindstand van poule " ++ (G.toString grp))
+
+
+introduction : Element.Element UI.Style.Style variation msg
 introduction =
-    p []
-        [ text """Voorspel de nummers 1, 2 en 3 van de eindstand in de poule.
-      De nummers 1 en 2 gaan door, en daarvoor krijg je 1 punt per
-      land dat de tweede ronde haalt. """
-        , Html.b [] [ text "Klik" ]
-        , text """ op een team om het te selecteren voor de positie in de eindstand.
-        Voor de nummers 3 volgt nog
-        een verdere vraag."""
+    Element.paragraph UI.Style.Introduction
+        [ width (px 600), spacing 7 ]
+        [ Element.text """Voorspel de nummers 1, 2 en 3 van de eindstand in de poule.
+      De nummers 1 en 2 gaan door, en daarvoor krijg je 1 punt per land dat de tweede ronde haalt. """
+        , Element.el UI.Style.Emphasis [] (Element.text "Klik")
+        , Element.text """op een team om het te selecteren voor de positie in de eindstand.
+        Voor de nummers 3 volgt nog een verdere vraag."""
         ]
 
 
-viewAnswer : Model -> Bet -> Answer -> Html Msg
+viewAnswer :
+    a
+    -> Bet
+    -> ( AnswerID, AnswerT )
+    -> Maybe (Element.Element UI.Style.Style variation Msg)
 viewAnswer model bet (( aid, answerT ) as answer) =
     let
         cs =
@@ -66,40 +76,58 @@ viewAnswer model bet (( aid, answerT ) as answer) =
         posText p =
             case p of
                 First ->
-                    text "1e"
+                    Element.text "1e"
 
                 Second ->
-                    text "2e"
+                    Element.text "2e"
 
                 Third ->
-                    text "3e"
+                    Element.text "3e"
 
                 _ ->
-                    text ""
+                    Element.text ""
 
         header g p =
-            UI.cell XS Irrelevant [] [ (h2 [] [ posText p ]) ]
+            Element.el UI.Style.GroupBadge
+                [ width (px 64), height (px 76), center, verticalCenter ]
+                (posText p)
     in
         case answerT of
             AnswerGroupPosition g pos ( drawID, mTeam ) _ ->
-                UI.container Leftside
-                    []
-                    ((header g pos) :: (List.map (mkButton answer g pos) cs))
+                let
+                    buttons =
+                        List.map (mkButton answer g pos) cs
+
+                    hdr =
+                        header g pos
+
+                    rowItems =
+                        hdr :: buttons
+                in
+                    Element.row UI.Style.GroupPosition
+                        [ padding 10, spacing 7 ]
+                        rowItems
+                        |> Just
 
             _ ->
-                div [] [ text "WHOOPS" ]
+                Nothing
 
 
-mkButton : Answer -> Group -> Pos -> ( Group, Team, Pos ) -> Html Msg
+mkButton :
+    Answer
+    -> Group
+    -> a
+    -> ( b, Team, a )
+    -> Element.Element UI.Style.Style variation Msg
 mkButton answer forGrp forPos ( grp, team, pos ) =
     let
         c =
             if pos == forPos then
-                Selected
+                UI.Style.TBSelected
             else
-                Potential
+                UI.Style.TBPotential
 
-        handler =
-            onClick (SetTeam answer forGrp team)
+        msg =
+            SetTeam answer forGrp team
     in
-        UI.button XS c [ handler ] [ viewTeam (Just team) ]
+        UI.Button.teamButton c msg team
