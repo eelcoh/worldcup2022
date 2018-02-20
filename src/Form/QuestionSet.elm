@@ -1,6 +1,5 @@
 module Form.QuestionSet exposing (Msg, update, view)
 
-import Html exposing (Html, p)
 import Bets.Types exposing (Bet, Answer, AnswerT(..), AnswerID, Answers, Group, Round)
 import UI.Style
 import Element
@@ -42,7 +41,7 @@ getAnswer cursor answers =
             |> List.head
 
 
-view : Model -> Bet -> Html Msg
+view : Model -> Bet -> Element.Element UI.Style.Style variation Msg
 view model bet =
     let
         answers =
@@ -54,10 +53,8 @@ view model bet =
         case model.questionType of
             MatchScore grp ->
                 Form.QuestionSets.MatchScoreQuestions.view model bet mCurrentAnswer answers
-                    |> Element.layout UI.Style.stylesheet
-                    |> Html.map UpdateMatchScoreQuestions
+                    |> Element.map UpdateMatchScoreQuestions
 
             GroupPosition grp ->
                 Form.QuestionSets.GroupPositionQuestions.view model bet mCurrentAnswer answers
-                    |> Element.layout UI.Style.stylesheet
-                    |> Html.map UpdateGroupPositionQuestions
+                    |> Element.map UpdateGroupPositionQuestions

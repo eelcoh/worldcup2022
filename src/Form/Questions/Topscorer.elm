@@ -1,6 +1,5 @@
 module Form.Questions.Topscorer exposing (Msg, update, view)
 
-import Html exposing (..)
 import List.Extra
 import Bets.Bet exposing (setTopscorer)
 import Bets.Types exposing (Bet, Answer, AnswerT(..), AnswerID, Team, Topscorer, Player, TeamData, TeamDatum)
@@ -67,7 +66,7 @@ update msg bet qState =
                 ( newBet, { qState | next = Nothing }, Cmd.none )
 
 
-view : Bet -> QState -> Html Msg
+view : Bet -> QState -> Element.Element UI.Style.Style variation Msg
 view bet qState =
     let
         mAnswer =
@@ -78,10 +77,10 @@ view bet qState =
                 viewTopscorer bet answerId topscorer
 
             _ ->
-                section [] [ h1 [] [ text "WHOOPS" ] ]
+                Element.empty
 
 
-viewTopscorer : Bet -> AnswerID -> Topscorer -> Html Msg
+viewTopscorer : Bet -> AnswerID -> Topscorer -> Element.Element UI.Style.Style variation Msg
 viewTopscorer bet answerId topscorer =
     let
         teamData =
@@ -119,7 +118,6 @@ viewTopscorer bet answerId topscorer =
              ]
                 ++ (List.map forGroup groups)
             )
-            |> Element.layout UI.Style.stylesheet
 
 
 introduction : Element.Element UI.Style.Style variation msg

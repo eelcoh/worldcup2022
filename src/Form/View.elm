@@ -1,7 +1,5 @@
 module Form.View exposing (view)
 
-import Html exposing (..)
-import Html.Events exposing (..)
 import Form.Types exposing (..)
 import Form.Info
 import Form.Submit
@@ -9,12 +7,11 @@ import Form.Question
 import Form.Questions.Types as QT
 import Form.QuestionSet
 import Form.QuestionSets.Types as QTS
-import UI.Grid as UI exposing (..)
-import Html.Attributes exposing (class)
 import Element
 import Element.Attributes exposing (padding, spacing)
 import UI.Style
 import UI.Button
+import Html exposing (Html)
 
 
 -- View
@@ -33,26 +30,27 @@ view model =
                     viewCard model model.idx card
 
                 Nothing ->
-                    section [] [ text "WHOOPS" ]
+                    Element.empty
 
         card =
             getCard
                 |> makeCard
     in
         viewCardChrome model card model.idx
+            |> Element.layout UI.Style.stylesheet
 
 
-viewCard : Model Msg -> Int -> Card -> Html Msg
+viewCard : Model Msg -> Int -> Card -> Element.Element UI.Style.Style variation Msg
 viewCard model i card =
     case card of
         IntroCard intro ->
-            map InfoMsg (Form.Info.view intro)
+            Element.map InfoMsg (Form.Info.view intro)
 
         QuestionCard qModel ->
-            map (Answered i) (Form.Question.view model.bet qModel)
+            Element.map (Answered i) (Form.Question.view model.bet qModel)
 
         QuestionSetCard qsModel ->
-            map (QuestionSetMsg i) (Form.QuestionSet.view qsModel model.bet)
+            Element.map (QuestionSetMsg i) (Form.QuestionSet.view qsModel model.bet)
 
         SubmitCard ->
             let
@@ -73,7 +71,7 @@ viewCard model i card =
                 submittable =
                     List.all isComplete model.cards
             in
-                map SubmitMsg (Form.Submit.view model.bet submittable model.submitted)
+                Element.map SubmitMsg (Form.Submit.view model.bet submittable model.submitted)
 
 
 viewPill : Model Msg -> Int -> ( Int, Card ) -> Element.Element UI.Style.Style variation Msg
@@ -129,7 +127,11 @@ viewPill model idx ( i, card ) =
             contents
 
 
-viewCardChrome : Model Msg -> Html Msg -> Int -> Html Msg
+viewCardChrome :
+    Model Msg
+    -> Element.Element UI.Style.Style variation Msg
+    -> Int
+    -> Element.Element UI.Style.Style variation Msg
 viewCardChrome model card i =
     let
         next =
@@ -141,16 +143,15 @@ viewCardChrome model card i =
         pills =
             List.map (viewPill model i) (List.indexedMap (,) model.cards)
                 |> Element.wrappedRow UI.Style.None [ spacing 7, padding 10 ]
-                |> Element.layout UI.Style.stylesheet
 
         nav =
             [ UI.Button.pill UI.Style.Potential (NavigateTo prev) "terug"
             , UI.Button.pill UI.Style.Potential (NavigateTo next) "volgende"
             ]
                 |> Element.wrappedRow UI.Style.None [ spacing 7, padding 10 ]
-                |> Element.layout UI.Style.stylesheet
     in
-        wrapper []
+        Element.column UI.Style.None
+            []
             [ pills
             , card
             , nav

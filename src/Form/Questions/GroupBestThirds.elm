@@ -5,7 +5,6 @@ import Bets.Types exposing (Answer, AnswerID, AnswerT(..), Bet, Candidates, Grou
 import Element exposing (layout)
 import Element.Attributes exposing (padding, spacing, width, px)
 import Form.Questions.Types exposing (QState)
-import Html exposing (..)
 import UI.Button
 import UI.Style
 import UI.Team exposing (viewTeam)
@@ -35,7 +34,7 @@ update msg bet qState =
                 ( newBet, { qState | next = Nothing }, Cmd.none )
 
 
-view : Bet -> QState -> Html Msg
+view : Bet -> QState -> Element.Element UI.Style.Style variation Msg
 view bet qState =
     let
         mAnswer =
@@ -63,16 +62,13 @@ view bet qState =
 
                 _ ->
                     Element.empty
-
-        contents =
-            Element.column UI.Style.None
-                [ width (px 600) ]
-                [ header
-                , introduction
-                , body
-                ]
     in
-        Element.layout UI.Style.stylesheet contents
+        Element.column UI.Style.None
+            [ width (px 600) ]
+            [ header
+            , introduction
+            , body
+            ]
 
 
 introduction : Element.Element UI.Style.Style variation msg

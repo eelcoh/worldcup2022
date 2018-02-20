@@ -13,7 +13,6 @@ import Form.Questions.Types as Q
 import Form.Types exposing (Model, Card(..), Info(..), SubmitMsgType(..), SubmitState(..))
 import UI.Button
 import Element
-import Html exposing (Html, div, h1, p, section, span)
 import UI.Style
 import UI.Text
 
@@ -51,7 +50,7 @@ update msg bet =
             ( Bets.Init.bet, Cmd.none, Just Reset )
 
 
-view : Bet -> Bool -> SubmitState -> Html Msg
+view : Bet -> Bool -> SubmitState -> Element.Element UI.Style.Style variation SubmitMsgType
 view bet submittable submitted =
     let
         isComplete card =
@@ -96,7 +95,6 @@ view bet submittable submitted =
             [ introText
             , UI.Button.submit semantics msg buttonText
             ]
-            |> Element.layout UI.Style.stylesheet
 
 
 introSubmittable : Element.Element UI.Style.Style variation msg

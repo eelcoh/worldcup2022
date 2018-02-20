@@ -10,7 +10,6 @@ import UI.Style
 import Element
 import Element.Attributes exposing (px, spacing, padding, paddingTop, paddingBottom, width, height)
 import UI.Text
-import Html exposing (div, text, h1, Html, section, p, ul, li)
 import Bets.Types exposing (Bet)
 
 
@@ -25,7 +24,7 @@ update act bet =
             ( bet, Cmd.none )
 
 
-view : Info -> Html Msg
+view : Info -> Element.Element UI.Style.Style variation msg
 view info =
     let
         cardContents =
@@ -63,7 +62,7 @@ view info =
                 ThankYou ->
                     UI.Text.simpleText "Hello ThankYou"
     in
-        Element.layout UI.Style.stylesheet cardContents
+        cardContents
 
 
 introduction : List (Element.Element UI.Style.Style variation msg)
