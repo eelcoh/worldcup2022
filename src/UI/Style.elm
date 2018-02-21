@@ -2,6 +2,7 @@ module UI.Style exposing (..)
 
 import Color exposing (..)
 import Style exposing (..)
+import Style.Border as Border
 import Style.Color as Color
 import Style.Font as Font
 import Style.Scale as Scale
@@ -64,8 +65,13 @@ grey =
     rgb 96 125 139
 
 
-brownGrey : Color
-brownGrey =
+potential : Color
+potential =
+    white
+
+
+browngrey : Color
+browngrey =
     rgb 215 204 200
 
 
@@ -79,9 +85,13 @@ orange =
     rgb 230 74 25
 
 
-green : Color
-green =
-    rgb 0 150 136
+selected : Color
+selected =
+    black
+
+
+
+-- rgb 0 150 136
 
 
 scale : Int -> Float
@@ -95,16 +105,27 @@ stylesheet =
         [ style Header1
             [ Font.size (scale 2)
             , Color.text orange
+            , Font.typeface
+                [ Font.font "medium-content-sans-serif-font"
+                ]
             ]
         , style Introduction
             [ Font.size (scale 1)
+            , Font.lineHeight 1.4
+            , Font.typeface
+                [ Font.font "medium-content-serif-font"
+                ]
             ]
         , style Page
             []
         , style (Button Active)
-            [ Color.background green
+            [ Color.background selected
             , Color.text white
-            , hover [ cursor "pointer" ]
+            , hover
+                [ cursor "pointer"
+                , Color.background orange
+                , Color.text white
+                ]
             ]
         , style (Button Inactive)
             [ Color.background <| rgb 121 85 72
@@ -118,12 +139,12 @@ stylesheet =
             , hover [ cursor "pointer" ]
             ]
         , style (Button Right)
-            [ Color.background green
+            [ Color.background selected
             , Color.text white
             , hover [ cursor "pointer" ]
             ]
         , style (Button Perhaps)
-            [ Color.background green
+            [ Color.background selected
             , Color.text white
             , hover [ cursor "pointer" ]
             ]
@@ -133,49 +154,66 @@ stylesheet =
             , hover [ cursor "pointer" ]
             ]
         , style (Button Potential)
-            [ Color.background brownGrey
-            , Color.text white
-            , hover [ cursor "pointer" ]
+            [ Color.background potential
+            , Color.text browngrey
+            , Border.all 2
+            , Color.border browngrey
+            , hover
+                [ cursor "pointer"
+                , Border.all 2
+                , Border.solid
+                , Color.border black
+                , Color.background white
+                , Color.text black
+                ]
             ]
         , style (Button Selected)
-            [ Color.background <| rgb 0 150 136
+            [ Color.background selected
             , Color.text white
-            , hover [ cursor "pointer" ]
+            , Border.all 2
+            , Color.border selected
+            , hover
+                [ cursor "pointer"
+                , Color.background orange
+                , Color.text black
+                , Color.border orange
+                ]
             ]
         , style (ScoreButton SBPotential)
-            [ Color.background brownGrey
+            [ Color.background potential
             , Color.text white
+            , Border.all 2
+            , Color.border selected
             , Font.lineHeight 1.0
             , Font.center
             , Font.size 15
             , hover [ cursor "pointer" ]
             ]
         , style (ScoreButton SBSelected)
-            [ Color.background green
+            [ Color.background selected
             , Color.text white
+            , Border.all 2
+            , Color.border selected
             , Font.lineHeight 1.0
             , Font.center
             , Font.size 15
             , hover [ cursor "pointer" ]
             ]
         , style (TeamButton TBPotential)
-            [ Color.background brownGrey
+            [ Color.background potential
             , Color.text grey
+            , Border.all 2
+            , Color.border potential
             , Font.lineHeight 1.0
             , Font.center
             , Font.size 15
             , hover [ cursor "pointer" ]
             ]
         , style (TeamButton TBSelected)
-            [ Color.background green
+            [ Color.background selected
             , Color.text white
-            , Font.lineHeight 1.0
-            , Font.center
-            , Font.size 15
-            ]
-        , style (TeamButton TBSelected)
-            [ Color.background grey
-            , Color.text white
+            , Border.all 2
+            , Color.border selected
             , Font.lineHeight 1.0
             , Font.center
             , Font.size 15
@@ -205,20 +243,20 @@ stylesheet =
             []
         , style (MatchRow Active)
             [ Color.background orange
-            , Color.text brownGrey
+            , Color.text potential
             , Font.size (scale 1)
             , Font.center
             , hover [ cursor "pointer" ]
             ]
         , style (MatchRow Selected)
             [ Color.background <| rgb 0 150 136
-            , Color.text brownGrey
+            , Color.text potential
             , Font.size (scale 1)
             , Font.center
             , hover [ cursor "pointer" ]
             ]
         , style (MatchRow Potential)
-            [ Color.background green
+            [ Color.background selected
             , Color.text white
             , Font.size (scale 1)
             , Font.center
@@ -257,52 +295,3 @@ stylesheet =
             , hover [ cursor "pointer" ]
             ]
         ]
-
-
-
-{-
-
-
-   .xxl {
-       height: 250px; width: 100%}
-   .xl {
-       height: 76px; width: 40%}
-   .l {
-       height: 76px; width: 30%}
-   .m {
-       height: 76px; width: 24%}
-   .s {
-       height: 150px; width: 16.66666%}
-   .xs {
-       height: 76px; width: 10%}
-
-   .xxs {
-       height: 40px; width: auto; line-height: 1.0;}
-
-   .xxxs {
-       height: 30px;
-       width: auto;
-       line-height: 1.0;
-       font-size: 0.750rem;
-       margin: 2px;
-       padding: 10px;
-     }
-
-   .scoreButton {
-       height: 28px; width: 48px; line-height: 1.0;}
-
-   .scoreButton > span {
-     display: block;
-     margin: auto;
-     text-align: center;
-   }
-
-   .teamButtonBracket {
-     flex-grow: 1;
-     flex: none;
-     align-self: flex-start;
-     padding: 5px 1px;
-     margin: 1px
-   }
-
--}

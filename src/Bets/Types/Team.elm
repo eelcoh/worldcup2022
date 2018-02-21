@@ -25,30 +25,46 @@ import Bets.Types exposing (Team, TeamID, TeamData, TeamDatum, Group(..))
 
 initTeamData : TeamData
 initTeamData =
-    [ france
-    , romania
-    , albania
-    , switzerland
-    , england
-    , russia
-    , wales
-    , slovakia
-    , germany
-    , ukraine
-    , poland
-    , northernIreland
-    , spain
-    , czechRepublic
-    , turkey
-    , croatia
-    , belgium
-    , italy
-    , ireland
-    , sweden
+    [ -- group A
+      russia
+    , saoudiArabia
+    , egypt
+    , uruguay
+      -- group B
     , portugal
+    , spain
+    , morocco
+    , iran
+      -- group C
+    , france
+    , australia
+    , peru
+    , denmark
+      -- group D
+    , argentina
     , iceland
-    , austria
-    , hungary
+    , croatia
+    , nigeria
+      -- group E
+    , brazil
+    , switzerland
+    , costaRica
+    , serbia
+      -- group F
+    , germany
+    , mexico
+    , sweden
+    , southKorea
+      -- group G
+    , belgium
+    , panama
+    , tunisia
+    , england
+      -- group H
+    , poland
+    , senegal
+    , colombia
+    , japan
     ]
 
 
@@ -160,183 +176,6 @@ encode team =
 -- teams
 
 
-france : TeamDatum
-france =
-    { team = { teamID = "FRA", teamName = "Frankrijk" }
-    , players =
-        [ "Hugo Lloris"
-        , "Steve Mandanda"
-        , "Benoit Costil"
-        , "Bacary Sagna"
-        , "Christophe Jallet"
-        , "Patrice Evra"
-        , "Raphaël Varane"
-        , "Laurent Koscielny"
-        , "Eliaquim Mangala"
-        , "Jérémy Mathieu"
-        , "Lucas Digne"
-        , "Lassana Diarra"
-        , "N’Golo Kanté"
-        , "Blaise Matuidi"
-        , "Paul Pogba"
-        , "Yohan Cabaye"
-        , "Moussa Sissoko "
-        , "Antoine Griezmann"
-        , "André-Pierre Gignac"
-        , "Anthony Martial"
-        , "Dimitri Payet"
-        , "Kingsley Coman"
-        , "Olivier Giroud"
-        ]
-    , group = A
-    }
-
-
-romania : TeamDatum
-romania =
-    { team = (team "ROU" "Roemenië")
-    , players =
-        [ "Ciprian Tatarusanu"
-        , "Costel Pantilimon"
-        , "Silviu Lung"
-        , "Cristian Sapunaru"
-        , "Alexandru Matel"
-        , "Vlad Chiriches"
-        , "Valerica Gaman"
-        , "Cosmin Moti"
-        , "Dragos Grigore"
-        , "Razvan Raţ"
-        , "Steliano Filip"
-        , "Alin Tosca"
-        , "Mihai Pintilii"
-        , "Ovidiu Hoban"
-        , "Adrian Ropotan"
-        , "Andrei Prepelita"
-        , "Adrian Popa"
-        , "Gabriel Torje"
-        , "Alexandru Chipciu"
-        , "Alexandru Maxim"
-        , "Nicolae Stanciu"
-        , "Lucian Sanmartean"
-        , "Claudiu Keserü"
-        , "Bogdan Stancu"
-        , "Florin Andone"
-        , "Denis Alibec"
-        , "Ioan Hora"
-        , "Andrei Ivan"
-        ]
-    , group = A
-    }
-
-
-albania : TeamDatum
-albania =
-    { team = (team "ALB" "Albanië")
-    , players =
-        [ "Etrit Berisha"
-        , "Alban Hoxha"
-        , "Orges Shehi"
-        , "Lorik Cana"
-        , "Arlind Ajeti"
-        , "Berat Gjimshiti"
-        , "Mërgim Mavraj"
-        , "Amir Rrahmani"
-        , "Elseid Hysaj"
-        , "Ansi Agolli"
-        , "Frederic Veseli"
-        , "Naser Aliji"
-        , "Ledjan Memushaj"
-        , "Ergys Kace"
-        , "Andi Lila"
-        , "Migjen Basha"
-        , "Odise Roshi"
-        , "Burim Kukeli"
-        , "Ermir Lenjani"
-        , "Herolind Shala"
-        , "Taulant Xhaka"
-        , "Armir Abrashi"
-        , "Bekim Balaj"
-        , "Sokol Cikalleshi"
-        , "Armando Sadiku"
-        , "Milot Rashica"
-        , "Shkëlzen Gashi"
-        ]
-    , group = A
-    }
-
-
-switzerland : TeamDatum
-switzerland =
-    { team = (team "SUI" "Zwitserland")
-    , players =
-        [ "Roman Bürki"
-        , "Marwin Hitz"
-        , "Yvon Mvongo"
-        , "Yann Sommer"
-        , "Johan Djourou"
-        , "Nicol Elvedi"
-        , "Michael Lang"
-        , "Stephan Lichtsteiner"
-        , "François Moubandje"
-        , "Ricardo Rodriguez"
-        , "Fabian Schär"
-        , "Philippe Senderos"
-        , "Steve Von Bergen"
-        , "Silvan Widmer"
-        , "Valon Behrami"
-        , "Eeren Derdiyok"
-        , "Blerim Dzemaili"
-        , "Breel Embolo"
-        , "Gelson Fernandes"
-        , "Fabian Frei"
-        , "Admir Mehmedi"
-        , "Haris Seferovic"
-        , "Xherdan Shaqiri"
-        , "Renato Steffen"
-        , "Shani Tarashaj"
-        , "Granit Xhaka"
-        , "Denis Zakaria"
-        , "Luca Zuffi"
-        ]
-    , group = A
-    }
-
-
-england : TeamDatum
-england =
-    { team = { teamID = "ENG", teamName = "Engeland" }
-    , players =
-        [ "Joe Hart"
-        , "Fraser Forster"
-        , "Tom Heaton"
-        , "Nathaniel Clyne"
-        , "Kyle Walker"
-        , "Danny Rose"
-        , "Ryan Bertrand"
-        , "Chris Smalling"
-        , "John Stones"
-        , "Gary Cahill"
-        , "Dele Alli"
-        , "Ross Barkley"
-        , "Fabian Delph"
-        , "Danny Drinkwater"
-        , "Eric Dier"
-        , "Jordan Henderson"
-        , "James Milner"
-        , "Adam Lallana"
-        , "Raheem Sterling"
-        , "Jack Wilshere"
-        , "Andros Townsend"
-        , "Wayne Rooney"
-        , "Harry Kane"
-        , "Jamie Vardy"
-        , "Marcus Rashford"
-        , "Daniel Sturridge"
-        ]
-    , group = B
-    }
-
-
 russia : TeamDatum
 russia =
     { team = (team "RUS" "Rusland")
@@ -365,229 +204,73 @@ russia =
         , "Alexander Kokorin"
         , "Fyodor Smolov"
         ]
-    , group = B
+    , group = A
     }
 
 
-wales : TeamDatum
-wales =
-    { team = (team "WAL" "Wales")
+egypt : TeamDatum
+egypt =
+    { team = { teamID = "EGY", teamName = "Egypte" }
     , players =
-        [ "Wayne Hennessey"
-        , "Danny Ward"
-        , "Owain Fon Williams"
-        , "Ben Davies"
-        , "Neil Taylor"
-        , "Chris Gunter"
-        , "Ashley Williams"
-        , "James Chester"
-        , "Ashley Richards"
-        , "Paul Dummett"
-        , "Adam Henley"
-        , "Adam Matthews"
-        , "James Collins"
-        , "Aaron Ramsey"
-        , "Joe Ledley"
-        , "David Vaughan"
-        , "Joe Allen"
-        , "David Cotterill"
-        , "Jonathan Williams"
-        , "George Williams"
-        , "Andy King"
-        , "Emyr Huws"
-        , "Dave Edwards (Wolverhampton Wanderers)."
-        , "Hal Robson-Kanu"
-        , "Sam Vokes"
-        , "Tom Bradshaw"
-        , "Tom Lawrence"
-        , "Simon Church"
-        , "Wes Burns"
-        , "Gareth Bale"
+        [ "Hossam Hassan"
+        ]
+    , group = A
+    }
+
+
+saoudiArabia : TeamDatum
+saoudiArabia =
+    { team = { teamID = "KSA", teamName = "Saoedi Arabië" }
+    , players =
+        [ "Luis Suarez"
+        ]
+    , group = A
+    }
+
+
+uruguay : TeamDatum
+uruguay =
+    { team = { teamID = "URU", teamName = "Uruguay" }
+    , players =
+        [ "Luis Suarez"
+        ]
+    , group = A
+    }
+
+
+
+-- group B
+
+
+portugal : TeamDatum
+portugal =
+    { team = (team "POR" "Portugal")
+    , players =
+        [ "Rui Patricio"
+        , "Anthony Lopes"
+        , "Eduardo"
+        , "Vieirinha"
+        , "Raphael Guerreiro"
+        , "Cédric Soares"
+        , "Eliseu"
+        , "Bruno Alves"
+        , "José Fonte"
+        , "Ricardo Carvalho"
+        , "Pepe"
+        , "William Carvalho"
+        , "Danilo Pereira"
+        , "João Moutinho"
+        , "Adrien Silva"
+        , "João Mario"
+        , "André Gomes"
+        , "Renato Sanches"
+        , "Cristiano Ronaldo"
+        , "Eder"
+        , "Nani"
+        , "Ricardo Quaresma"
+        , "Rafa Silva"
         ]
     , group = B
-    }
-
-
-slovakia : TeamDatum
-slovakia =
-    { team = (team "SVK" "Slowakije")
-    , players =
-        [ "Matus Kozacik"
-        , "Jan Mucha"
-        , "Jan Novota"
-        , "Peter Pekarik"
-        , "Milan Skriniar"
-        , "Martin Skrtel"
-        , "Norbert Gyoember"
-        , "Jan Durica"
-        , "Kornel Salata"
-        , "Tomas Hubocan"
-        , "Dusan Svento"
-        , "Lukas Tesak"
-        , "Viktor Pecovsky"
-        , "Matus Bero"
-        , "Robert Mak"
-        , "Erik Sabo"
-        , "Juraj Kucka"
-        , "Patrik Hrosovsky"
-        , "Jan Gregus"
-        , "Stanislav Sestak"
-        , "Marek Hamsik"
-        , "Ondrej Duda"
-        , "Miroslav Stoch"
-        , "Vladimir Weiss"
-        , "Michal Duris"
-        , "Adam Nemec"
-        , "Adam Zrelak"
-        ]
-    , group = B
-    }
-
-
-germany : TeamDatum
-germany =
-    { team = (team "GER" "Duitsland")
-    , players =
-        [ "Manuel Neuer"
-        , "Bernd Leno"
-        , "Marc-André Ter Stegen"
-        , "Jérôme Boateng"
-        , "Emre Can"
-        , "Jonas Hector"
-        , "Benedikt Höwedes"
-        , "Mats Hummels"
-        , "Shkodran Mustafi"
-        , "Sebastian Rudy"
-        , "Antonio Rüdiger"
-        , "Julian Brandt"
-        , "Julian Draxler"
-        , "Mario Götze"
-        , "Sami Khedira"
-        , "Joshua Kimmich"
-        , "Toni Kroos"
-        , "Thomas Muller"
-        , "Mesut Özil"
-        , "Bastian Schweinsteiger"
-        , "Julian Weigl"
-        , "Karim Bellarabi"
-        , "Mario Gomez"
-        , " Lukas Podolski"
-        , "Marco Reus"
-        , "Leroy Sané"
-        , "André Schürrle"
-        ]
-    , group = C
-    }
-
-
-ukraine : TeamDatum
-ukraine =
-    { team = (team "UKR" "Oekraïne")
-    , players =
-        [ "Andriy Pyatov"
-        , "Denys Boyko"
-        , "Mykyta Shevchenko"
-        , "Vyacheslav Shevchuk"
-        , "Yaroslav Rakitskyi"
-        , "Oleksandr Kucher"
-        , "Yevgen Khacheridi"
-        , "Artem Fedetskyi"
-        , "Mykyta Kamenyuka"
-        , "Bogdan Butko"
-        , "Anatoliy Tymoshchuk"
-        , "Taras Stepanenko"
-        , "Viktor Kovalenko"
-        , "Maksym Malyshev"
-        , "Ruslan Rotan Dnipro Dnipropetrovsk)"
-        , "Yevhen Shakhov  Dnipro Dnipropetrovsk)"
-        , "Yevhen Konoplyanka"
-        , "Oleg Gusev"
-        , "Sergiy Rybalka"
-        , "Denys Garmash"
-        , "Sergiy Sydorchuk"
-        , "Andriy Yarmolenko"
-        , "Oleksandr Karavayev"
-        , "Ivan Petryak"
-        , "Oleksandr Zinchenko"
-        , "Roman Zozulya"
-        , "Artem Kravets"
-        , "Pylyp Budkivskyi"
-        ]
-    , group = C
-    }
-
-
-poland : TeamDatum
-poland =
-    { team = (team "POL" "Polen")
-    , players =
-        [ "Artur Boruc"
-        , "Lukasz Fabianski"
-        , "Wojciech Szczesny"
-        , "Przemysław Tyton (VfB Stuttgart)."
-        , "Thiago Cionek"
-        , "Pavel Dawidowicz"
-        , "Kamil Glik"
-        , "Artur Jedrzejczyk"
-        , "Michał Pazdan"
-        , "Lukasz Piszczek"
-        , "Maciej Rybus"
-        , "Bartosz Salamon"
-        , "Jakub Wawrzyniak (Lechia Gdansk)."
-        , "Jakub Blaszczykowski"
-        , "Kamil Grosicki"
-        , "Tomasz Jodlowiec"
-        , "Bartosz Kapustka"
-        , "Grzegorz Krychowiak"
-        , "Karol Linetty"
-        , "Krzysztof Maczynski"
-        , "Slawomir Peszko"
-        , "Filip Starzynski"
-        , "Pavel Wszolek"
-        , "Piotr Zielinski"
-        , "Robert Lewandowski"
-        , "Arek Milik"
-        , "Artur Sobiech"
-        , "Mariusz Stepinski"
-        ]
-    , group = C
-    }
-
-
-northernIreland : TeamDatum
-northernIreland =
-    { team = (team "NIR" "Noord-Ierland")
-    , players =
-        [ "Roy Carroll"
-        , "Michael McGovern"
-        , "Alan McManus"
-        , "Craig Cathcart"
-        , "Jonny Evans"
-        , "Gareth McAuley"
-        , "Luke McCullough"
-        , "Conor McLaughlin"
-        , "Aaron Hughes"
-        , "Daniel Lafferty"
-        , "Michael Smith"
-        , "Lee Hodson"
-        , "Chris Baird"
-        , "Paddy McNair"
-        , "Steven Davis"
-        , "Oliver Norwood"
-        , "Corry Evans"
-        , "Jamie Ward"
-        , "Stuart Dallas"
-        , "Niall McGinn"
-        , "Shane Ferguson"
-        , "Ben Reeves"
-        , "Will Grigg"
-        , "Kyle Lafferty"
-        , "Conor Washington"
-        , "Billy McKay"
-        , "Liam Boyce"
-        , "Josh Magennis"
-        ]
-    , group = C
     }
 
 
@@ -621,81 +304,137 @@ spain =
         , "Alvaro Morata"
         , "Lucas Vázquez"
         ]
-    , group = D
+    , group = B
     }
 
 
-czechRepublic : TeamDatum
-czechRepublic =
-    { team = (team "CZE" "Tsjechië")
+morocco : TeamDatum
+morocco =
+    { team = { teamID = "MAR", teamName = "Marokko" }
     , players =
-        [ "Petr Cech"
-        , "Tomas Vaclik"
-        , "Tomas Koubek"
-        , "Pavel Kaderabek"
-        , "Theodor Gebre Selassie"
-        , "Tomas Sivok"
-        , "Michal Kadlec"
-        , "Ondrej Zahustel"
-        , "Roman Hubnik"
-        , "David Limbersky"
-        , "Daniel Pudil"
-        , "Marek Suchy (FC Basel)."
-        , "Vladimir Darida"
-        , "Jaroslav Plasil"
-        , "David Pavelka"
-        , "Jiri Skalak"
-        , "Ladislav Krejci"
-        , "Borek Dockal"
-        , "Tomas Rosicky"
-        , "Daniel Kolar"
-        , "Jan Kovarik"
-        , "Lukas Marecek"
-        , "Tomas Necid"
-        , "Matej Vydra"
-        , "David Lafata"
-        , "Patrik Schick"
-        , "Milan Skoda"
+        [ "Morrocan Striker"
+        ]
+    , group = B
+    }
+
+
+iran : TeamDatum
+iran =
+    { team = { teamID = "IRN", teamName = "Iran" }
+    , players =
+        [ "Alireza Jahanbaksh"
+        ]
+    , group = B
+    }
+
+
+
+-- group C
+
+
+france : TeamDatum
+france =
+    { team = { teamID = "FRA", teamName = "Frankrijk" }
+    , players =
+        [ "Hugo Lloris"
+        , "Steve Mandanda"
+        , "Benoit Costil"
+        , "Bacary Sagna"
+        , "Christophe Jallet"
+        , "Patrice Evra"
+        , "Raphaël Varane"
+        , "Laurent Koscielny"
+        , "Eliaquim Mangala"
+        , "Jérémy Mathieu"
+        , "Lucas Digne"
+        , "Lassana Diarra"
+        , "N’Golo Kanté"
+        , "Blaise Matuidi"
+        , "Paul Pogba"
+        , "Yohan Cabaye"
+        , "Moussa Sissoko "
+        , "Antoine Griezmann"
+        , "André-Pierre Gignac"
+        , "Anthony Martial"
+        , "Dimitri Payet"
+        , "Kingsley Coman"
+        , "Olivier Giroud"
+        ]
+    , group = C
+    }
+
+
+australia : TeamDatum
+australia =
+    { team = { teamID = "AUS", teamName = "Australië" }
+    , players =
+        [ "Bret Holman"
+        ]
+    , group = C
+    }
+
+
+peru : TeamDatum
+peru =
+    { team = { teamID = "PER", teamName = "Peru" }
+    , players =
+        [ "Farfan"
+        ]
+    , group = C
+    }
+
+
+denmark : TeamDatum
+denmark =
+    { team = { teamID = "DEN", teamName = "Denemarken" }
+    , players =
+        [ "Christian Eriksen"
+        ]
+    , group = C
+    }
+
+
+
+-- group D
+
+
+argentina : TeamDatum
+argentina =
+    { team = { teamID = "ARG", teamName = "Argentinë" }
+    , players =
+        [ "Lionel Messi"
         ]
     , group = D
     }
 
 
-turkey : TeamDatum
-turkey =
-    { team = (team "TUR" "Turkije")
+iceland : TeamDatum
+iceland =
+    { team = (team "ISL" "IJsland")
     , players =
-        [ "Ali Sasal Vural"
-        , "Harun Tekin"
-        , "Onur Kivrak"
-        , "Volkan Babacan"
-        , "Gökhan Gönül"
-        , "Şener Özbayrakli"
-        , "Ahmet Çalik"
-        , "Çaglar Söyüncü"
-        , "Hakan Balta"
-        , "Mehmet Topal"
-        , "Semih Kaya"
-        , "Serdar Aziz"
-        , "Caner Erkin"
-        , "İsmail Köybasi"
-        , "Emre Mor"
-        , "Gökhan Töre"
-        , "Volkan Sen"
-        , "Yasin Öztekin"
-        , "Hakan Calhanogu"
-        , "Mahmut Tekdemir"
-        , "Nuri Sahin"
-        , "Oguzhan Özyakup"
-        , "Ozan Tufan"
-        , "Selçuk İnan"
-        , "Alper Potuk"
-        , "Arda Turan"
-        , "Olcay Şahan"
-        , "Burak Yilmaz"
-        , "Cenk Tosun"
-        , "Mevlüt Erdinç"
-        , "Yunus Malli"
+        [ "Hannes Halldorsson"
+        , "Ögmundur Kristinsson"
+        , "Ingvar Jonsson"
+        , "Birkir Mar Saevarsson"
+        , "Ragnar Sigurdsson"
+        , "Kari Arnason"
+        , "Ari Freyr Skulason"
+        , "Haukur Heidar Hauksson"
+        , "Sverrir Ingi Ingason"
+        , "Hördur Björgvin Magnusson"
+        , "Hjörtur Hermannsson"
+        , "Aron Einar Gunnarsson"
+        , "Emil Hallfredsson"
+        , "Birkir Bjarnason"
+        , "Johann Berg Gudmundsson"
+        , "Gylfi Sigurdsson"
+        , "Theodor Elmar Bjarnason"
+        , "Runar Mar Sigurjonsson"
+        , "Arnor Ingvi Traustason"
+        , "Eidur Gudjohnsen"
+        , "Kolbeinn Sigthorsson"
+        , "Alfred Finnbogason"
+        , "Jon Dadi Bödvarsson"
         ]
     , group = D
     }
@@ -737,119 +476,134 @@ croatia =
     }
 
 
-belgium : TeamDatum
-belgium =
-    { team = (team "BEL" "België")
+nigeria : TeamDatum
+nigeria =
+    { team = { teamID = "NGA", teamName = "Nigeria" }
     , players =
-        [ "Thibaut Courtois"
-        , "Simon Mignolet"
-        , "Jean-François Gillet"
-        , "Jan Vertonghen"
-        , "Toby Alderweireld"
-        , "Nicolas Lombaerts"
-        , "Thomas Vermaelen"
-        , "Jason Denayer"
-        , "Jordan Lukaku"
-        , "Björn Engels"
-        , "Dedryck Boyata"
-        , "Thomas Meunier"
-        , "Kevin De Bruyne"
-        , "Radja Nainggolan"
-        , "Moussa Dembélé"
-        , "Axel Witsel"
-        , "Marouane Fellaini"
-        , "Dries Mertens"
-        , "Eden Hazard"
-        , "Romelu Lukaku"
-        , "Yannick Ferreira-Carrasco"
-        , "Divock Origi"
-        , "Michy Batshuayi"
-        , "Christian Benteke"
+        [ "Ochekubwu"
+        ]
+    , group = D
+    }
+
+
+
+-- group E
+
+
+brazil : TeamDatum
+brazil =
+    { team = { teamID = "BRA", teamName = "Brazilië" }
+    , players =
+        [ "Neymar"
         ]
     , group = E
     }
 
 
-italy : TeamDatum
-italy =
-    { team = (team "ITA" "Italië")
+switzerland : TeamDatum
+switzerland =
+    { team = (team "SUI" "Zwitserland")
     , players =
-        [ "Gianluigi Buffon"
-        , "Federico Marchetti"
-        , "Salvatore Sirigu (Paris Saint Germain) "
-        , "Davide Astori"
-        , "Andrea Barzagli"
-        , "Leonardo Bonucci"
-        , "Giorgio Chiellini"
-        , "Matteo Darmian"
-        , "Mattia De Sciglio"
-        , "Angelo Ogbonna"
-        , "Daniele Rugani"
-        , "Davide Zappacosta"
-        , "Marco Benassi"
-        , "Federico Bernardeschi"
-        , "Giacomo Bonaventura"
-        , "Antonio Candreva"
-        , "Daniele De Rossi"
-        , "Alessandro Florenzi"
-        , "Emanuele Giaccherini"
-        , "Jorge Luiz Jorginho"
-        , "Riccardo Montolivo"
-        , "Thiago Motta"
-        , "Marco Parolo"
-        , "Stefano Sturaro"
-        , "Eder"
-        , "Ciro Immobile"
-        , "Stephan El Shaarawy"
-        , "Lorenzo Insigne"
-        , "Graziano Pellè"
-        , "Simone Zaza"
+        [ "Roman Bürki"
+        , "Marwin Hitz"
+        , "Yvon Mvongo"
+        , "Yann Sommer"
+        , "Johan Djourou"
+        , "Nicol Elvedi"
+        , "Michael Lang"
+        , "Stephan Lichtsteiner"
+        , "François Moubandje"
+        , "Ricardo Rodriguez"
+        , "Fabian Schär"
+        , "Philippe Senderos"
+        , "Steve Von Bergen"
+        , "Silvan Widmer"
+        , "Valon Behrami"
+        , "Eeren Derdiyok"
+        , "Blerim Dzemaili"
+        , "Breel Embolo"
+        , "Gelson Fernandes"
+        , "Fabian Frei"
+        , "Admir Mehmedi"
+        , "Haris Seferovic"
+        , "Xherdan Shaqiri"
+        , "Renato Steffen"
+        , "Shani Tarashaj"
+        , "Granit Xhaka"
+        , "Denis Zakaria"
+        , "Luca Zuffi"
         ]
     , group = E
     }
 
 
-ireland : TeamDatum
-ireland =
-    { team = (team "IRL" "Ierland")
+costaRica : TeamDatum
+costaRica =
+    { team = { teamID = "CRC", teamName = "Costa Rica" }
     , players =
-        [ "Shay Given"
-        , "Darren Randolph"
-        , "David Forde"
-        , "Keiren Westwood"
-        , "Seamus Coleman"
-        , "Cyrus Christie"
-        , "Paul McShane"
-        , "Ciaran Clark"
-        , "Richard Keogh"
-        , "John O'Shea"
-        , "Alex Pearce"
-        , "Shane Duffy"
-        , "Marc Wilson"
-        , "Stephen Ward"
-        , "Aiden McGeady"
-        , "James McClean"
-        , "Glenn Whelan"
-        , "James McCarthy"
-        , "Jeff Hendrick"
-        , "David Meyler"
-        , "Stephen Quinn"
-        , "Darron Gibson"
-        , "Harry Arter"
-        , "Wes Hoolahan"
-        , "Eunan O'Kane"
-        , "Anthony Pilkington"
-        , "Robbie Brady"
-        , "Jonathan Walters"
-        , "Jonathan Hayes"
-        , "Callum O'Dowda"
-        , "Robbie Keane"
-        , "Shane Long"
-        , "David McGoldrick"
-        , "Kevin Doyle"
-        , "Daryl Murphy"
+        [ "Ledezma"
         ]
     , group = E
+    }
+
+
+serbia : TeamDatum
+serbia =
+    { team = { teamID = "SRB", teamName = "Servië" }
+    , players =
+        [ "Milosevic"
+        ]
+    , group = E
+    }
+
+
+
+-- group F
+
+
+germany : TeamDatum
+germany =
+    { team = (team "GER" "Duitsland")
+    , players =
+        [ "Manuel Neuer"
+        , "Bernd Leno"
+        , "Marc-André Ter Stegen"
+        , "Jérôme Boateng"
+        , "Emre Can"
+        , "Jonas Hector"
+        , "Benedikt Höwedes"
+        , "Mats Hummels"
+        , "Shkodran Mustafi"
+        , "Sebastian Rudy"
+        , "Antonio Rüdiger"
+        , "Julian Brandt"
+        , "Julian Draxler"
+        , "Mario Götze"
+        , "Sami Khedira"
+        , "Joshua Kimmich"
+        , "Toni Kroos"
+        , "Thomas Muller"
+        , "Mesut Özil"
+        , "Bastian Schweinsteiger"
+        , "Julian Weigl"
+        , "Karim Bellarabi"
+        , "Mario Gomez"
+        , " Lukas Podolski"
+        , "Marco Reus"
+        , "Leroy Sané"
+        , "André Schürrle"
+        ]
+    , group = F
+    }
+
+
+mexico : TeamDatum
+mexico =
+    { team = { teamID = "MEX", teamName = "Mexico" }
+    , players =
+        [ "Lozano"
+        ]
+    , group = F
     }
 
 
@@ -881,141 +635,178 @@ sweden =
         , "Zlatan Ibrahimovic"
         , "Emir Kujovic"
         ]
-    , group = E
+    , group = F
     }
 
 
-portugal : TeamDatum
-portugal =
-    { team = (team "POR" "Portugal")
+southKorea : TeamDatum
+southKorea =
+    { team = { teamID = "KOR", teamName = "Zuid Korea" }
     , players =
-        [ "Rui Patricio"
-        , "Anthony Lopes"
-        , "Eduardo"
-        , "Vieirinha"
-        , "Raphael Guerreiro"
-        , "Cédric Soares"
-        , "Eliseu"
-        , "Bruno Alves"
-        , "José Fonte"
-        , "Ricardo Carvalho"
-        , "Pepe"
-        , "William Carvalho"
-        , "Danilo Pereira"
-        , "João Moutinho"
-        , "Adrien Silva"
-        , "João Mario"
-        , "André Gomes"
-        , "Renato Sanches"
-        , "Cristiano Ronaldo"
-        , "Eder"
-        , "Nani"
-        , "Ricardo Quaresma"
-        , "Rafa Silva"
+        [ "Song"
         ]
     , group = F
     }
 
 
-iceland : TeamDatum
-iceland =
-    { team = (team "ISL" "IJsland")
+
+-- group G
+
+
+belgium : TeamDatum
+belgium =
+    { team = (team "BEL" "België")
     , players =
-        [ "Hannes Halldorsson"
-        , "Ögmundur Kristinsson"
-        , "Ingvar Jonsson"
-        , "Birkir Mar Saevarsson"
-        , "Ragnar Sigurdsson"
-        , "Kari Arnason"
-        , "Ari Freyr Skulason"
-        , "Haukur Heidar Hauksson"
-        , "Sverrir Ingi Ingason"
-        , "Hördur Björgvin Magnusson"
-        , "Hjörtur Hermannsson"
-        , "Aron Einar Gunnarsson"
-        , "Emil Hallfredsson"
-        , "Birkir Bjarnason"
-        , "Johann Berg Gudmundsson"
-        , "Gylfi Sigurdsson"
-        , "Theodor Elmar Bjarnason"
-        , "Runar Mar Sigurjonsson"
-        , "Arnor Ingvi Traustason"
-        , "Eidur Gudjohnsen"
-        , "Kolbeinn Sigthorsson"
-        , "Alfred Finnbogason"
-        , "Jon Dadi Bödvarsson"
+        [ "Thibaut Courtois"
+        , "Simon Mignolet"
+        , "Jean-François Gillet"
+        , "Jan Vertonghen"
+        , "Toby Alderweireld"
+        , "Nicolas Lombaerts"
+        , "Thomas Vermaelen"
+        , "Jason Denayer"
+        , "Jordan Lukaku"
+        , "Björn Engels"
+        , "Dedryck Boyata"
+        , "Thomas Meunier"
+        , "Kevin De Bruyne"
+        , "Radja Nainggolan"
+        , "Moussa Dembélé"
+        , "Axel Witsel"
+        , "Marouane Fellaini"
+        , "Dries Mertens"
+        , "Eden Hazard"
+        , "Romelu Lukaku"
+        , "Yannick Ferreira-Carrasco"
+        , "Divock Origi"
+        , "Michy Batshuayi"
+        , "Christian Benteke"
         ]
-    , group = F
+    , group = G
     }
 
 
-austria : TeamDatum
-austria =
-    { team = (team "AUT" "Oostenrijk")
+panama : TeamDatum
+panama =
+    { team = { teamID = "PAN", teamName = "Panama" }
     , players =
-        [ "Robert Almer"
-        , "Heinz Lindner"
-        , "Ramazan Ozcan"
-        , "Aleksandar Dragovic"
-        , "Christian Fuchs"
-        , "Gyorgy Garics"
-        , "Martin Hinteregger"
-        , "Florian Klein"
-        , "Sebastian Prodl"
-        , "Markus Suttner"
-        , "Kevin Wimmer"
-        , "David Alaba"
-        , "Marko Arnautovic"
-        , "Julian Baumgartlinger"
-        , "Martin Harnik"
-        , "Stefan Ilsanker"
-        , "Jakob Jantscher"
-        , "Zlatko Junuzovic"
-        , "Marcel Sabitzer"
-        , "Alessandro Schopf"
-        , "Valentino Lazaro"
-        , "Lukas Hinterseer"
-        , "Rubin Okotie"
-        , "Marc Janko"
+        [ "Gonzalez"
         ]
-    , group = F
+    , group = G
     }
 
 
-hungary : TeamDatum
-hungary =
-    { team = (team "HUN" "Hongarije")
+tunisia : TeamDatum
+tunisia =
+    { team = { teamID = "TUN", teamName = "Tunesië" }
     , players =
-        [ "Gábor Király"
-        , "Balázs Megyeri"
-        , "Dénes Dibusz"
-        , "Péter Gulácsi"
-        , "Roland Juhász"
-        , "Tamás Kádár"
-        , "Mihály Korhut"
-        , "Richárd Guzmics"
-        , "Attila Fiola"
-        , "Ádám Lang"
-        , "Gergö Kocsis"
-        , "Barnabás Bese"
-        , "Zsolt Korcsmár"
-        , "Gergö Lovrencsis"
-        , "Máté Vida"
-        , "Zoltán Gera"
-        , "Balázs Dzsudzsák"
-        , "Ákos Elek"
-        , "Ádám Pintér"
-        , "Zoltán Stieber"
-        , "Ádám Gyurcsó"
-        , "Ádám Nagy"
-        , "László Keinheisler"
-        , "Roland Sallai"
-        , "Tamás Priskin"
-        , "Ádám Szalai"
-        , "Krisztián Németh"
-        , "Nemanja Nikolic"
-        , "Dániel Böde"
-        , "Lászlo Lencse"
+        [ "El Ghazi"
         ]
-    , group = F
+    , group = G
+    }
+
+
+england : TeamDatum
+england =
+    { team = { teamID = "ENG", teamName = "Engeland" }
+    , players =
+        [ "Joe Hart"
+        , "Fraser Forster"
+        , "Tom Heaton"
+        , "Nathaniel Clyne"
+        , "Kyle Walker"
+        , "Danny Rose"
+        , "Ryan Bertrand"
+        , "Chris Smalling"
+        , "John Stones"
+        , "Gary Cahill"
+        , "Dele Alli"
+        , "Ross Barkley"
+        , "Fabian Delph"
+        , "Danny Drinkwater"
+        , "Eric Dier"
+        , "Jordan Henderson"
+        , "James Milner"
+        , "Adam Lallana"
+        , "Raheem Sterling"
+        , "Jack Wilshere"
+        , "Andros Townsend"
+        , "Wayne Rooney"
+        , "Harry Kane"
+        , "Jamie Vardy"
+        , "Marcus Rashford"
+        , "Daniel Sturridge"
+        ]
+    , group = G
+    }
+
+
+
+-- group H
+
+
+poland : TeamDatum
+poland =
+    { team = (team "POL" "Polen")
+    , players =
+        [ "Artur Boruc"
+        , "Lukasz Fabianski"
+        , "Wojciech Szczesny"
+        , "Przemysław Tyton (VfB Stuttgart)."
+        , "Thiago Cionek"
+        , "Pavel Dawidowicz"
+        , "Kamil Glik"
+        , "Artur Jedrzejczyk"
+        , "Michał Pazdan"
+        , "Lukasz Piszczek"
+        , "Maciej Rybus"
+        , "Bartosz Salamon"
+        , "Jakub Wawrzyniak (Lechia Gdansk)."
+        , "Jakub Blaszczykowski"
+        , "Kamil Grosicki"
+        , "Tomasz Jodlowiec"
+        , "Bartosz Kapustka"
+        , "Grzegorz Krychowiak"
+        , "Karol Linetty"
+        , "Krzysztof Maczynski"
+        , "Slawomir Peszko"
+        , "Filip Starzynski"
+        , "Pavel Wszolek"
+        , "Piotr Zielinski"
+        , "Robert Lewandowski"
+        , "Arek Milik"
+        , "Artur Sobiech"
+        , "Mariusz Stepinski"
+        ]
+    , group = H
+    }
+
+
+senegal : TeamDatum
+senegal =
+    { team = { teamID = "SEN", teamName = "Senegal" }
+    , players =
+        [ "Baobab"
+        ]
+    , group = H
+    }
+
+
+colombia : TeamDatum
+colombia =
+    { team = { teamID = "COL", teamName = "Colombia" }
+    , players =
+        [ "Carlos Valderrama"
+        ]
+    , group = H
+    }
+
+
+japan : TeamDatum
+japan =
+    { team = { teamID = "JPN", teamName = "Japan" }
+    , players =
+        [ "Honda"
+        ]
+    , group = H
     }

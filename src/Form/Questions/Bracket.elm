@@ -112,65 +112,65 @@ viewBracket bet answer bracket =
             viewMatchWinner bet answer mb
 
         final =
-            B.get bracket "m51"
-
-        m51 =
-            v <| B.get bracket "m51"
-
-        m50 =
-            v <| B.get bracket "m50"
+            B.get bracket "m64"
 
         m49 =
             v <| B.get bracket "m49"
 
-        m48 =
-            v <| B.get bracket "m48"
+        m50 =
+            v <| B.get bracket "m50"
 
-        m47 =
-            v <| B.get bracket "m47"
+        m51 =
+            v <| B.get bracket "m51"
 
-        m46 =
-            v <| B.get bracket "m46"
+        m52 =
+            v <| B.get bracket "m52"
 
-        m45 =
-            v <| B.get bracket "m45"
+        m53 =
+            v <| B.get bracket "m53"
 
-        m44 =
-            v <| B.get bracket "m44"
+        m54 =
+            v <| B.get bracket "m54"
 
-        m43 =
-            v <| B.get bracket "m43"
+        m55 =
+            v <| B.get bracket "m55"
 
-        m42 =
-            v <| B.get bracket "m42"
+        m56 =
+            v <| B.get bracket "m56"
 
-        m41 =
-            v <| B.get bracket "m41"
+        m57 =
+            v <| B.get bracket "m57"
 
-        m40 =
-            v <| B.get bracket "m40"
+        m58 =
+            v <| B.get bracket "m58"
 
-        m39 =
-            v <| B.get bracket "m39"
+        m59 =
+            v <| B.get bracket "m59"
 
-        m38 =
-            v <| B.get bracket "m38"
+        m60 =
+            v <| B.get bracket "m60"
 
-        m37 =
-            v <| B.get bracket "m37"
+        m61 =
+            v <| B.get bracket "m61"
+
+        m62 =
+            v <| B.get bracket "m62"
+
+        m64 =
+            v <| B.get bracket "m64"
 
         champion =
             mkButtonChamp final
     in
         Element.column UI.Style.None
             [ spacing 10, width (px 600) ]
-            [ Element.row UI.Style.None [ spread ] [ m37, m39, m38, m42 ]
-            , Element.row UI.Style.None [ spread, paddingXY 76 0 ] [ m45, m46 ]
-            , Element.row UI.Style.None [ center ] [ m49 ]
-            , Element.row UI.Style.None [ alignRight, spacing 44 ] [ m51, champion ]
-            , Element.row UI.Style.None [ center ] [ m50 ]
-            , Element.row UI.Style.None [ spread, paddingXY 76 0 ] [ m47, m48 ]
-            , Element.row UI.Style.None [ spread ] [ m41, m43, m40, m44 ]
+            [ Element.row UI.Style.None [ spread ] [ m49, m50, m53, m54 ]
+            , Element.row UI.Style.None [ spread, paddingXY 76 0 ] [ m57, m58 ]
+            , Element.row UI.Style.None [ center ] [ m61 ]
+            , Element.row UI.Style.None [ alignRight, spacing 44 ] [ m64, champion ]
+            , Element.row UI.Style.None [ center ] [ m62 ]
+            , Element.row UI.Style.None [ spread, paddingXY 76 0 ] [ m59, m60 ]
+            , Element.row UI.Style.None [ spread ] [ m51, m52, m55, m56 ]
             ]
 
 

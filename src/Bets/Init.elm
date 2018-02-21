@@ -24,76 +24,100 @@ answers : Answers
 answers =
     let
         a1 =
-            "A1" => Just (team "FRA" "France")
+            "A1" => Just (team "RUS" "Rusland")
 
         a2 =
-            "A2" => Just (team "ROU" "Romania")
+            "A2" => Just (team "KSA" "Saoedi Arabië")
 
         a3 =
-            "A3" => Just (team "ALB" "Albania")
+            "A3" => Just (team "EGY" "Egypte")
 
         a4 =
-            "A4" => Just (team "SUI" "Switzerland")
+            "A4" => Just (team "URU" "Uruguay")
 
         b1 =
-            "B1" => Just (team "ENG" "England")
+            "B1" => Just (team "POR" "Portugal")
 
         b2 =
-            "B2" => Just (team "RUS" "Russia")
+            "B2" => Just (team "ESP" "Spanje")
 
         b3 =
-            "B3" => Just (team "WAL" "Wales")
+            "B3" => Just (team "MAR" "Marokko")
 
         b4 =
-            "B4" => Just (team "SVK" "Slovakia")
+            "B4" => Just (team "IRN" "Iran")
 
         c1 =
-            "C1" => Just (team "GER" "Germany")
+            "C1" => Just (team "FRA" "Frankrijk")
 
         c2 =
-            "C2" => Just (team "UKR" "Ukraine")
+            "C2" => Just (team "AUS" "Australië")
 
         c3 =
-            "C3" => Just (team "POL" "Poland")
+            "C3" => Just (team "PER" "Peru")
 
         c4 =
-            "C4" => Just (team "NIR" "Northern Ireland")
+            "C4" => Just (team "DEN" "Denmark")
 
         d1 =
-            "D1" => Just (team "ESP" "Spain")
+            "D1" => Just (team "ARG" "Argentinë")
 
         d2 =
-            "D2" => Just (team "CZE" "Czech Republic")
+            "D2" => Just (team "ISL" "IJsland")
 
         d3 =
-            "D3" => Just (team "TUR" "Turkey")
+            "D3" => Just (team "CRO" "Koratië")
 
         d4 =
-            "D4" => Just (team "CRO" "Croatia")
+            "D4" => Just (team "NGA" "Nigeria")
 
         e1 =
-            "E1" => Just (team "BEL" "Belgium")
+            "E1" => Just (team "BRA" "Brazilië")
 
         e2 =
-            "E2" => Just (team "ITA" "Italy")
+            "E2" => Just (team "SUI" "Zwitserland")
 
         e3 =
-            "E3" => Just (team "IRL" "Ireland")
+            "E3" => Just (team "CRC" "Costa Rica")
 
         e4 =
-            "E4" => Just (team "SWE" "Sweden")
+            "E4" => Just (team "SRB" "Servië")
 
         f1 =
-            "F1" => Just (team "POR" "Portugal")
+            "F1" => Just (team "GER" "Duitsland")
 
         f2 =
-            "F2" => Just (team "ISL" "Iceland")
+            "F2" => Just (team "MEX" "Mexico")
 
         f3 =
-            "F3" => Just (team "AUT" "Austria")
+            "F3" => Just (team "SWE" "Zweden")
 
         f4 =
-            "F4" => Just (team "HUN" "Hungary")
+            "F4" => Just (team "KOR" "Zuid-Korea")
+
+        g1 =
+            "G1" => Just (team "BEL" "België")
+
+        g2 =
+            "G2" => Just (team "PAN" "Panama")
+
+        g3 =
+            "G3" => Just (team "TUN" "Tunesië")
+
+        g4 =
+            "G4" => Just (team "ENG" "Engeland")
+
+        h1 =
+            "H1" => Just (team "POL" "Polen")
+
+        h2 =
+            "H2" => Just (team "SEN" "Senegal")
+
+        h3 =
+            "H3" => Just (team "COL" "Colombia")
+
+        h4 =
+            "H4" => Just (team "JPN" "Japan")
 
         wa =
             "WA" => Nothing
@@ -113,6 +137,12 @@ answers =
         wf =
             "WF" => Nothing
 
+        wg =
+            "WG" => Nothing
+
+        wh =
+            "WH" => Nothing
+
         ra =
             "RA" => Nothing
 
@@ -131,80 +161,13 @@ answers =
         rf =
             "RF" => Nothing
 
-        za =
-            "ZA" => Nothing
+        rg =
+            "RG" => Nothing
 
-        zb =
-            "ZB" => Nothing
+        rh =
+            "RH" => Nothing
 
-        zc =
-            "ZC" => Nothing
-
-        zd =
-            "ZD" => Nothing
-
-        ze =
-            "ZE" => Nothing
-
-        zf =
-            "ZF" => Nothing
-
-        bt =
-            "BT" => Nothing
-
-        -- AnswerBestThird
-        t1 =
-            "T1" => Nothing
-
-        -- AnswerBestThird
-        t2 =
-            "T2" => Nothing
-
-        -- AnswerBestThird
-        t3 =
-            "T3" => Nothing
-
-        -- AnswerBestThird
-        t4 =
-            "T4" => Nothing
-
-        -- AnswerBestThird
-        w37 =
-            "W37" => Nothing
-
-        w38 =
-            "W38" => Nothing
-
-        w39 =
-            "W39" => Nothing
-
-        w40 =
-            "W40" => Nothing
-
-        w41 =
-            "W41" => Nothing
-
-        w42 =
-            "W42" => Nothing
-
-        w43 =
-            "W43" => Nothing
-
-        w44 =
-            "W44" => Nothing
-
-        w45 =
-            "W45" => Nothing
-
-        w46 =
-            "W46" => Nothing
-
-        w47 =
-            "W47" => Nothing
-
-        w48 =
-            "W48" => Nothing
-
+        -- Quarter finalists
         w49 =
             "W49" => Nothing
 
@@ -214,35 +177,84 @@ answers =
         w51 =
             "W51" => Nothing
 
-        bordeaux =
-            { town = "Bordeaux", stadium = "Stade de Bordeaux" }
+        w52 =
+            "W52" => Nothing
 
-        lens =
-            { town = "Lens", stadium = "Stade Bollaert-Delelis" }
+        w53 =
+            "W53" => Nothing
 
-        lille =
-            { town = "Lille", stadium = "Stade Pierre Mauroy" }
+        w54 =
+            "W54" => Nothing
 
-        lyon =
-            { town = "Lyon", stadium = "Stade Lyon" }
+        w55 =
+            "W55" => Nothing
 
-        marseille =
-            { town = "Marseille", stadium = "Stade Vélodrome" }
+        w56 =
+            "W56" => Nothing
 
-        nice =
-            { town = "Nice", stadium = "Stade de Nice" }
+        -- Semi finalists
+        w57 =
+            "W57" => Nothing
 
-        paris =
-            { town = "Paris", stadium = "Parc des Princes" }
+        w58 =
+            "W58" => Nothing
 
-        saintdenis =
-            { town = "Saint-Denis", stadium = "Stade de France" }
+        w59 =
+            "W59" => Nothing
 
-        saintetienne =
-            { town = "Saint-Etienne", stadium = "Stade Geoffroy Guichard" }
+        w60 =
+            "W60" => Nothing
 
-        toulouse =
-            { town = "Toulouse", stadium = "Stadium de Toulouse" }
+        -- Finalists
+        w61 =
+            "W61" => Nothing
+
+        w62 =
+            "W62" => Nothing
+
+        -- 3rd
+        w63 =
+            "W63" => Nothing
+
+        -- Champion
+        w64 =
+            "W64" => Nothing
+
+        moskou =
+            { town = "Moskou", stadium = "Luzhniki Stadion" }
+
+        spartak =
+            { town = "Moskou", stadium = "Spartak stadion" }
+
+        petersburg =
+            { town = "Lille", stadium = "Sint-Petersburg stadion" }
+
+        novgorod =
+            { town = "Nizhny Novgorod", stadium = "Nizhny Novgorod" }
+
+        volgograd =
+            { town = "Volgograd", stadium = "Volgograd Arena" }
+
+        jekaterinenburg =
+            { town = "Jekaterinenburg", stadium = "Jekaterinenburg Arena" }
+
+        sotsji =
+            { town = "Sotsji", stadium = "Fisht Stadion" }
+
+        rostov =
+            { town = "Rostov", stadium = "Rostov Arena" }
+
+        saransk =
+            { town = "Saransk", stadium = "Mordovia Arena" }
+
+        samara =
+            { town = "Samara", stadium = "Cosmos Arena" }
+
+        kazan =
+            { town = "Kazan", stadium = "Kazan Arena" }
+
+        kaliningrad =
+            { town = "Kaliningrad ", stadium = "Kaliningrad Stadion" }
 
         tnwa =
             TeamNode "WA" Nothing TBD
@@ -262,6 +274,12 @@ answers =
         tnwf =
             TeamNode "WF" Nothing TBD
 
+        tnwg =
+            TeamNode "WG" Nothing TBD
+
+        tnwh =
+            TeamNode "WH" Nothing TBD
+
         tnra =
             TeamNode "RA" Nothing TBD
 
@@ -280,153 +298,142 @@ answers =
         tnrf =
             TeamNode "RF" Nothing TBD
 
-        tnt1 =
-            TeamNode "T1" Nothing TBD
+        tnrg =
+            TeamNode "RG" Nothing TBD
 
-        tnt2 =
-            TeamNode "T2" Nothing TBD
+        tnrh =
+            TeamNode "RH" Nothing TBD
 
-        tnt3 =
-            TeamNode "T3" Nothing TBD
-
-        tnt4 =
-            TeamNode "T4" Nothing TBD
-
-        mn37 =
-            MatchNode "m37" None tnra tnrc II TBD
-
-        -- "2016/06/15 15:00" saintetienne (Just "W37")
-        mn38 =
-            MatchNode "m38" None tnwb tnt2 II TBD
-
-        -- "2016/06/15 15:00" paris (Just "W38")
-        mn39 =
-            MatchNode "m39" None tnwd tnt4 II TBD
-
-        -- "2016/06/15 15:00" lens (Just "W39")
-        mn40 =
-            MatchNode "m40" None tnwa tnt1 II TBD
-
-        -- "2016/06/15 15:00" lyon (Just "W40")
-        mn41 =
-            MatchNode "m41" None tnwc tnt3 II TBD
-
-        -- "2016/06/15 15:00" lille (Just "W41")
-        mn42 =
-            MatchNode "m42" None tnwf tnre II TBD
-
-        -- "2016/06/15 15:00" toulouse (Just "W42")
-        mn43 =
-            MatchNode "m43" None tnwe tnrd II TBD
-
-        -- "2016/06/15 15:00" saintdenis (Just "W43")
-        mn44 =
-            MatchNode "m44" None tnrb tnrf II TBD
-
-        -- "2016/06/15 15:00" nice (Just "W44")
-        mn45 =
-            MatchNode "m45" None mn37 mn39 III TBD
-
-        -- "2016/06/15 15:00" marseille (Just "W45")
-        mn46 =
-            MatchNode "m46" None mn38 mn42 III TBD
-
-        -- "2016/06/15 15:00" lille (Just "W46")
-        mn47 =
-            MatchNode "m47" None mn41 mn43 III TBD
-
-        -- "2016/06/15 15:00" bordeaux (Just "W47")
-        mn48 =
-            MatchNode "m48" None mn40 mn44 III TBD
-
-        -- "2016/06/15 15:00" saintdenis (Just "W48")
+        -- second round matches
         mn49 =
-            MatchNode "m49" None mn45 mn46 IV TBD
+            MatchNode "m49" None tnwa tnrb II TBD
 
-        -- "2016/06/15 15:00" lyon (Just "W49")
         mn50 =
-            MatchNode "m50" None mn47 mn48 IV TBD
+            MatchNode "m50" None tnwc tnrd II TBD
 
-        -- "2016/06/15 15:00" marseille (Just "W50")
         mn51 =
-            MatchNode "m51" None mn49 mn50 V TBD
+            MatchNode "m51" None tnwb tnra II TBD
 
-        -- "2016/06/15 15:00" saintdenis Nothing
+        mn52 =
+            MatchNode "m52" None tnwd tnrc II TBD
+
+        mn53 =
+            MatchNode "m53" None tnwe tnrf II TBD
+
+        mn54 =
+            MatchNode "m54" None tnwg tnrh II TBD
+
+        mn55 =
+            MatchNode "m55" None tnwf tnre II TBD
+
+        mn56 =
+            MatchNode "m56" None tnwh tnrg II TBD
+
+        -- quarter finals
+        mn57 =
+            MatchNode "m57" None mn49 mn50 II TBD
+
+        mn58 =
+            MatchNode "m58" None mn53 mn54 II TBD
+
+        mn59 =
+            MatchNode "m59" None mn51 mn52 II TBD
+
+        mn60 =
+            MatchNode "m60" None mn55 mn56 II TBD
+
+        -- semi finals
+        mn61 =
+            MatchNode "m61" None mn57 mn58 II TBD
+
+        mn62 =
+            MatchNode "m62" None mn59 mn60 II TBD
+
+        -- finals
+        mn64 =
+            MatchNode "m64" None mn61 mn62 II TBD
+
         bracket =
-            mn51
+            mn64
     in
-        [ "m01" => answerGroupMatch A a1 a2 "2016/06/10 21:00" saintdenis
-        , "m02" => answerGroupMatch A a3 a4 "2016/06/11 15:00" lens
-        , "m03" => answerGroupMatch B b3 b4 "2016/06/11 18:00" bordeaux
-        , "m04" => answerGroupMatch B b1 b2 "2016/06/11 21:00" marseille
-        , "m05" => answerGroupMatch D d3 d4 "2016/06/12 15:00" paris
-        , "m06" => answerGroupMatch C c3 c4 "2016/06/12 18:00" nice
-        , "m07" => answerGroupMatch C c1 c2 "2016/06/12 21:00" lille
-        , "m08" => answerGroupMatch D d1 d2 "2016/06/13 15:00" toulouse
-        , "m09" => answerGroupMatch E e3 e4 "2016/06/13 18:00" saintdenis
-        , "m10" => answerGroupMatch E e1 e2 "2016/06/13 21:00" lyon
-        , "m11" => answerGroupMatch F f3 f4 "2016/06/14 18:00" bordeaux
-        , "m12" => answerGroupMatch F f1 f2 "2016/06/14 21:00" saintetienne
-        , "m13" => answerGroupMatch B b2 b4 "2016/06/15 15:00" lille
-        , "m14" => answerGroupMatch A a2 a4 "2016/06/15 18:00" paris
-        , "m15" => answerGroupMatch A a1 a3 "2016/06/15 21:00" marseille
-        , "m16" => answerGroupMatch B b1 b3 "2016/06/16 15:00" lens
-        , "m17" => answerGroupMatch C c2 c4 "2016/06/16 18:00" lyon
-        , "m18" => answerGroupMatch C c1 c3 "2016/06/16 21:00" saintdenis
-        , "m19" => answerGroupMatch E e2 e4 "2016/06/17 15:00" toulouse
-        , "m20" => answerGroupMatch D d2 d4 "2016/06/17 18:00" saintetienne
-        , "m21" => answerGroupMatch D d1 d3 "2016/06/17 21:00" nice
-        , "m22" => answerGroupMatch E e1 e3 "2016/06/18 15:00" bordeaux
-        , "m23" => answerGroupMatch F f2 f4 "2016/06/18 18:00" marseille
-        , "m24" => answerGroupMatch F f1 f3 "2016/06/18 21:00" paris
-        , "m25" => answerGroupMatch A a2 a3 "2016/06/19 21:00" lyon
-        , "m26" => answerGroupMatch A a4 a1 "2016/06/19 21:00" lille
-        , "m27" => answerGroupMatch B b2 b3 "2016/06/20 21:00" toulouse
-        , "m28" => answerGroupMatch B b4 b1 "2016/06/20 21:00" saintetienne
-        , "m29" => answerGroupMatch C c2 c3 "2016/06/21 18:00" marseille
-        , "m30" => answerGroupMatch C c4 c1 "2016/06/21 18:00" paris
-        , "m31" => answerGroupMatch D d2 d3 "2016/06/21 21:00" lens
-        , "m32" => answerGroupMatch D d4 d1 "2016/06/21 21:00" bordeaux
-        , "m33" => answerGroupMatch F f2 f3 "2016/06/22 18:00" saintdenis
-        , "m34" => answerGroupMatch F f4 f1 "2016/06/22 18:00" lyon
-        , "m35" => answerGroupMatch E e2 e3 "2016/06/22 21:00" lille
-        , "m36" => answerGroupMatch E e4 e1 "2016/06/22 21:00" nice
+        -- group A
+        [ "m01" => answerGroupMatch A a1 a2 "2018/06/14 17:00" moskou
+        , "m02" => answerGroupMatch A a3 a4 "2018/06/15 15:00" jekaterinenburg
+        , "m17" => answerGroupMatch A a1 a3 "2018/06/19 20:00" petersburg
+        , "m18" => answerGroupMatch A a4 a2 "2018/06/20 17:00" rostov
+        , "m33" => answerGroupMatch A a4 a1 "2018/06/25 16:00" samara
+        , "m34" => answerGroupMatch A a2 a3 "2018/06/25 16:00" volgograd
+          -- group B
+        , "m03" => answerGroupMatch B b1 b2 "2018/06/15 20:00" sotsji
+        , "m04" => answerGroupMatch B b3 b4 "2018/06/15 17:00" petersburg
+        , "m19" => answerGroupMatch B b1 b3 "2018/06/20 14:00" moskou
+        , "m20" => answerGroupMatch B b4 b2 "2018/06/20 20:00" kazan
+        , "m35" => answerGroupMatch B b4 b1 "2018/06/25 20:00" saransk
+        , "m36" => answerGroupMatch B b2 b3 "2018/06/25 20:00" kaliningrad
+          -- group C
+        , "m05" => answerGroupMatch C c1 c2 "2018/06/16 12:00" kazan
+        , "m06" => answerGroupMatch C c3 c4 "2018/06/16 18:00" saransk
+        , "m22" => answerGroupMatch C c4 c2 "2018/06/21 14:00" samara
+        , "m21" => answerGroupMatch C c1 c3 "2018/06/21 17:00" jekaterinenburg
+        , "m37" => answerGroupMatch C c4 c1 "2018/06/26 16:00" moskou
+        , "m37" => answerGroupMatch C c2 c3 "2018/06/26 16:00" sotsji
+          -- group D
+        , "m07" => answerGroupMatch D d1 d2 "2018/06/16 15:00" spartak
+        , "m08" => answerGroupMatch D d3 d4 "2018/06/16 21:00" kaliningrad
+        , "m23" => answerGroupMatch D d1 d3 "2018/06/21 20:00" novgorod
+        , "m24" => answerGroupMatch D d4 d2 "2018/06/22 17:00" volgograd
+        , "m39" => answerGroupMatch D d4 d1 "2018/06/26 20:00" petersburg
+        , "m40" => answerGroupMatch D d2 d3 "2018/06/26 20:00" rostov
+          -- group E
+        , "m10" => answerGroupMatch E e3 e4 "2018/06/17 14:00" samara
+        , "m09" => answerGroupMatch E e1 e2 "2018/06/17 20:00" rostov
+        , "m25" => answerGroupMatch E e1 e3 "2018/06/22 14:00" petersburg
+        , "m26" => answerGroupMatch E e4 e2 "2018/06/22 20:00" kaliningrad
+        , "m41" => answerGroupMatch E e4 e1 "2018/06/27 20:00" spartak
+        , "m42" => answerGroupMatch E e2 e3 "2018/06/27 20:00" novgorod
+          -- group F
+        , "m11" => answerGroupMatch F f1 f2 "2018/06/17 17:00" moskou
+        , "m12" => answerGroupMatch F f3 f4 "2018/06/18 14:00" novgorod
+        , "m28" => answerGroupMatch F f4 f2 "2018/06/23 17:00" rostov
+        , "m27" => answerGroupMatch F f1 f3 "2018/06/23 20:00" sotsji
+        , "m43" => answerGroupMatch F f4 f1 "2018/06/27 16:00" kazan
+        , "m44" => answerGroupMatch F f2 f3 "2018/06/27 16:00" jekaterinenburg
+          -- group G
+        , "m13" => answerGroupMatch G g1 g2 "2018/06/18 17:00" sotsji
+        , "m14" => answerGroupMatch G g3 g4 "2018/06/18 20:00" volgograd
+        , "m29" => answerGroupMatch G g1 g3 "2018/06/23 14:00" spartak
+        , "m30" => answerGroupMatch G g4 g2 "2018/06/24 14:00" novgorod
+        , "m45" => answerGroupMatch G g4 g1 "2018/06/28 20:00" kaliningrad
+        , "m46" => answerGroupMatch G g2 g4 "2018/06/28 20:00" saransk
+          -- group H
+        , "m16" => answerGroupMatch H h3 h4 "2018/06/19 14:00" saransk
+        , "m15" => answerGroupMatch H h1 h2 "2018/06/19 17:00" spartak
+        , "m32" => answerGroupMatch H h4 h2 "2018/06/24 17:00" jekaterinenburg
+        , "m31" => answerGroupMatch H h1 h3 "2018/06/24 20:00" kazan
+        , "m47" => answerGroupMatch H h4 h1 "2018/06/28 16:00" volgograd
+        , "m48" => answerGroupMatch H h2 h3 "2018/06/28 16:00" samara
+          -- Second rounders
         , "wa" => AnswerGroupPosition A First wa Nothing
         , "ra" => AnswerGroupPosition A Second ra Nothing
-        , "za" => AnswerGroupPosition A Third za Nothing
         , "wb" => AnswerGroupPosition B First wb Nothing
         , "rb" => AnswerGroupPosition B Second rb Nothing
-        , "zb" => AnswerGroupPosition B Third zb Nothing
         , "wc" => AnswerGroupPosition C First wc Nothing
         , "rc" => AnswerGroupPosition C Second rc Nothing
-        , "zc" => AnswerGroupPosition C Third zc Nothing
         , "wd" => AnswerGroupPosition D First wd Nothing
         , "rd" => AnswerGroupPosition D Second rd Nothing
-        , "zd" => AnswerGroupPosition D Third zd Nothing
         , "we" => AnswerGroupPosition E First we Nothing
         , "re" => AnswerGroupPosition E Second re Nothing
-        , "ze" => AnswerGroupPosition E Third ze Nothing
         , "wf" => AnswerGroupPosition F First wf Nothing
         , "rf" => AnswerGroupPosition F Second rf Nothing
-        , "zf" => AnswerGroupPosition F Third zf Nothing
-        , "bt" => AnswerGroupBestThirds [] Nothing
-          --    , "m37" => answerMatchWinnerInit II ra rc "2016/06/15 15:00" saintetienne (Just "W37")
-          --    , "m38" => answerMatchWinnerInit II wb t2 "2016/06/15 15:00" paris (Just "W38")
-          --    , "m39" => answerMatchWinnerInit II wd t4 "2016/06/15 15:00" lens (Just "W39")
-          --    , "m40" => answerMatchWinnerInit II wa t1 "2016/06/15 15:00" lyon (Just "W40")
-          --    , "m41" => answerMatchWinnerInit II wc t3 "2016/06/15 15:00" lille (Just "W41")
-          --    , "m42" => answerMatchWinnerInit II wf re "2016/06/15 15:00" toulouse (Just "W42")
-          --    , "m43" => answerMatchWinnerInit II we rd "2016/06/15 15:00" saintdenis (Just "W43")
-          --    , "m44" => answerMatchWinnerInit II rb rf "2016/06/15 15:00" nice (Just "W44")
-          --    , "m45" => answerMatchWinnerInit III w37 w39 "2016/06/15 15:00" marseille (Just "W45")
-          --    , "m46" => answerMatchWinnerInit III w38 w42 "2016/06/15 15:00" lille (Just "W46")
-          --    , "m47" => answerMatchWinnerInit III w41 w43 "2016/06/15 15:00" bordeaux (Just "W47")
-          --    , "m48" => answerMatchWinnerInit III w40 w44 "2016/06/15 15:00" saintdenis (Just "W48")
-          --    , "m49" => answerMatchWinnerInit IV w45 w46 "2016/06/15 15:00" lyon (Just "W49")
-          --    , "m50" => answerMatchWinnerInit IV w47 w48 "2016/06/15 15:00" marseille (Just "W50")
-          --    , "m51" => answerMatchWinnerInit V w49 w50 "2016/06/15 15:00" saintdenis Nothing
+        , "wg" => AnswerGroupPosition G First wg Nothing
+        , "rg" => AnswerGroupPosition G Second rg Nothing
+        , "wh" => AnswerGroupPosition H First wh Nothing
+        , "rh" => AnswerGroupPosition H Second rh Nothing
+          -- topscorer
         , "ts" => AnswerTopscorer ( Nothing, Nothing ) Nothing
+          -- participant
         , "me" => AnswerParticipant (P.init)
+          -- bracket
         , "br" => AnswerBracket bracket Nothing
         ]
 
