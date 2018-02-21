@@ -123,7 +123,7 @@ viewTopscorer bet answerId topscorer =
 introduction : Element.Element UI.Style.Style variation msg
 introduction =
     Element.paragraph UI.Style.Introduction
-        [ width (px 600), spacing 7 ]
+        [ width (px 600) ]
         [ UI.Text.simpleText """
     Voorspel de topscorer. Kies eerst het land, dan de speler. 9 punten als je het goed hebt.
     Let op: dit zijn de voorlopige selecties.
