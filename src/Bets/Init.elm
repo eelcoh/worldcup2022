@@ -227,7 +227,7 @@ answers =
             { town = "Moskou", stadium = "Spartak stadion" }
 
         petersburg =
-            { town = "Lille", stadium = "Sint-Petersburg stadion" }
+            { town = "Sint-Petersburg", stadium = "Sint-Petersburg stadion" }
 
         novgorod =
             { town = "Nizhny Novgorod", stadium = "Nizhny Novgorod" }
@@ -331,27 +331,27 @@ answers =
 
         -- quarter finals
         mn57 =
-            MatchNode "m57" None mn49 mn50 II TBD
+            MatchNode "m57" None mn49 mn50 III TBD
 
         mn58 =
-            MatchNode "m58" None mn53 mn54 II TBD
+            MatchNode "m58" None mn53 mn54 III TBD
 
         mn59 =
-            MatchNode "m59" None mn51 mn52 II TBD
+            MatchNode "m59" None mn51 mn52 III TBD
 
         mn60 =
-            MatchNode "m60" None mn55 mn56 II TBD
+            MatchNode "m60" None mn55 mn56 III TBD
 
         -- semi finals
         mn61 =
-            MatchNode "m61" None mn57 mn58 II TBD
+            MatchNode "m61" None mn57 mn58 IV TBD
 
         mn62 =
-            MatchNode "m62" None mn59 mn60 II TBD
+            MatchNode "m62" None mn59 mn60 IV TBD
 
         -- finals
         mn64 =
-            MatchNode "m64" None mn61 mn62 II TBD
+            MatchNode "m64" None mn61 mn62 V TBD
 
         bracket =
             mn64
@@ -376,7 +376,7 @@ answers =
         , "m22" => answerGroupMatch C c4 c2 "2018/06/21 14:00" samara
         , "m21" => answerGroupMatch C c1 c3 "2018/06/21 17:00" jekaterinenburg
         , "m37" => answerGroupMatch C c4 c1 "2018/06/26 16:00" moskou
-        , "m37" => answerGroupMatch C c2 c3 "2018/06/26 16:00" sotsji
+        , "m38" => answerGroupMatch C c2 c3 "2018/06/26 16:00" sotsji
           -- group D
         , "m07" => answerGroupMatch D d1 d2 "2018/06/16 15:00" spartak
         , "m08" => answerGroupMatch D d3 d4 "2018/06/16 21:00" kaliningrad

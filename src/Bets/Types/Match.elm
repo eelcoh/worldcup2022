@@ -115,18 +115,31 @@ unsetTeamMatch ( home, away, dt, stadium ) team =
 
 encode : Match -> Json.Encode.Value
 encode ( home, away, dt, stadium ) =
-    Json.Encode.list
-        [ (Bets.Types.Draw.encode home)
-        , (Bets.Types.Draw.encode away)
-        , (Bets.Types.Date.encode dt)
-        , (Bets.Types.Stadium.encode stadium)
+    Json.Encode.object
+        [ ( "home", (Bets.Types.Draw.encode home) )
+        , ( "away", (Bets.Types.Draw.encode away) )
+        , ( "time", (Bets.Types.Date.encode dt) )
+        , ( "stadium", (Bets.Types.Stadium.encode stadium) )
         ]
+
+
+
+{-
+   decode : Decoder Match
+   decode =
+       Json.Decode.map4 match
+           (index 0 (Bets.Types.Draw.decode))
+           (index 1 (Bets.Types.Draw.decode))
+           (index 2 (Bets.Types.Date.decode))
+           (index 3 (Bets.Types.Stadium.decode))
+
+-}
 
 
 decode : Decoder Match
 decode =
     Json.Decode.map4 match
-        (index 0 (Bets.Types.Draw.decode))
-        (index 1 (Bets.Types.Draw.decode))
-        (index 2 (Bets.Types.Date.decode))
-        (index 3 (Bets.Types.Stadium.decode))
+        (Json.Decode.field "home" Bets.Types.Draw.decode)
+        (Json.Decode.field "away" Bets.Types.Draw.decode)
+        (Json.Decode.field "time" Bets.Types.Date.decode)
+        (Json.Decode.field "stadium" Bets.Types.Stadium.decode)
