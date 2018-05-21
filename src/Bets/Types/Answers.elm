@@ -8,6 +8,7 @@ module Bets.Types.Answers  exposing
   , setWinner
   , findGroupMatchAnswers
   , findGroupPositionAnswers
+  , findAllGroupMatchAnswers
   , encode
   , decode
   )
@@ -524,6 +525,16 @@ setWinner answers (aid, answer) slot homeOrAway =
       answers
 
 
+isMatchScoreAnswer : Answer -> Bool
+isMatchScoreAnswer (_, answer) =
+  case answer of
+    AnswerGroupMatch _ _ _ _ ->
+      True
+
+    _ ->
+      False
+
+
 isGroupMatchScoreAnswer : Group -> Answer -> Bool
 isGroupMatchScoreAnswer grp (_, answer) =
   case answer of
@@ -550,6 +561,11 @@ findGroupAnswers fltr answers =
 findGroupMatchAnswers : Group -> Answers -> Answers
 findGroupMatchAnswers grp answers =
   findGroupAnswers (isGroupMatchScoreAnswer grp) answers
+
+
+findAllGroupMatchAnswers :  Answers -> Answers
+findAllGroupMatchAnswers  answers =
+  findGroupAnswers  isMatchScoreAnswer answers
 
 findGroupPositionAnswers : Group -> Answers -> Answers
 findGroupPositionAnswers grp answers =

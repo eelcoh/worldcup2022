@@ -36,7 +36,7 @@ view model bet mAnswer answers =
     case model.questionType of
         GroupPosition grp ->
             Element.column UI.Style.Page
-                []
+                [ spacing 20 ]
                 [ displayHeader grp
                 , introduction
                 , Element.column UI.Style.GroupPositions [] (List.filterMap (viewAnswer model bet) answers)
@@ -54,7 +54,7 @@ displayHeader grp =
 introduction : Element.Element UI.Style.Style variation msg
 introduction =
     Element.paragraph UI.Style.Introduction
-        [ width (px 600), spacing 7 ]
+        [ spacing 7 ]
         [ Element.text """Voorspel de nummers 1, 2 en 3 van de eindstand in de poule.
       De nummers 1 en 2 gaan door, en daarvoor krijg je 1 punt per land dat de tweede ronde haalt. """
         , Element.el UI.Style.Emphasis [] (Element.text "Klik")

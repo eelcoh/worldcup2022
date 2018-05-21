@@ -12,7 +12,7 @@ module Form.QuestionSets.Types
         )
 
 import Bets.Types exposing (AnswerID, Group(..), Bet, Answers)
-import Bets.Bet exposing (findGroupMatchAnswers, findGroupPositionAnswers)
+import Bets.Bet exposing (findGroupMatchAnswers, findGroupPositionAnswers, findAllGroupMatchAnswers)
 import List.Extra exposing (dropWhile)
 import Bets.Types.Answer
 import Bets.Types.Group as Group

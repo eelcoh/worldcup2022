@@ -53,7 +53,7 @@ view model bet mAnswer answers =
     case mAnswer of
         Just (( answerId, AnswerGroupMatch g match mScore points ) as answer) ->
             Element.column UI.Style.Page
-                [ width (px 650) ]
+                [ width (px 650), spacing 20 ]
                 [ displayHeader g
                 , introduction
                 , displayMatches model.cursor answers
@@ -73,7 +73,7 @@ displayHeader grp =
 introduction : Element.Element UI.Style.Style variation msg
 introduction =
     Element.paragraph UI.Style.Introduction
-        [ width (px 600), spacing 7 ]
+        [ spacing 7 ]
         [ Element.text "Voorspel de uitslagen door op de knop met de gewenste score te klikken. Voor een juiste uitslag krijg je 3 punten. Heb je enkel de toto goed levert je dat 1 punt op." ]
 
 
@@ -188,10 +188,10 @@ viewInput model answer homeTeam awayTeam mScore =
                     , options = []
                     }
             in
-                Input.text UI.Style.ScoreInput [ width (px 20) ] inp
+                Input.text UI.Style.ScoreInput [ width (px 30) ] inp
 
         wrap fld =
-            Element.el UI.Style.Wrapper [ width (px 24), center, verticalCenter ] fld
+            Element.el UI.Style.Wrapper [ width (px 34), center, verticalCenter ] fld
 
         extractScore extractor =
             mScore

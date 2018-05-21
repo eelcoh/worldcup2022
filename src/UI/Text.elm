@@ -1,24 +1,20 @@
 module UI.Text exposing (..)
 
 import Element
-import Element.Attributes exposing (alignLeft, px, spacing, paddingLeft, paddingTop, verticalCenter, width)
+import Element.Attributes exposing (alignLeft, px, spacing, padding, paddingXY, paddingLeft, paddingBottom, paddingTop, verticalCenter, width)
 import UI.Style
 
 
 displayHeader : String -> Element.Element UI.Style.Style variation msg
 displayHeader txt =
-    Element.h1 UI.Style.Header1
-        [ width (px 600), spacing 7 ]
-        (Element.paragraph
-            UI.Style.Header1
-            [ width Element.Attributes.fill ]
-            [ (Element.text txt) ]
-        )
+    Element.header UI.Style.Header2
+        [ width Element.Attributes.fill ]
+        (Element.text txt)
 
 
 simpleText : String -> Element.Element UI.Style.Style variation msg
 simpleText txt =
-    Element.el UI.Style.None [] (Element.text txt)
+    Element.el UI.Style.Text [] (Element.text txt)
 
 
 bulletText : String -> Element.Element UI.Style.Style variation msg

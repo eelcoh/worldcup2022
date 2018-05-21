@@ -4,6 +4,7 @@ module Bets.Bet
         , candidates
         , findGroupMatchAnswers
         , findGroupPositionAnswers
+        , findAllGroupMatchAnswers
         , setWinner
         , setTeam
         , setMatchScore
@@ -30,6 +31,11 @@ getAnswer bet answerId =
 candidates : Bet -> Answer -> Candidates
 candidates bet answer =
     Bets.Types.Candidates.candidates bet.answers answer
+
+
+findAllGroupMatchAnswers : Bet -> Answers
+findAllGroupMatchAnswers bet =
+    Bets.Types.Answers.findAllGroupMatchAnswers bet.answers
 
 
 findGroupMatchAnswers : Group -> Bet -> Answers

@@ -11,10 +11,10 @@ placeBet bet msg =
         ( vrb, url ) =
             case bet.uuid of
                 Just uuid ->
-                    ( "PUT", "/app/bets/" ++ uuid )
+                    ( "PUT", "/bets/" ++ uuid )
 
                 Nothing ->
-                    ( "POST", "/app/bets/" )
+                    ( "POST", "/bets/" )
 
         body =
             Bets.Bet.encode bet

@@ -8,7 +8,7 @@ import Form.Questions.Types as QT
 import Form.QuestionSet
 import Form.QuestionSets.Types as QTS
 import Element
-import Element.Attributes exposing (padding, spacing)
+import Element.Attributes exposing (padding, spacing, paddingXY)
 import UI.Style
 import UI.Button
 import Html exposing (Html)
@@ -142,16 +142,16 @@ viewCardChrome model card i =
 
         pills =
             List.map (viewPill model i) (List.indexedMap (,) model.cards)
-                |> Element.wrappedRow UI.Style.None [ spacing 7, padding 10 ]
+                |> Element.wrappedRow UI.Style.None [ spacing 7, padding 0 ]
 
         nav =
             [ UI.Button.pill UI.Style.Potential (NavigateTo prev) "terug"
             , UI.Button.pill UI.Style.Potential (NavigateTo next) "volgende"
             ]
-                |> Element.wrappedRow UI.Style.None [ spacing 7, padding 10 ]
+                |> Element.wrappedRow UI.Style.None [ spacing 7, padding 0 ]
     in
         Element.column UI.Style.None
-            []
+            [ spacing 20, paddingXY 70 20 ]
             [ pills
             , card
             , nav

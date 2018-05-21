@@ -93,19 +93,22 @@ view bet qState =
                 _ ->
                     [ "", "", "", "", "", "" ]
 
+        placeholder p =
+            Element.Input.placeholder { text = p, label = Element.Input.hiddenLabel p }
+
         inputField ( k, v ) =
             let
                 inp =
                     { onChange = (\val -> (Set (k val) qState.answerId))
                     , value = (Tuple.second v)
-                    , label = Element.Input.hiddenLabel "k"
+                    , label = placeholder (Tuple.first v)
                     , options = []
                     }
             in
                 Element.Input.text UI.Style.TextInput [ width (px 260), height (px 36) ] inp
 
         lines =
-            List.map2 (,) values [ "Naam", "Adres", "Woonplaats", "Email", "Telefoonnummer", "Waar ken je ons van?" ]
+            List.map2 (,) [ "Naam", "Adres", "Woonplaats", "Email", "Telefoonnummer", "Waar ken je ons van?" ] values
                 |> List.map2 (,) keys
                 |> List.map inputField
 
