@@ -6,7 +6,7 @@ import Bets.Types.Group as G
 import Bets.Types.Match as M
 import Bets.Types.Score as S
 import Element
-import Element.Attributes as Attributes exposing (center, height, padding, px, spacing, verticalCenter, width)
+import Element.Attributes as Attributes exposing (spread, center, height, padding, px, spacing, verticalCenter, width)
 import Element.Events
 import Element.Input as Input
 import Form.QuestionSets.Types exposing (ChangeCursor(..), Model, updateCursor)
@@ -297,7 +297,7 @@ displayMatch cursor ( answerId, answer ) =
                     displayScore mScore
             in
                 Element.row (UI.Style.MatchRow semantics)
-                    [ handler, center, verticalCenter, padding 10, spacing 7, width (px 150), height (px 70) ]
+                    [ handler, spread, verticalCenter, padding 10, spacing 7, width (px 150), height (px 70) ]
                     [ home, sc, away ]
     in
         case answer of

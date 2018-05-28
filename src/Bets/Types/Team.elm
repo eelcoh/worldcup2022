@@ -831,7 +831,34 @@ serbia : TeamDatum
 serbia =
     { team = { teamID = "SRB", teamName = "Servië" }
     , players =
-        []
+        [ "Vladimir Stojkovic"
+        , "Predrag Rajkovic"
+        , "Marko Dmitrovic"
+        , "Aleksandar Jovanovic"
+        , "Branislav Ivanovic"
+        , "Aleksandar Kolarov"
+        , "Antonio Rukavina"
+        , "Dusko Tosic"
+        , "Milos Veljkovic"
+        , "Uros Spajic"
+        , "Nikola Milenkovic"
+        , "Milan Rodić"
+        , "Matija Nastasic"
+        , "Nemanja Maksimovic"
+        , "Dusan Tadic"
+        , "Filip Kostic"
+        , "Andrija Zivkovic"
+        , "Nemanja Radonjic"
+        , "Nemanja Matic"
+        , "Luka Milivojevic"
+        , "Sergej Milinkovic-Savic"
+        , "Adem Ljajic"
+        , "Mijat Gacinovic"
+        , "Marko Grujic"
+        , "Aleksandar Prijovic"
+        , "Luka Jovic"
+        , "Aleksandar Mitrovic"
+        ]
     , group = E
     }
 
@@ -1027,7 +1054,40 @@ panama : TeamDatum
 panama =
     { team = { teamID = "PAN", teamName = "Panama" }
     , players =
-        []
+        [ "José Calderon"
+        , "Jaime Penedo"
+        , "Alex Rodriguez"
+        , "Azmahar Ariano"
+        , "Felipe Baloy"
+        , "Harold Cummings"
+        , "Erick Davis"
+        , "Fidel Escobar"
+        , "Luis Ovalle"
+        , "Francisco Palacios"
+        , "Richard Peralta"
+        , "Roman Torres"
+        , "Ricardo Buitrago"
+        , "Ricardo Avila"
+        , "Edgar Barcenas"
+        , "Miguel Camargo"
+        , "Adalberto Carrasquilla"
+        , "Armando Cooper"
+        , "Anibal Godoy"
+        , "Gabriel Gomez"
+        , "Jose Gonzalez"
+        , "Cristian Martinez"
+        , "Valentin Pimentel"
+        , "Alberto Quintero"
+        , "José Luis Rodriguez"
+        , "Abdiel Arroyo"
+        , "Rolando Blackburn"
+        , "Ismael Diaz"
+        , "José Fajardo"
+        , "Roberto Nurse"
+        , "Blas Perez"
+        , "Luis Tejada"
+        , "Gabriel Torres"
+        ]
     , group = G
     }
 

@@ -15,6 +15,7 @@ import UI.Button
 import Element
 import UI.Style
 import UI.Text
+import Navigation
 
 
 type alias Msg =
@@ -37,8 +38,16 @@ update msg bet =
                     let
                         freshBet =
                             Bets.Init.bet
+
+                        cmd =
+                            case nwBet.uuid of
+                                Nothing ->
+                                    Cmd.none
+
+                                Just uuid ->
+                                    Navigation.load ("http://www.webstekjes.com/voetbalpool/#inzendingen/" ++ uuid)
                     in
-                        ( freshBet, Cmd.none, Just Done )
+                        ( freshBet, cmd, Just Done )
 
                 Err res ->
                     ( bet, Cmd.none, Just Error )
@@ -109,7 +118,7 @@ introSubmitting =
 
 introNotReady : Element.Element UI.Style.Style variation msg
 introNotReady =
-    Element.paragraph UI.Style.None [] [ UI.Text.simpleText "Het formulier is nog niet helemaal ingevuld. Je kunt het nog niet insturen. Kijk op de 'tabs' bovenin welke er nog niet groengekleurd zijn." ]
+    Element.paragraph UI.Style.None [] [ UI.Text.simpleText "Het formulier is nog niet helemaal ingevuld. Je kunt het nog niet insturen. Kijk op de 'tabs' bovenin welke er nog rood zijn." ]
 
 
 introSubmitted : Element.Element UI.Style.Style variation msg

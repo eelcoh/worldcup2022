@@ -103,7 +103,7 @@ viewPill model idx ( i, card ) =
                     UI.Style.Right
 
                 ( False, False ) ->
-                    UI.Style.Potential
+                    UI.Style.Wrong
 
         msg =
             NavigateTo i
@@ -142,17 +142,20 @@ viewCardChrome model card i =
 
         pills =
             List.map (viewPill model i) (List.indexedMap (,) model.cards)
-                |> Element.wrappedRow UI.Style.None [ spacing 7, padding 0 ]
 
-        nav =
-            [ UI.Button.pill UI.Style.Potential (NavigateTo prev) "terug"
-            , UI.Button.pill UI.Style.Potential (NavigateTo next) "volgende"
-            ]
+        prevPill =
+            UI.Button.pill UI.Style.Irrelevant (NavigateTo prev) "vorige"
+
+        nextPill =
+            UI.Button.pill UI.Style.Irrelevant (NavigateTo next) "volgende"
+
+        pillsPlus =
+            prevPill
+                :: (List.append pills [ nextPill ])
                 |> Element.wrappedRow UI.Style.None [ spacing 7, padding 0 ]
     in
         Element.column UI.Style.None
             [ spacing 20, paddingXY 70 20 ]
-            [ pills
+            [ pillsPlus
             , card
-            , nav
             ]

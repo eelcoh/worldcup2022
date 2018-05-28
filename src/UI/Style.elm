@@ -188,10 +188,11 @@ stylesheet =
         , style (Button Active)
             [ Color.background secondary
             , Color.text secondaryText
+            , Border.all 1
             , hover
                 [ cursor "pointer"
-                , Color.background UI.Color.orange
-                , Color.text UI.Color.white
+                , Color.background secondaryLight
+                , Color.text secondaryText
                 ]
             , Font.typeface
                 [ Font.font "Roboto Mono"
@@ -200,6 +201,7 @@ stylesheet =
         , style (Button Inactive)
             [ Color.background secondaryDark
             , Color.text secondaryText
+            , Border.all 1
             , Font.lineHeight 1.0
             , hover [ cursor "not-allowed" ]
             , Font.typeface
@@ -207,16 +209,16 @@ stylesheet =
                 ]
             ]
         , style (Button Wrong)
-            [ Color.background secondary
-            , Color.text secondaryText
+            [ Color.text wrong
+            , Border.all 1
             , hover [ cursor "pointer" ]
             , Font.typeface
                 [ Font.font "Roboto Mono"
                 ]
             ]
         , style (Button Right)
-            [ Color.background secondary
-            , Color.text secondaryText
+            [ Color.text secondaryText
+            , Border.all 1
             , hover [ cursor "pointer" ]
             , Font.typeface
                 [ Font.font "Roboto Mono"
@@ -225,13 +227,15 @@ stylesheet =
         , style (Button Perhaps)
             [ Color.background secondary
             , Color.text secondaryText
+            , Border.all 1
             , hover [ cursor "pointer" ]
             , Font.typeface
                 [ Font.font "Roboto Mono"
                 ]
             ]
         , style (Button Irrelevant)
-            [ Color.background secondary
+            [ Color.border secondaryLight
+            , Border.all 1
             , Color.text secondaryText
             , hover [ cursor "pointer" ]
             , Font.typeface
@@ -242,6 +246,7 @@ stylesheet =
             [ Color.background secondary
             , Color.text secondaryText
             , Color.border secondary
+            , Border.all 1
             , hover
                 [ cursor "pointer"
                 , Color.border secondaryLight
@@ -255,7 +260,8 @@ stylesheet =
         , style (Button Selected)
             [ Color.background secondaryLight
             , Color.text secondaryText
-            , Color.border secondary
+            , Border.all 1
+            , Color.border UI.Color.primary
             , hover
                 [ cursor "pointer"
                 , Color.background primaryDark
@@ -309,7 +315,7 @@ stylesheet =
             [ Color.background secondaryLight
             , Color.text secondaryText
             , Border.all 1
-            , Color.border UI.Color.orange
+            , Color.border UI.Color.primary
             , Font.lineHeight 1.0
             , Font.center
             , Font.size 15
@@ -379,8 +385,11 @@ stylesheet =
                 ]
             ]
         , style TeamNameFull
-            [ Font.size (scale 1)
+            [ Font.size 20
             , Font.center
+            , Font.typeface
+                [ Font.font "Roboto Mono"
+                ]
             ]
         , style TeamBox
             [ Color.background primaryDark
