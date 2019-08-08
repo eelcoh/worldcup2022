@@ -1,9 +1,9 @@
-module Bets.Types.Score exposing (homeScore, awayScore, asString, merge, isComplete, decode, encode, encodeMaybe)
+module Bets.Types.Score exposing (asString, awayScore, decode, encode, encodeMaybe, homeScore, isComplete, merge)
 
-import Json.Encode
-import Json.Decode exposing (Decoder, maybe, index, map2)
-import Bets.Types exposing (Score)
 import Bets.Json.Encode exposing (mIntEnc)
+import Bets.Types exposing (Score)
+import Json.Decode exposing (Decoder, index, map2, maybe)
+import Json.Encode
 
 
 homeScore : Score -> Maybe Int
@@ -50,19 +50,19 @@ merge newScore oldScore =
                 Nothing ->
                     oldHome
 
-        score =
+        score_ =
             ( home, away )
     in
-        score
+    score_
 
 
 asString : Score -> String
 asString ( mH, mA ) =
     let
         str mInt =
-            Maybe.map toString mInt |> Maybe.withDefault "_"
+            Maybe.map String.fromInt mInt |> Maybe.withDefault "_"
     in
-        List.foldr (++) "" [ (str mH), "-", (str mA) ]
+    List.foldr (++) "" [ str mH, "-", str mA ]
 
 
 isComplete : Maybe Score -> Bool
@@ -94,7 +94,7 @@ encodeMaybe mScore =
 
 encode : Score -> Json.Encode.Value
 encode ( mHome, mAway ) =
-    Json.Encode.list
-        [ (mIntEnc mHome)
-        , (mIntEnc mAway)
+    Json.Encode.list mIntEnc
+        [  mHome
+        ,  mAway
         ]

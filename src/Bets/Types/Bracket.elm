@@ -1,26 +1,25 @@
-module Bets.Types.Bracket
-    exposing
-        ( set
-        , setBulk
-        , proceed
-        , proceedHome
-        , proceedAway
-        , winner
-        , unsetQualifier
-        , get
-        , qualifier
-        , display
-        , isComplete
-        , encode
-        , decode
-        , decodeWinner
-        )
+module Bets.Types.Bracket exposing
+    ( decode
+    , decodeWinner
+    , display
+    , encode
+    , get
+    , isComplete
+    , proceed
+    , proceedAway
+    , proceedHome
+    , qualifier
+    , set
+    , setBulk
+    , unsetQualifier
+    , winner
+    )
 
-import Json.Encode
-import Json.Decode exposing (Decoder, maybe, fail, field, lazy)
-import Bets.Types exposing (Team, Bracket(..), Qualifier, Winner(..), Slot, HasQualified(..), Group)
-import Bets.Types.Team as T
+import Bets.Types exposing (Bracket(..), Group, HasQualified(..), Qualifier, Slot, Team, Winner(..))
 import Bets.Types.Round as R
+import Bets.Types.Team as T
+import Json.Decode exposing (Decoder, fail, field, lazy, maybe)
+import Json.Encode
 import Maybe.Extra as M
 
 
@@ -35,14 +34,15 @@ reset newBracket prevWinner =
                 newWinner =
                     if currentWinner == prevWinner then
                         w
+
                     else
                         None
             in
-                -- should really reassess hasQ, but not necessary now since it can only be TBD
-                MatchNode slot newWinner home away rnd hasQ
+            -- should really reassess hasQ, but not necessary now since it can only be TBD
+            MatchNode slot newWinner home away rnd hasQ
 
-        TeamNode slot qualifier hasQ ->
-            TeamNode slot qualifier hasQ
+        TeamNode slot qual hasQ ->
+            TeamNode slot qual hasQ
 
 
 proceedHome : Bracket -> Slot -> Bracket
@@ -62,6 +62,7 @@ proceed bracket slot wnnr =
             if s == slot then
                 -- should really reassess hasQ, but not necessary now since it can only be TBD
                 MatchNode slot wnnr home away rnd hasQ
+
             else
                 let
                     newLeft =
@@ -77,7 +78,7 @@ proceed bracket slot wnnr =
                     newBracket =
                         MatchNode s w newLeft newRight rnd hasQ
                 in
-                    reset newBracket currentWinner
+                reset newBracket currentWinner
 
         _ ->
             bracket
@@ -97,20 +98,20 @@ winner bracket =
                 None ->
                     Nothing
 
-        TeamNode slot qualifier hasQ ->
-            qualifier
+        TeamNode slot qual hasQ ->
+            qual
 
 
 set : Bracket -> Slot -> Qualifier -> Bracket
-set bracket slot qualifier =
+set bracket slot qual =
     case bracket of
         MatchNode s w home away round hasQ ->
             let
                 newHome =
-                    set home slot qualifier
+                    set home slot qual
 
                 newAway =
-                    set away slot qualifier
+                    set away slot qual
 
                 newBracket =
                     MatchNode s w newHome newAway round hasQ
@@ -118,11 +119,12 @@ set bracket slot qualifier =
                 currentWinner =
                     winner bracket
             in
-                reset newBracket currentWinner
+            reset newBracket currentWinner
 
         TeamNode s mt hasQ ->
             if s == slot then
-                TeamNode slot qualifier hasQ
+                TeamNode slot qual hasQ
+
             else
                 bracket
 
@@ -130,22 +132,22 @@ set bracket slot qualifier =
 setBulk : Bracket -> List ( Slot, Qualifier ) -> Bracket
 setBulk bracket slots =
     let
-        newSet ( slot, qualifier ) brkt =
-            set brkt slot qualifier
+        newSet ( slot, qual ) brkt =
+            set brkt slot qual
     in
-        List.foldl newSet bracket slots
+    List.foldl newSet bracket slots
 
 
 unsetQualifier : Bracket -> Qualifier -> Bracket
-unsetQualifier bracket qualifier =
+unsetQualifier bracket qual =
     case bracket of
         MatchNode s w home away round hasQ ->
             let
                 newHome =
-                    unsetQualifier home qualifier
+                    unsetQualifier home qual
 
                 newAway =
-                    unsetQualifier away qualifier
+                    unsetQualifier away qual
 
                 newBracket =
                     MatchNode s w newHome newAway round hasQ
@@ -153,11 +155,12 @@ unsetQualifier bracket qualifier =
                 currentWinner =
                     winner bracket
             in
-                reset newBracket currentWinner
+            reset newBracket currentWinner
 
         TeamNode slot mt hasQ ->
-            if mt == qualifier then
+            if mt == qual then
                 TeamNode slot Nothing hasQ
+
             else
                 bracket
 
@@ -186,16 +189,18 @@ get brkt slot =
         MatchNode s w home away round hasQ ->
             if s == slot then
                 Just brkt
+
             else
                 let
                     oneOf =
                         M.values >> List.head
                 in
-                    oneOf [ (get away slot), (get home slot) ]
+                oneOf [ get away slot, get home slot ]
 
         TeamNode s q hasQ ->
             if s == slot then
                 Just brkt
+
             else
                 Nothing
 
@@ -208,8 +213,8 @@ display bracket =
 isComplete : Bracket -> Bool
 isComplete brkt =
     case brkt of
-        TeamNode slot qualifier hasQ ->
-            M.isJust qualifier
+        TeamNode slot qual hasQ ->
+            M.isJust qual
 
         MatchNode slot w home away round hasQ ->
             case w of
@@ -221,8 +226,8 @@ isComplete brkt =
 
 
 encodeWinner : Winner -> Json.Encode.Value
-encodeWinner winner =
-    case winner of
+encodeWinner wnnr =
+    case wnnr of
         HomeTeam ->
             Json.Encode.string "HomeTeam"
 
@@ -236,19 +241,19 @@ encodeWinner winner =
 encode : Bracket -> Json.Encode.Value
 encode bracket =
     case bracket of
-        TeamNode slot qualifier hasQ ->
+        TeamNode slot qual hasQ ->
             Json.Encode.object
                 [ ( "node", Json.Encode.string "team" )
                 , ( "slot", Json.Encode.string slot )
-                , ( "qualifier", T.encodeMaybe qualifier )
+                , ( "qualifier", T.encodeMaybe qual )
                 , ( "hasQualified", encodeHasQualified hasQ )
                 ]
 
-        MatchNode slot winner home away round hasQ ->
+        MatchNode slot wnnr home away round hasQ ->
             Json.Encode.object
                 [ ( "node", Json.Encode.string "match" )
                 , ( "slot", Json.Encode.string slot )
-                , ( "winner", encodeWinner winner )
+                , ( "winner", encodeWinner wnnr )
                 , ( "home", encode home )
                 , ( "away", encode away )
                 , ( "round", R.encode round )
@@ -258,7 +263,7 @@ encode bracket =
 
 decode : Decoder Bracket
 decode =
-    (field "node" Json.Decode.string)
+    field "node" Json.Decode.string
         |> Json.Decode.andThen
             (\node ->
                 case node of
@@ -271,7 +276,7 @@ decode =
                     "match" ->
                         Json.Decode.map6 MatchNode
                             (field "slot" Json.Decode.string)
-                            (field "winner" ((maybe Json.Decode.string) |> Json.Decode.andThen decodeWinner))
+                            (field "winner" (maybe Json.Decode.string |> Json.Decode.andThen decodeWinner))
                             (field "home" (lazy (\_ -> decode)))
                             (field "away" (lazy (\_ -> decode)))
                             (field "round" R.decode)
@@ -285,8 +290,8 @@ decode =
 decodeWinner : Maybe String -> Decoder Winner
 decodeWinner w =
     let
-        stringToWinner winner =
-            case winner of
+        stringToWinner wnnr =
+            case wnnr of
                 "HomeTeam" ->
                     HomeTeam
 
@@ -296,12 +301,12 @@ decodeWinner w =
                 _ ->
                     None
     in
-        case w of
-            Nothing ->
-                Json.Decode.succeed None
+    case w of
+        Nothing ->
+            Json.Decode.succeed None
 
-            Just wnr ->
-                Json.Decode.succeed (stringToWinner wnr)
+        Just wnr ->
+            Json.Decode.succeed (stringToWinner wnr)
 
 
 toStringHasQualified : HasQualified -> String
@@ -335,7 +340,7 @@ toHasQualified hasQStr =
 
 encodeHasQualified : HasQualified -> Json.Encode.Value
 encodeHasQualified hasQ =
-    Json.Encode.string (toString hasQ)
+    Json.Encode.string (toStringHasQualified hasQ)
 
 
 decodeHasQualified : Decoder HasQualified

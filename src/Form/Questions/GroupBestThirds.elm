@@ -3,7 +3,7 @@ module Form.Questions.GroupBestThirds exposing (Msg, update, view)
 import Bets.Bet exposing (candidates, getAnswer, setTeam)
 import Bets.Types exposing (Answer, AnswerID, AnswerT(..), Bet, Candidates, Group, Pos(..), Team)
 import Element exposing (layout)
-import Element.Attributes exposing (padding, spacing, width, px)
+import Element.Attributes exposing (padding, px, spacing, width)
 import Form.Questions.Types exposing (QState)
 import UI.Button
 import UI.Style
@@ -31,7 +31,7 @@ update msg bet qState =
                         Nothing ->
                             bet
             in
-                ( newBet, { qState | next = Nothing }, Cmd.none )
+            ( newBet, { qState | next = Nothing }, Cmd.none )
 
 
 view : Bet -> QState -> Element.Element UI.Style.Style variation Msg
@@ -56,19 +56,19 @@ view bet qState =
                         rowItems =
                             List.map (displayTeam (act answerId)) (cs answer)
                     in
-                        Element.row UI.Style.GroupPosition
-                            [ padding 10, spacing 7 ]
-                            rowItems
+                    Element.row UI.Style.GroupPosition
+                        [ padding 10, spacing 7 ]
+                        rowItems
 
                 _ ->
                     Element.empty
     in
-        Element.column UI.Style.None
-            [ width (px 600) ]
-            [ header
-            , introduction
-            , body
-            ]
+    Element.column UI.Style.None
+        [ width (px 600) ]
+        [ header
+        , introduction
+        , body
+        ]
 
 
 introduction : Element.Element UI.Style.Style variation msg
@@ -96,9 +96,9 @@ displayTeam act ( grp, team, pos ) =
                     UI.Style.TBInactive
 
         msg =
-            (act grp team)
+            act grp team
 
         contents =
             [ viewTeam (Just team) ]
     in
-        UI.Button.teamButton c msg team
+    UI.Button.teamButton c msg team

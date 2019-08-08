@@ -6,7 +6,7 @@ import Bets.Types.Group as G
 import Bets.Types.Match as M
 import Bets.Types.Score as S
 import Element
-import Element.Attributes as Attributes exposing (spread, center, height, padding, px, spacing, verticalCenter, width)
+import Element.Attributes as Attributes exposing (center, height, padding, px, spacing, spread, verticalCenter, width)
 import Element.Events
 import Element.Input as Input
 import Form.QuestionSets.Types exposing (ChangeCursor(..), Model, updateCursor)
@@ -67,7 +67,7 @@ view model bet mAnswer answers =
 
 displayHeader : Group -> Element.Element UI.Style.Style variation msg
 displayHeader grp =
-    UI.Text.displayHeader ("Voorspel de uitslagen in group " ++ (G.toString grp))
+    UI.Text.displayHeader ("Voorspel de uitslagen in group " ++ G.toString grp)
 
 
 introduction : Element.Element UI.Style.Style variation msg
@@ -158,8 +158,8 @@ scores =
 indexedScores : List ( Int, Int ) -> List ( Int, ( Int, Int, String ) )
 indexedScores scoreList =
     scoreList
-        |> List.map (\( h, a ) -> ( h, a, (scoreString h a) ))
-        |> List.indexedMap (,)
+        |> List.map (\( h, a ) -> ( h, a, scoreString h a ))
+        |> List.indexedMap (\a b -> ( a, b ))
 
 
 viewInput :
@@ -172,23 +172,23 @@ viewInput :
 viewInput model answer homeTeam awayTeam mScore =
     let
         makeAction act val =
-            case (String.toInt val) of
-                Ok v ->
+            case String.toInt val of
+                Just v ->
                     act v
 
-                Err _ ->
+                Nothing ->
                     NoOp
 
         inputField v act =
             let
                 inp =
-                    { onChange = (makeAction act)
+                    { onChange = makeAction act
                     , value = v
                     , label = Input.hiddenLabel ".."
                     , options = []
                     }
             in
-                Input.text UI.Style.ScoreInput [ width (px 30) ] inp
+            Input.text UI.Style.ScoreInput [ width (px 30) ] inp
 
         wrap fld =
             Element.el UI.Style.Wrapper [ width (px 34), center, verticalCenter ] fld
@@ -196,7 +196,7 @@ viewInput model answer homeTeam awayTeam mScore =
         extractScore extractor =
             mScore
                 |> Maybe.andThen extractor
-                |> Maybe.map toString
+                |> Maybe.map String.fromInt
                 |> Maybe.withDefault ""
 
         homeInput =
@@ -213,13 +213,13 @@ viewInput model answer homeTeam awayTeam mScore =
         awayBadge =
             UI.Team.viewTeamFull awayTeam
     in
-        Element.row UI.Style.ActiveMatch
-            [ center, padding 20, spacing 7 ]
-            [ homeBadge
-            , homeInput
-            , awayInput
-            , awayBadge
-            ]
+    Element.row UI.Style.ActiveMatch
+        [ center, padding 20, spacing 7 ]
+        [ homeBadge
+        , homeInput
+        , awayInput
+        , awayBadge
+        ]
 
 
 viewKeyboard : a -> Answer -> Element.Element UI.Style.Style variation Msg
@@ -233,9 +233,9 @@ viewKeyboard model answer =
                 [ center, spacing 2, verticalCenter ]
                 (List.map toButton scoreList)
     in
-        Element.column UI.Style.ScoreColumn
-            [ spacing 2 ]
-            (List.map toRow scores)
+    Element.column UI.Style.ScoreColumn
+        [ spacing 2 ]
+        (List.map toRow scores)
 
 
 scoreButton : UI.Style.ScoreButtonSemantics -> Answer -> Int -> Int -> String -> Element.Element UI.Style.Style variation Msg
@@ -244,7 +244,7 @@ scoreButton c answer home away t =
         msg =
             Update answer home away
     in
-        UI.Button.scoreButton c msg t
+    UI.Button.scoreButton c msg t
 
 
 displayMatches :
@@ -256,10 +256,10 @@ displayMatches cursor answers =
         display =
             displayMatch cursor
     in
-        --
-        Element.wrappedRow UI.Style.Matches
-            [ padding 10, spacing 7, center, width (px 600) ]
-            (List.filterMap display answers)
+    --
+    Element.wrappedRow UI.Style.Matches
+        [ padding 10, spacing 7, center, width (px 600) ]
+        (List.filterMap display answers)
 
 
 displayMatch : AnswerID -> ( AnswerID, AnswerT ) -> Maybe (Element.Element UI.Style.Style variation Msg)
@@ -268,13 +268,14 @@ displayMatch cursor ( answerId, answer ) =
         semantics =
             if cursor == answerId then
                 UI.Style.Active
+
             else
                 UI.Style.Potential
 
         disp match mScore =
             let
                 c =
-                    case ( (cursor == answerId), (S.isComplete mScore) ) of
+                    case ( cursor == answerId, S.isComplete mScore ) of
                         ( True, _ ) ->
                             3
 
@@ -296,21 +297,21 @@ displayMatch cursor ( answerId, answer ) =
                 sc =
                     displayScore mScore
             in
-                Element.row (UI.Style.MatchRow semantics)
-                    [ handler, spread, verticalCenter, padding 10, spacing 7, width (px 150), height (px 70) ]
-                    [ home, sc, away ]
+            Element.row (UI.Style.MatchRow semantics)
+                [ handler, spread, verticalCenter, padding 10, spacing 7, width (px 150), height (px 70) ]
+                [ home, sc, away ]
     in
-        case answer of
-            AnswerGroupMatch g match mScore _ ->
-                Just <| disp match mScore
+    case answer of
+        AnswerGroupMatch g match mScore _ ->
+            Just <| disp match mScore
 
-            _ ->
-                Nothing
+        _ ->
+            Nothing
 
 
-scoreString : a -> b -> String
+scoreString : Int -> Int -> String
 scoreString h a =
-    List.foldr (++) "" [ " ", (toString h), "-", (toString a), " " ]
+    List.foldr (++) "" [ " ", String.fromInt h, "-", String.fromInt a, " " ]
 
 
 displayScore : Maybe Score -> Element.Element UI.Style.Style variation msg
@@ -319,9 +320,9 @@ displayScore mScore =
         txt =
             case mScore of
                 Just score ->
-                    (S.asString score)
+                    S.asString score
 
                 Nothing ->
                     " _-_ "
     in
-        Element.el UI.Style.Score [ verticalCenter ] (Element.text (txt))
+    Element.el UI.Style.Score [ verticalCenter ] (Element.text txt)

@@ -1,11 +1,11 @@
 module Form.Init exposing (init, initModel)
 
-import Html exposing (div)
 import Bets.Init
 import Bets.Types exposing (Group(..), Round(..))
-import Form.Types exposing (..)
-import Form.Questions.Types as Q
 import Form.QuestionSets.Types as QSet
+import Form.Questions.Types as Q
+import Form.Types exposing (..)
+import Html exposing (div)
 
 
 init : Flags -> ( Model Msg, Cmd Msg )

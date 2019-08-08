@@ -1,26 +1,25 @@
-module Bets.Bet
-    exposing
-        ( getAnswer
-        , candidates
-        , findGroupMatchAnswers
-        , findGroupPositionAnswers
-        , findAllGroupMatchAnswers
-        , setWinner
-        , setTeam
-        , setMatchScore
-        , setMatchWinner
-        , setParticipant
-        , setTopscorer
-        , encode
-        , decode
-        )
+module Bets.Bet exposing
+    ( candidates
+    , decode
+    , encode
+    , findAllGroupMatchAnswers
+    , findGroupMatchAnswers
+    , findGroupPositionAnswers
+    , getAnswer
+    , setMatchScore
+    , setMatchWinner
+    , setParticipant
+    , setTeam
+    , setTopscorer
+    , setWinner
+    )
 
+import Bets.Json.Encode exposing (mIntEnc, mStrEnc)
 import Bets.Types exposing (..)
 import Bets.Types.Answers
 import Bets.Types.Candidates
+import Json.Decode exposing (Decoder, fail, field, maybe)
 import Json.Encode
-import Json.Decode exposing (Decoder, maybe, fail, field)
-import Bets.Json.Encode exposing (mStrEnc, mIntEnc)
 
 
 getAnswer : Bet -> AnswerID -> Maybe Answer
@@ -100,8 +99,8 @@ encode bet =
                 , ( "active", Json.Encode.bool bet.active )
                 ]
     in
-        Json.Encode.object
-            [ ( "bet", betObject ) ]
+    Json.Encode.object
+        [ ( "bet", betObject ) ]
 
 
 type alias IncomingBet =

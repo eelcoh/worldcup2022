@@ -1,37 +1,45 @@
-module Bets.Types.Match
-    exposing
-        ( homeTeam
-        , awayTeam
-        , teamsInMatch
-        , setTeamMatch
-        , unsetTeamMatch
-        , isComplete
-        , encode
-        , decode
-        )
+module Bets.Types.Match exposing
+    ( awayTeam
+    , decode
+    , encode
+    , homeTeam
+    , isComplete
+    , setTeamMatch
+    , teamsInMatch
+    , unsetTeamMatch
+    )
 
-import Json.Encode
-import Json.Decode exposing (Decoder, index)
-import Bets.Types exposing (Match, Draw, Team, Stadium)
+import Bets.Types exposing (Date, Draw, Match(..), Stadium, Team, Time)
+import Bets.Types.DateTime as DateTime
 import Bets.Types.Draw
-import Bets.Types.Date
 import Bets.Types.Stadium
-import Date exposing (Date)
+import Json.Decode exposing (Decoder, index)
+import Json.Encode
 
 
 homeTeam : Match -> Maybe Team
-homeTeam ( d, _, _, _ ) =
+homeTeam (Match d _ _ _) =
     Bets.Types.Draw.team d
 
 
 awayTeam : Match -> Maybe Team
-awayTeam ( _, d, _, _ ) =
+awayTeam (Match _ d _ _) =
     Bets.Types.Draw.team d
 
 
-match : Draw -> Draw -> Date -> Stadium -> Match
-match home away date stadium =
-    ( home, away, date, stadium )
+match : Draw -> Draw -> Date -> Time -> Stadium -> Match
+match home away date time stadium =
+    let
+        dt =
+            DateTime.toPosix date time
+
+        points =
+            Nothing
+
+        score =
+            Nothing
+    in
+    Match home away dt stadium
 
 
 
@@ -41,7 +49,7 @@ match home away date stadium =
 
 
 teamsInMatch : Match -> List Team
-teamsInMatch ( ( _, mHome ), ( _, mAway ), _, _ ) =
+teamsInMatch (Match ( _, mHome ) ( _, mAway ) _ _) =
     List.filterMap identity [ mHome, mAway ]
 
 
@@ -53,7 +61,7 @@ isComplete m mTeam =
                 teams =
                     teamsInMatch m
             in
-                ((List.length teams) == 2) && (List.member t teams)
+            (List.length teams == 2) && List.member t teams
 
         Nothing ->
             False
@@ -66,11 +74,12 @@ isComplete m mTeam =
 
 
 setTeamMatch : Match -> Draw -> Match
-setTeamMatch ( home, away, dt, stadium ) ( drawId, mTeam ) =
+setTeamMatch (Match home away dt stadium) ( drawId, mTeam ) =
     let
         updateDraw (( dId, _ ) as draw) =
-            if (dId == drawId) then
+            if dId == drawId then
                 ( drawId, mTeam )
+
             else
                 draw
 
@@ -80,7 +89,7 @@ setTeamMatch ( home, away, dt, stadium ) ( drawId, mTeam ) =
         newAway =
             updateDraw away
     in
-        ( newHome, newAway, dt, stadium )
+    Match newHome newAway dt stadium
 
 
 
@@ -91,13 +100,14 @@ setTeamMatch ( home, away, dt, stadium ) ( drawId, mTeam ) =
 
 
 unsetTeamMatch : Match -> Team -> Match
-unsetTeamMatch ( home, away, dt, stadium ) team =
+unsetTeamMatch (Match home away dt stadium) team =
     let
         cleanDraw (( drawId, mTeam ) as draw) =
             case mTeam of
                 Just t ->
                     if team == t then
                         ( drawId, Nothing )
+
                     else
                         draw
 
@@ -110,36 +120,23 @@ unsetTeamMatch ( home, away, dt, stadium ) team =
         newAway =
             cleanDraw away
     in
-        ( newHome, newAway, dt, stadium )
+    Match newHome newAway dt stadium
 
 
 encode : Match -> Json.Encode.Value
-encode ( home, away, dt, stadium ) =
+encode (Match home away dt stadium) =
     Json.Encode.object
-        [ ( "home", (Bets.Types.Draw.encode home) )
-        , ( "away", (Bets.Types.Draw.encode away) )
-        , ( "time", (Bets.Types.Date.encode dt) )
-        , ( "stadium", (Bets.Types.Stadium.encode stadium) )
+        [ ( "home", Bets.Types.Draw.encode home )
+        , ( "away", Bets.Types.Draw.encode away )
+        , ( "time", DateTime.encode dt )
+        , ( "stadium", Bets.Types.Stadium.encode stadium )
         ]
-
-
-
-{-
-   decode : Decoder Match
-   decode =
-       Json.Decode.map4 match
-           (index 0 (Bets.Types.Draw.decode))
-           (index 1 (Bets.Types.Draw.decode))
-           (index 2 (Bets.Types.Date.decode))
-           (index 3 (Bets.Types.Stadium.decode))
-
--}
 
 
 decode : Decoder Match
 decode =
-    Json.Decode.map4 match
+    Json.Decode.map4 Match
         (Json.Decode.field "home" Bets.Types.Draw.decode)
         (Json.Decode.field "away" Bets.Types.Draw.decode)
-        (Json.Decode.field "time" Bets.Types.Date.decode)
+        (Json.Decode.field "time" DateTime.decode)
         (Json.Decode.field "stadium" Bets.Types.Stadium.decode)

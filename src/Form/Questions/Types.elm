@@ -1,8 +1,8 @@
-module Form.Questions.Types exposing (..)
+module Form.Questions.Types exposing (Model, QState, QuestionType(..), display, isComplete, qBracket, qGroupBestThirds, qParticipant, qTopscorer, question)
 
-import Bets.Types exposing (Bet, AnswerID)
-import Bets.Types.Answer
 import Bets.Bet
+import Bets.Types exposing (AnswerID, Bet)
+import Bets.Types.Answer
 
 
 type alias QState =
@@ -54,12 +54,12 @@ isComplete bet qState =
         mAnswer =
             Bets.Bet.getAnswer bet qState.answerId
     in
-        case mAnswer of
-            Just answer ->
-                Bets.Types.Answer.isComplete answer
+    case mAnswer of
+        Just answer ->
+            Bets.Types.Answer.isComplete answer
 
-            Nothing ->
-                False
+        Nothing ->
+            False
 
 
 display : Bet -> QState -> String
@@ -68,9 +68,9 @@ display bet qState =
         mAnswer =
             Bets.Bet.getAnswer bet qState.answerId
     in
-        case mAnswer of
-            Just answer ->
-                Bets.Types.Answer.summary answer
+    case mAnswer of
+        Just answer ->
+            Bets.Types.Answer.summary answer
 
-            Nothing ->
-                ""
+        Nothing ->
+            ""

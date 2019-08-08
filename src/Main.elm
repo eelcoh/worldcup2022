@@ -1,19 +1,60 @@
-module Main exposing (..)
+module Main exposing (main)
 
-import Html exposing (Html)
-import Form.View exposing (view)
-import Form.Update exposing (update)
+-- import Html exposing (Html)
+
+import Browser
+import Browser.Navigation as Navigation
 import Form.Init exposing (init)
-import Form.Types exposing (Model, Msg, Flags)
+import Form.Types exposing (Flags, Model, Msg(..))
+import Form.Update exposing (update)
+import Form.View exposing (view)
+import Url
 
 
-main : Program Flags (Model Msg) Msg
+
+-- app stuff
+
+
+init : Flags -> Url.Url -> Navigation.Key -> ( Model Msg, Cmd Msg )
+init flags url navKey =
+    let
+        ( page, msg ) =
+            getPage loc.fragment
+
+        screenSize =
+            classifyDevice { width = flags.width, height = 0 }
+
+        model =
+            { newModel | navKey = key }
+
+        -- cmd =
+        --     fetchActivities model
+    in
+    update msg model
+
+
+subscriptions : Model Msg -> Sub Msg
+subscriptions model =
+    Sub.batch [ Window.resizes SetScreenSize ]
+
+
+type alias Flags =
+    { width : Int
+    }
+
+
+
+-- main : Program Flags Model Msg
+
+
 main =
-    Html.programWithFlags
+    Browser.application
         { init = init
         , update = update
         , view = view
-        , subscriptions = \_ -> Sub.none
+        , subscriptions = subscriptions
+        , onUrlRequest = UrlRequest
+        , onUrlChange = UrlChange
         }
 
 

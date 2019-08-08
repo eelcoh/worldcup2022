@@ -1,7 +1,7 @@
-module UI.Text exposing (..)
+module UI.Text exposing (boldText, bulletText, displayHeader, simpleText)
 
 import Element
-import Element.Attributes exposing (alignLeft, px, spacing, padding, paddingXY, paddingLeft, paddingBottom, paddingTop, verticalCenter, width)
+import Element.Attributes exposing (alignLeft, padding, paddingBottom, paddingLeft, paddingTop, paddingXY, px, spacing, verticalCenter, width)
 import UI.Style
 
 
@@ -26,9 +26,9 @@ bulletText txt =
                 [ Element.circle 3 UI.Style.Bullet [ alignLeft ] Element.empty ]
 
         contents =
-            Element.paragraph UI.Style.Introduction [ width Element.Attributes.fill ] [ (Element.text txt) ]
+            Element.paragraph UI.Style.Introduction [ width Element.Attributes.fill ] [ Element.text txt ]
     in
-        Element.row UI.Style.None [ paddingLeft 5, spacing 7 ] [ bullet, contents ]
+    Element.row UI.Style.None [ paddingLeft 5, spacing 7 ] [ bullet, contents ]
 
 
 boldText : String -> Element.Element UI.Style.Style variation msg

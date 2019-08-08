@@ -1,8 +1,8 @@
-module Bets.Types.Group exposing (encode, decode, toString, toGroup)
+module Bets.Types.Group exposing (decode, encode, toGroup, toString)
 
-import Json.Encode
-import Json.Decode exposing (Decoder)
 import Bets.Types exposing (Group(..))
+import Json.Decode exposing (Decoder)
+import Json.Encode
 
 
 toString : Group -> String

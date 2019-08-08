@@ -1,22 +1,24 @@
-module Form.Types
-    exposing
-        ( Card(..)
-        , Info(..)
-        , Model
-        , Msg(..)
-        , FormInfoMsg(..)
-        , SubmitMsgType(..)
-        , SubmitState(..)
-        , Flags
-        )
+module Form.Types exposing
+    ( Card(..)
+    , Flags
+    , FormInfoMsg(..)
+    , Info(..)
+    , InputState(..)
+    , Model
+    , Msg(..)
+    )
 
 import Bets.Types exposing (AnswerID, Bet, Group, Round)
+import Browser
+import Browser.Navigation as Navigation
 import Form.Question
 import Form.QuestionSet
 import Form.QuestionSets.Types as QuestionSets
 import Form.Questions.Types as Questions
 import Html exposing (Html)
 import Http
+import RemoteData exposing (WebData)
+import Url
 
 
 type alias Flags =
@@ -57,30 +59,29 @@ type alias State msg =
     Model msg
 
 
-type SubmitState
+type InputState
     = Clean
     | Dirty
-    | Sent
-    | Done
-    | Error
-    | Reset
 
 
 type alias Model msg =
     { cards : List Card
     , bet : Bet
+    , savedBet : WebData Bet
     , idx : Page
     , card : Html msg
     , formId : Maybe String
-    , submitted : SubmitState
+    , betState : InputState
+    , navKey : Navigation.Key
     }
 
 
-type SubmitMsgType
-    = PlaceBet
-    | BetPlaced (Result Http.Error Bet)
-    | NoOp
-    | Again
+
+-- type SubmitMsgType
+--     = PlaceBet
+--     | BetPlaced (Result Http.Error Bet)
+--     | NoOp
+--     | Again
 
 
 type FormInfoMsg
@@ -92,4 +93,9 @@ type Msg
     | Answered Page Form.Question.Msg
     | InfoMsg FormInfoMsg
     | QuestionSetMsg Page Form.QuestionSet.Msg
-    | SubmitMsg SubmitMsgType
+    | SubmitMsg
+    | SubmittedBet (WebData Bet)
+    | NoOp
+    | Restart
+    | UrlRequest Browser.UrlRequest
+    | UrlChange Url.Url

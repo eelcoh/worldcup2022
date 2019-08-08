@@ -1,19 +1,18 @@
-module Bets.Types.Topscorer
-    exposing
-        ( getTeam
-        , setTeam
-        , getPlayer
-        , setPlayer
-        , isComplete
-        , decode
-        , encode
-        )
+module Bets.Types.Topscorer exposing
+    ( decode
+    , encode
+    , getPlayer
+    , getTeam
+    , isComplete
+    , setPlayer
+    , setTeam
+    )
 
-import Json.Encode
-import Json.Decode exposing (Decoder, maybe, map2, field)
 import Bets.Json.Encode exposing (mStrEnc)
-import Bets.Types exposing (Topscorer, Team, Player)
+import Bets.Types exposing (Player, Team, Topscorer)
 import Bets.Types.Team
+import Json.Decode exposing (Decoder, field, map2, maybe)
+import Json.Encode
 import Maybe.Extra as M
 import Tuple exposing (first, second)
 
@@ -31,13 +30,14 @@ getTeam ts =
 
 setTeam : Topscorer -> Team -> Topscorer
 setTeam ts team =
-    case (getTeam ts) of
+    case getTeam ts of
         Nothing ->
             ( Nothing, Just team )
 
         Just t ->
-            if (t == team) then
+            if t == team then
                 ( Nothing, Nothing )
+
             else
                 ( Nothing, Just team )
 
@@ -55,8 +55,9 @@ setPlayer ( mPlayer, mTeam ) player =
 
         -- we should actually check whether that is possible. Todo.
         Just p ->
-            if (p == player) then
+            if p == player then
                 ( Nothing, mTeam )
+
             else
                 ( Just player, mTeam )
 
@@ -68,7 +69,7 @@ topscorer mName mTeam =
 
 isComplete : Topscorer -> Bool
 isComplete ( mName, mTeam ) =
-    (M.isJust mName) && (M.isJust mTeam)
+    M.isJust mName && M.isJust mTeam
 
 
 encode : Topscorer -> Json.Encode.Value

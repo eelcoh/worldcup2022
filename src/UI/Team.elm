@@ -3,7 +3,7 @@ module UI.Team exposing (viewTeam, viewTeamEl, viewTeamFull, viewTeamLarge)
 import Bets.Types exposing (Team)
 import Bets.Types.Team as T
 import Element exposing (Element, column, el, image, layout, row)
-import Element.Attributes exposing (center, height, width, fill, padding, px, verticalCenter, verticalSpread)
+import Element.Attributes exposing (center, fill, height, padding, px, verticalCenter, verticalSpread, width)
 import Html exposing (Html, div, span, text)
 import Html.Attributes exposing (class)
 import UI.Style exposing (..)
@@ -36,16 +36,16 @@ viewTeamEl team =
                 teamName
             }
     in
-        column TeamBox
-            [ verticalSpread, height (px 45), width (px 34) ]
-            [ row Flag
-                []
-                [ image FlagImage [] img
-                ]
-            , row TeamName
-                [ center ]
-                [ Element.el UI.Style.TeamName [ center ] (Element.text (teamName)) ]
+    column TeamBox
+        [ verticalSpread, height (px 45), width (px 34) ]
+        [ row Flag
+            []
+            [ image FlagImage [] img
             ]
+        , row TeamName
+            [ center ]
+            [ Element.el UI.Style.TeamName [ center ] (Element.text teamName) ]
+        ]
 
 
 viewTeamFull : Maybe Team -> Element Style variation msg
@@ -67,16 +67,16 @@ viewTeamFull team =
         h =
             Element.Attributes.height (px 82)
     in
-        column TeamBox
-            [ verticalSpread, h, w, center, padding 10 ]
-            [ row Flag
-                [ center ]
-                [ image FlagImage [] img
-                ]
-            , row TeamNameFull
-                [ center ]
-                [ Element.el UI.Style.TeamNameFull [ center ] (Element.text (teamName)) ]
+    column TeamBox
+        [ verticalSpread, h, w, center, padding 10 ]
+        [ row Flag
+            [ center ]
+            [ image FlagImage [] img
             ]
+        , row TeamNameFull
+            [ center ]
+            [ Element.el UI.Style.TeamNameFull [ center ] (Element.text teamName) ]
+        ]
 
 
 viewTeamLarge : Maybe Team -> Html msg

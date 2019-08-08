@@ -1,6 +1,7 @@
-module UI.Style exposing (..)
+module UI.Style exposing (ButtonSemantics(..), ScoreButtonSemantics(..), Style(..), TeamButtonSemantics(..), scale, stylesheet)
 
-import Color exposing (..)
+-- import Color exposing (..)
+
 import Style exposing (..)
 import Style.Border as Border
 import Style.Color as Color

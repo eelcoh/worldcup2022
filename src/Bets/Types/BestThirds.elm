@@ -1,19 +1,18 @@
-module Bets.Types.BestThirds
-    exposing
-        ( updateChoices
-        , teamsToReset
-        , isComplete
-        , encode
-        , decode
-        )
+module Bets.Types.BestThirds exposing
+    ( decode
+    , encode
+    , isComplete
+    , teamsToReset
+    , updateChoices
+    )
 
-import Json.Encode
-import Json.Decode exposing (Decoder, map3, index)
-import Bets.Types exposing (Group(..), Team, BestThird, BestThirds, DrawID)
-import Bets.Types.Team exposing (..)
+import Bets.Types exposing (BestThird, BestThirds, DrawID, Group(..), Team)
 import Bets.Types.Group
-import String
+import Bets.Types.Team exposing (..)
+import Json.Decode exposing (Decoder, index, map3)
+import Json.Encode
 import Set
+import String
 
 
 type alias Choice =
@@ -53,15 +52,15 @@ updateChoices group team currentBestThirds =
         tempChoices =
             newChoices bToggleOff bGroupToggle bFreeSlot choice currentChoices
     in
-        reorderChoices tempChoices
-            |> toBestThirds
+    reorderChoices tempChoices
+        |> toBestThirds
 
 
 teamsToReset : BestThirds -> BestThirds -> List Team
 teamsToReset oldAssignments newAssignments =
     let
         thrd =
-            (\( _, _, d ) -> d)
+            \( _, _, d ) -> d
 
         sortedOld =
             List.sortBy thrd oldAssignments
@@ -69,35 +68,36 @@ teamsToReset oldAssignments newAssignments =
         sortedNew =
             List.sortBy thrd newAssignments
     in
-        case ( sortedOld, sortedNew ) of
-            -- base assumption:
-            -- the triplets are sorted on the third element: the drawId
-            -- the two are then processed 'balanced line'
-            -- if both lists are empty, the result is empty
-            ( [], [] ) ->
-                []
+    case ( sortedOld, sortedNew ) of
+        -- base assumption:
+        -- the triplets are sorted on the third element: the drawId
+        -- the two are then processed 'balanced line'
+        -- if both lists are empty, the result is empty
+        ( [], [] ) ->
+            []
 
-            -- if the first list is empty and the second isn't, the team in the second
-            --
-            ( [], ( _, t2, _ ) :: restNew ) ->
-                t2 :: teamsToReset [] restNew
+        -- if the first list is empty and the second isn't, the team in the second
+        --
+        ( [], ( _, t2, _ ) :: restNew ) ->
+            t2 :: teamsToReset [] restNew
 
-            ( ( _, t1, _ ) :: restOld, [] ) ->
-                t1 :: teamsToReset [] restOld
+        ( ( _, t1, _ ) :: restOld, [] ) ->
+            t1 :: teamsToReset [] restOld
 
-            ( ( g1, t1, d1 ) :: restOld, ( g2, t2, d2 ) :: restNew ) ->
-                case (compare d1 d2) of
-                    GT ->
-                        t2 :: teamsToReset sortedOld restNew
+        ( ( g1, t1, d1 ) :: restOld, ( g2, t2, d2 ) :: restNew ) ->
+            case compare d1 d2 of
+                GT ->
+                    t2 :: teamsToReset sortedOld restNew
 
-                    LT ->
-                        t1 :: teamsToReset restOld sortedNew
+                LT ->
+                    t1 :: teamsToReset restOld sortedNew
 
-                    EQ ->
-                        if (t1 == t2) then
-                            teamsToReset restOld restNew
-                        else
-                            t1 :: t2 :: teamsToReset restOld restNew
+                EQ ->
+                    if t1 == t2 then
+                        teamsToReset restOld restNew
+
+                    else
+                        t1 :: t2 :: teamsToReset restOld restNew
 
 
 
@@ -107,10 +107,10 @@ teamsToReset oldAssignments newAssignments =
 toBestThirds : List ( Choice, DrawID ) -> BestThirds
 toBestThirds assignedChoices =
     let
-        toBestThird ( ( g, t ), dId ) =
+        toBestThird_ ( ( g, t ), dId ) =
             ( g, t, dId )
     in
-        List.map toBestThird assignedChoices
+    List.map toBestThird_ assignedChoices
 
 
 
@@ -124,7 +124,7 @@ isChoice ( gNew, tNew ) ( gOld, tOld ) =
 
 isGroup : Choice -> Choice -> Bool
 isGroup ( gNew, _ ) ( gOld, _ ) =
-    (gNew == gOld)
+    gNew == gOld
 
 
 
@@ -164,11 +164,12 @@ updateChoice choice choices =
         [] ->
             []
 
-        c :: choices ->
+        c :: otherChoices ->
             if isGroup choice c then
-                choice :: choices
+                choice :: otherChoices
+
             else
-                c :: updateChoice choice choices
+                c :: updateChoice choice otherChoices
 
 
 
@@ -181,38 +182,39 @@ resetChoice choice choices =
         [] ->
             []
 
-        c :: choices ->
+        c :: otherChoices ->
             if isChoice choice c then
-                choices
+                otherChoices
+
             else
-                c :: resetChoice choice choices
+                c :: resetChoice choice otherChoices
 
 
 
 -- Reordering ----
 
 
-{-|
-Once the four best thirds have been determined, these need to be placed on the bracket. This is using the following scheme:
+{-| Once the four best thirds have been determined, these need to be placed on the bracket. This is using the following scheme:
 
 The four best-placed teams are:
-1 2 3 4  | WA WB WC WD play
+1 2 3 4 | WA WB WC WD play
 ---------|-----------------
-A B C D  | 3C 3D 3A 3B
-A B C E  | 3C 3A 3B 3E
-A B C F  | 3C 3A 3B 3F
-A B D E  | 3D 3A 3B 3E
-A B D F  | 3D 3A 3B 3F
-A B E F  | 3E 3A 3B 3F
-A C D E  | 3C 3D 3A 3E
-A C D F  | 3C 3D 3A 3F
-A C E F  | 3C 3A 3F 3E
-A D E F  | 3D 3A 3F 3E
-B C D E  | 3C 3D 3B 3E
-B C D F  | 3C 3D 3B 3F
-B C E F  | 3E 3C 3B 3F
-B D E F  | 3E 3D 3B 3F
-C D E F  | 3C 3D 3F 3E
+A B C D | 3C 3D 3A 3B
+A B C E | 3C 3A 3B 3E
+A B C F | 3C 3A 3B 3F
+A B D E | 3D 3A 3B 3E
+A B D F | 3D 3A 3B 3F
+A B E F | 3E 3A 3B 3F
+A C D E | 3C 3D 3A 3E
+A C D F | 3C 3D 3A 3F
+A C E F | 3C 3A 3F 3E
+A D E F | 3D 3A 3F 3E
+B C D E | 3C 3D 3B 3E
+B C D F | 3C 3D 3B 3F
+B C E F | 3E 3C 3B 3F
+B D E F | 3E 3D 3B 3F
+C D E F | 3C 3D 3F 3E
+
 -}
 order : String -> List ( DrawID, Group )
 order groups =
@@ -283,23 +285,20 @@ reorderChoices choices =
         groupsString : String
         groupsString =
             List.map Tuple.first sChoices
-                |> List.map toString
+                |> List.map Bets.Types.Group.toString
                 |> String.concat
 
         -- e.g ABDF
     in
-        -- start with []
-        order groupsString
-            -- e.g. [("T1", E), ("T2", A), ("T3", B), ("T4", F)]
-            --|> List.map (\(a, b) -> (b, a))
-            |>
-                List.sortWith tupleCompare
-            -- e.g. [("T2", A), ("T3", B), ("T1", E), ("T4", F)]
-            |>
-                List.map Tuple.first
-            -- e.g. ["T2", "T3" , "T1", "T4"]
-            |>
-                List.map2 (,) sChoices
+    -- start with []
+    order groupsString
+        -- e.g. [("T1", E), ("T2", A), ("T3", B), ("T4", F)]
+        --|> List.map (\(a, b) -> (b, a))
+        |> List.sortWith tupleCompare
+        -- e.g. [("T2", A), ("T3", B), ("T1", E), ("T4", F)]
+        |> List.map Tuple.first
+        -- e.g. ["T2", "T3" , "T1", "T4"]
+        |> List.map2 (\a b -> ( a, b )) sChoices
 
 
 
@@ -309,7 +308,7 @@ reorderChoices choices =
 
 gcompare : Group -> Group -> Order
 gcompare g1 g2 =
-    compare (toString g1) (toString g2)
+    compare (Bets.Types.Group.toString g1) (Bets.Types.Group.toString g2)
 
 
 extractChoices : BestThirds -> List Choice
@@ -319,7 +318,7 @@ extractChoices bts =
 
 toBestThird : Group -> Team -> DrawID -> BestThird
 toBestThird =
-    (,,)
+    \a b c -> ( a, b, c )
 
 
 isComplete : BestThirds -> Bool
@@ -338,14 +337,14 @@ isComplete bts =
                 |> Set.fromList
                 |> Set.size
     in
-        (numberOfBts == 4)
-            && (numberOfTeams == 4)
-            && (numberOfGroups == 4)
+    (numberOfBts == 4)
+        && (numberOfTeams == 4)
+        && (numberOfGroups == 4)
 
 
 encodeBestThird : ( Group, Team, DrawID ) -> Json.Encode.Value
 encodeBestThird ( group, team, drawID ) =
-    Json.Encode.list
+    Json.Encode.list identity 
         [ Bets.Types.Group.encode group
         , Bets.Types.Team.encode team
         , Json.Encode.string drawID
@@ -354,8 +353,7 @@ encodeBestThird ( group, team, drawID ) =
 
 encode : BestThirds -> Json.Encode.Value
 encode bestThirds =
-    List.map encodeBestThird bestThirds
-        |> Json.Encode.list
+      Json.Encode.list encodeBestThird bestThirds
 
 
 decodeBestThird : Decoder BestThird

@@ -1,7 +1,17 @@
-module UI.Color exposing (..)
+module UI.Color exposing (black, grey, orange, potential, primary, primaryDark, primaryLight, primaryText, red, right, secondary, secondaryDark, secondaryLight, secondaryText, selected, white, wrong)
 
+import Style exposing (Color, rgb)
 import Style.Color as Color
-import Color exposing (..)
+
+
+red : Color
+red =
+    rgb 255 0 0
+
+
+black : Color
+black =
+    rgb 0 0 0
 
 
 grey : Color

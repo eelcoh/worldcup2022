@@ -1,16 +1,17 @@
-module Form.Info
-    exposing
-        ( Msg
-        , view
-        , update
-        )
+module Form.Info exposing
+    ( Msg
+    , update
+    , view
+    )
 
-import Form.Types exposing (Info(..), FormInfoMsg(..))
-import UI.Style
-import Element
-import Element.Attributes exposing (px, spacing, padding, paddingTop, paddingBottom, width, height)
-import UI.Text
 import Bets.Types exposing (Bet)
+import Bets.Types.Group as Group
+import Bets.Types.Round as Round
+import Element
+import Element.Attributes exposing (height, padding, paddingBottom, paddingTop, px, spacing, width)
+import Form.Types exposing (FormInfoMsg(..), Info(..))
+import UI.Style
+import UI.Text
 
 
 type alias Msg =
@@ -36,10 +37,10 @@ view info =
                     UI.Text.simpleText "Hello FirstRoundIntro"
 
                 GroupIntro group ->
-                    UI.Text.simpleText ("Hello GroupIntro " ++ (toString group))
+                    UI.Text.simpleText ("Hello GroupIntro " ++ Group.toString group)
 
                 GroupStandingsIntro group ->
-                    UI.Text.simpleText ("Hello GroupStandingsIntro " ++ (toString group))
+                    UI.Text.simpleText ("Hello GroupStandingsIntro " ++ Group.toString group)
 
                 BestThirdIntro ->
                     UI.Text.simpleText "Hello BestThirdIntro"
@@ -50,8 +51,8 @@ view info =
                 BracketView ->
                     UI.Text.simpleText "Hello BracketView"
 
-                BracketRoundIntro round ->
-                    UI.Text.simpleText ("Hello BracketRoundIntro " ++ (toString round))
+                BracketRoundIntro round_ ->
+                    UI.Text.simpleText ("Hello BracketRoundIntro " ++ Round.toString round_)
 
                 TopscorerIntro ->
                     UI.Text.simpleText "Hello TopscorerIntro"
@@ -62,7 +63,7 @@ view info =
                 ThankYou ->
                     UI.Text.simpleText "Hello ThankYou"
     in
-        cardContents
+    cardContents
 
 
 introduction : List (Element.Element UI.Style.Style variation msg)

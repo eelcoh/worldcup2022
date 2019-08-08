@@ -1,17 +1,17 @@
 module Form.Questions.Topscorer exposing (Msg, update, view)
 
-import List.Extra
 import Bets.Bet exposing (setTopscorer)
-import Bets.Types exposing (Bet, Answer, AnswerT(..), AnswerID, Team, Topscorer, Player, TeamData, TeamDatum)
-import UI.Text
-import UI.Style
+import Bets.Types exposing (Answer, AnswerID, AnswerT(..), Bet, Player, Team, TeamData, TeamDatum, Topscorer)
+import Bets.Init.Euro2020.Tournament exposing (initTeamData)
 import Bets.Types.Topscorer as TS
-import Bets.Types.Team exposing (initTeamData)
-import Form.Questions.Types exposing (QState)
-import UI.Team exposing (viewTeam)
-import UI.Button
 import Element
-import Element.Attributes exposing (width, px, spacing, padding)
+import Element.Attributes exposing (padding, px, spacing, width)
+import Form.Questions.Types exposing (QState)
+import List.Extra
+import UI.Button
+import UI.Style
+import UI.Team exposing (viewTeam)
+import UI.Text
 
 
 type Msg
@@ -39,12 +39,12 @@ update msg bet qState =
                                 newTopscorer =
                                     TS.setTeam topscorer team
                             in
-                                setTopscorer bet answer newTopscorer
+                            setTopscorer bet answer newTopscorer
 
                         _ ->
                             bet
             in
-                ( newBet, { qState | next = Nothing }, Cmd.none )
+            ( newBet, { qState | next = Nothing }, Cmd.none )
 
         SelectPlayer answerId player ->
             let
@@ -58,12 +58,12 @@ update msg bet qState =
                                 newTopscorer =
                                     TS.setPlayer topscorer player
                             in
-                                setTopscorer bet answer newTopscorer
+                            setTopscorer bet answer newTopscorer
 
                         _ ->
                             bet
             in
-                ( newBet, { qState | next = Nothing }, Cmd.none )
+            ( newBet, { qState | next = Nothing }, Cmd.none )
 
 
 view : Bet -> QState -> Element.Element UI.Style.Style variation Msg
@@ -72,12 +72,12 @@ view bet qState =
         mAnswer =
             Bets.Bet.getAnswer bet qState.answerId
     in
-        case mAnswer of
-            Just (( answerId, AnswerTopscorer topscorer _ ) as answer) ->
-                viewTopscorer bet answerId topscorer
+    case mAnswer of
+        Just (( answerId, AnswerTopscorer topscorer _ ) as answer) ->
+            viewTopscorer bet answerId topscorer
 
-            _ ->
-                Element.empty
+        _ ->
+            Element.empty
 
 
 viewTopscorer : Bet -> AnswerID -> Topscorer -> Element.Element UI.Style.Style variation Msg
@@ -86,21 +86,35 @@ viewTopscorer bet answerId topscorer =
         teamData =
             initTeamData
 
+        groupWhile : (a -> a -> Bool) -> List a -> List (List a)
+        groupWhile eq xs_ =
+            case xs_ of
+                [] ->
+                    []
+
+                x :: xs ->
+                    let
+                        ( ys, zs ) =
+                            List.Extra.span (eq x) xs
+                    in
+                        (x :: ys) :: groupWhile eq zs
+
         groups : List (List ( TeamDatum, IsSelected ))
         groups =
             initTeamData
                 |> List.map isSelected
-                |> List.Extra.groupWhile (\x y -> (.group (Tuple.first x)) == (.group (Tuple.first y)))
+                |> groupWhile (\x y -> .group (Tuple.first x) == .group (Tuple.first y))
 
         isSelected : TeamDatum -> ( TeamDatum, IsSelected )
         isSelected t =
-            case (TS.getTeam topscorer) of
+            case TS.getTeam topscorer of
                 Nothing ->
                     ( t, NotSelected )
 
                 Just team ->
-                    if (.team t) == team then
+                    if .team t == team then
                         ( t, Selected )
+
                     else
                         ( t, NotSelected )
 
@@ -110,14 +124,14 @@ viewTopscorer bet answerId topscorer =
         headertext =
             UI.Text.displayHeader "Wie wordt de topscorer?"
     in
-        Element.column UI.Style.None
-            []
-            ([ headertext
-             , introduction
-             , viewPlayers bet answerId topscorer teamData
-             ]
-                ++ (List.map forGroup groups)
-            )
+    Element.column UI.Style.None
+        []
+        ([ headertext
+         , introduction
+         , viewPlayers bet answerId topscorer teamData
+         ]
+            ++ List.map forGroup groups
+        )
 
 
 introduction : Element.Element UI.Style.Style variation msg
@@ -141,9 +155,9 @@ viewPlayers :
 viewPlayers bet answerId topscorer teamData =
     let
         isSelectedTeam teamDatum =
-            case (TS.getTeam topscorer) of
+            case TS.getTeam topscorer of
                 Just t ->
-                    t == (.team teamDatum)
+                    t == .team teamDatum
 
                 Nothing ->
                     False
@@ -153,13 +167,14 @@ viewPlayers bet answerId topscorer teamData =
                 |> List.head
 
         isSelected player =
-            case (TS.getPlayer topscorer) of
+            case TS.getPlayer topscorer of
                 Nothing ->
                     ( player, NotSelected )
 
                 Just p ->
                     if player == p then
                         ( player, Selected )
+
                     else
                         ( player, NotSelected )
 
@@ -167,14 +182,14 @@ viewPlayers bet answerId topscorer teamData =
             .players teamWP
                 |> List.map isSelected
     in
-        case selectedTeam of
-            Nothing ->
-                Element.empty
+    case selectedTeam of
+        Nothing ->
+            Element.empty
 
-            Just teamWP ->
-                Element.wrappedRow UI.Style.None
-                    [ width (px 600), padding 10, spacing 7 ]
-                    (List.map (mkPlayerButton (SelectPlayer answerId)) (players teamWP))
+        Just teamWP ->
+            Element.wrappedRow UI.Style.None
+                [ width (px 600), padding 10, spacing 7 ]
+                (List.map (mkPlayerButton (SelectPlayer answerId)) (players teamWP))
 
 
 mkTeamButton :
@@ -200,7 +215,7 @@ mkTeamButton act ( teamDatum, isSelected ) =
         contents =
             [ viewTeam (Just team) ]
     in
-        UI.Button.teamButton c msg team
+    UI.Button.teamButton c msg team
 
 
 mkPlayerButton :
@@ -223,4 +238,4 @@ mkPlayerButton act ( player, isSelected ) =
         contents =
             player
     in
-        UI.Button.pill c msg player
+    UI.Button.pill c msg player
