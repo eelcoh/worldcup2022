@@ -6,6 +6,7 @@ module Form.Types exposing
     , InputState(..)
     , Model
     , Msg(..)
+    , Page
     )
 
 import Bets.Types exposing (AnswerID, Bet, Group, Round)
@@ -99,3 +100,4 @@ type Msg
     | Restart
     | UrlRequest Browser.UrlRequest
     | UrlChange Url.Url
+    | ScreenResize Int Int

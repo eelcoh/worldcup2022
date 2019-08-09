@@ -190,6 +190,9 @@ update msg state =
         UrlChange url ->
             ( state, Cmd.none )
 
+        ScreenResize w h ->
+            ( state, Cmd.none )
+
 
 updateQuestionSetCard : QS.Model -> Card -> Card
 updateQuestionSetCard qSmodel card =

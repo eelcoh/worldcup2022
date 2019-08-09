@@ -2,12 +2,16 @@ module Main exposing (main)
 
 -- import Html exposing (Html)
 
+import Bets.Init
 import Browser
+import Browser.Events as Events
 import Browser.Navigation as Navigation
-import Form.Init exposing (init)
-import Form.Types exposing (Flags, Model, Msg(..))
+import Form.Init exposing (cards)
+import Form.Types exposing (Flags, InputState(..), Model, Msg(..))
 import Form.Update exposing (update)
 import Form.View exposing (view)
+import Html exposing (div)
+import RemoteData exposing (RemoteData(..))
 import Url
 
 
@@ -17,25 +21,22 @@ import Url
 
 init : Flags -> Url.Url -> Navigation.Key -> ( Model Msg, Cmd Msg )
 init flags url navKey =
-    let
-        ( page, msg ) =
-            getPage loc.fragment
-
-        screenSize =
-            classifyDevice { width = flags.width, height = 0 }
-
-        model =
-            { newModel | navKey = key }
-
-        -- cmd =
-        --     fetchActivities model
-    in
-    update msg model
+    ( { cards = cards
+      , bet = Bets.Init.bet
+      , savedBet = NotAsked
+      , idx = 0
+      , card = div [] []
+      , formId = Nothing
+      , betState = Clean
+      , navKey = navKey
+      }
+    , Cmd.none
+    )
 
 
 subscriptions : Model Msg -> Sub Msg
 subscriptions model =
-    Sub.batch [ Window.resizes SetScreenSize ]
+    Sub.batch [ Events.onResize ScreenResize ]
 
 
 type alias Flags =

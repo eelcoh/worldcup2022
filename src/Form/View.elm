@@ -1,5 +1,6 @@
 module Form.View exposing (view)
 
+import Browser
 import Element
 import Element.Attributes exposing (padding, paddingXY, spacing)
 import Form.Info
@@ -18,7 +19,7 @@ import UI.Style
 -- View
 
 
-view : Model Msg -> Html Msg
+view : Model Msg -> Browser.Document Msg
 view model =
     let
         getCard =
@@ -36,9 +37,15 @@ view model =
         card =
             getCard
                 |> makeCard
+
+        body =
+            viewCardChrome model card model.idx
+                |> Element.layout UI.Style.stylesheet
+
+        title =
+            "Euro 2020"
     in
-    viewCardChrome model card model.idx
-        |> Element.layout UI.Style.stylesheet
+    { title = title, body = [ body ] }
 
 
 viewCard : Model Msg -> Int -> Card -> Element.Element UI.Style.Style variation Msg

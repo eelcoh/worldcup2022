@@ -4,6 +4,7 @@ module Bets.Types.Match exposing
     , encode
     , homeTeam
     , isComplete
+    , match
     , setTeamMatch
     , teamsInMatch
     , unsetTeamMatch
