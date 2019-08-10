@@ -10,6 +10,7 @@ cleanInt i mInt =
         Just n ->
             if i == n then
                 Nothing
+
             else
                 Just n
 
@@ -27,7 +28,7 @@ clean l1 f =
                 l2 =
                     cleanInts l1 h
             in
-                clean l2 rest
+            clean l2 rest
 
         [] ->
             l1

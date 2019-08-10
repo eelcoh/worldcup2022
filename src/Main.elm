@@ -1,19 +1,56 @@
-module Main exposing (..)
+module Main exposing (main)
 
-import Html exposing (Html)
-import Form.View exposing (view)
+-- import Html exposing (Html)
+
+import Bets.Init
+import Browser
+import Browser.Events as Events
+import Browser.Navigation as Navigation
+import Form.Init exposing (cards)
+import Form.Types exposing (Flags, InputState(..), Model, Msg(..))
 import Form.Update exposing (update)
-import Form.Init exposing (init)
-import Form.Types exposing (Model, Msg, Flags)
+import Form.View exposing (view)
+import Html exposing (div)
+import RemoteData exposing (RemoteData(..))
+import Url
 
 
-main : Program Flags (Model Msg) Msg
+
+-- app stuff
+
+
+init : Flags -> Url.Url -> Navigation.Key -> ( Model Msg, Cmd Msg )
+init flags url navKey =
+    ( { cards = cards
+      , bet = Bets.Init.bet
+      , savedBet = NotAsked
+      , idx = 0
+      , card = div [] []
+      , formId = flags.formId
+      , betState = Clean
+      , navKey = navKey
+      }
+    , Cmd.none
+    )
+
+
+subscriptions : Model Msg -> Sub Msg
+subscriptions model =
+    Sub.batch [ Events.onResize ScreenResize ]
+
+
+
+-- main : Program Flags Model Msg
+
+
 main =
-    Html.programWithFlags
+    Browser.application
         { init = init
         , update = update
         , view = view
-        , subscriptions = \_ -> Sub.none
+        , subscriptions = subscriptions
+        , onUrlRequest = UrlRequest
+        , onUrlChange = UrlChange
         }
 
 

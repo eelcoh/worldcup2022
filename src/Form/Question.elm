@@ -1,18 +1,18 @@
-module Form.Question
-    exposing
-        ( view
-        , update
-        , Msg
-        )
+module Form.Question exposing
+    ( Msg
+    , update
+    , view
+    )
 
-import Bets.Types exposing (Bet, Answer, AnswerT(..), AnswerID, Group, Round)
-import UI.Style
+import Bets.Types exposing (Answer, AnswerID, AnswerT(..), Bet, Group, Round)
 import Element
-import Form.Questions.Participant
 import Form.Questions.Bracket
 import Form.Questions.GroupBestThirds
+import Form.Questions.Participant
 import Form.Questions.Topscorer
 import Form.Questions.Types exposing (..)
+import UI.Style
+
 
 
 -- import Form.Cards exposing (..)
@@ -33,28 +33,28 @@ update msg bet qState =
                 ( newBet, newQState, fx ) =
                     Form.Questions.GroupBestThirds.update act bet qState
             in
-                ( newBet, newQState, Cmd.map (GroupBestThirdsAnswer) fx )
+            ( newBet, newQState, Cmd.map GroupBestThirdsAnswer fx )
 
         BracketAnswer act ->
             let
                 ( newBet, newQState, fx ) =
                     Form.Questions.Bracket.update act bet qState
             in
-                ( newBet, newQState, Cmd.map (BracketAnswer) fx )
+            ( newBet, newQState, Cmd.map BracketAnswer fx )
 
         TopscorerAnswer act ->
             let
                 ( newBet, newQState, fx ) =
                     Form.Questions.Topscorer.update act bet qState
             in
-                ( newBet, newQState, Cmd.map (TopscorerAnswer) fx )
+            ( newBet, newQState, Cmd.map TopscorerAnswer fx )
 
         ParticipantAnswer act ->
             let
                 ( newBet, newQState, fx ) =
                     Form.Questions.Participant.update act bet qState
             in
-                ( newBet, newQState, Cmd.map (ParticipantAnswer) fx )
+            ( newBet, newQState, Cmd.map ParticipantAnswer fx )
 
 
 view : Bet -> QState -> Element.Element UI.Style.Style variation Msg

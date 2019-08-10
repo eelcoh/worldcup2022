@@ -3,7 +3,6 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
 
   <title>WK 2018 - formulier</title>
 
@@ -19,8 +18,8 @@
 </body>
 
 <script type="text/javascript">
-  var app = Elm.Main.fullscreen({
-    formId: null
+  var app = Elm.Main.init({
+    flags: {formId: null}
   });
 </script>
 

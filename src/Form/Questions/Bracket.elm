@@ -2,14 +2,14 @@ module Form.Questions.Bracket exposing (Msg, update, view)
 
 import Bets.Bet exposing (setTeam)
 import Bets.Types exposing (Answer, AnswerID, AnswerT(..), Bet, Bracket(..), Qualifier, Slot, Team, Winner(..))
-import UI.Text
 import Bets.Types.Bracket as B
 import Element
-import Element.Attributes exposing (alignRight, center, px, spacing, paddingXY, spread, width)
+import Element.Attributes exposing (alignRight, center, paddingXY, px, spacing, spread, width)
 import Form.Questions.Types exposing (QState)
 import Html exposing (..)
 import UI.Button
 import UI.Style
+import UI.Text
 
 
 type Msg
@@ -31,6 +31,7 @@ isWinner bracketWinner homeOrAway =
         _ ->
             if homeOrAway == bracketWinner then
                 Yes
+
             else
                 No
 
@@ -51,7 +52,7 @@ update msg bet qState =
                         Nothing ->
                             bet
             in
-                ( newBet, { qState | next = Nothing }, Cmd.none )
+            ( newBet, { qState | next = Nothing }, Cmd.none )
 
 
 view : Bet -> QState -> Element.Element UI.Style.Style variation Msg
@@ -72,17 +73,17 @@ view bet qQState =
         introduction =
             Element.paragraph UI.Style.None [] [ UI.Text.simpleText introtext ]
     in
-        case mAnswer of
-            Just (( answerId, AnswerBracket bracket _ ) as answer) ->
-                Element.column UI.Style.None
-                    []
-                    [ header
-                    , introduction
-                    , (viewBracket bet answer bracket)
-                    ]
+    case mAnswer of
+        Just (( answerId, AnswerBracket bracket _ ) as answer) ->
+            Element.column UI.Style.None
+                []
+                [ header
+                , introduction
+                , viewBracket bet answer bracket
+                ]
 
-            _ ->
-                Element.empty
+        _ ->
+            Element.empty
 
 
 viewBracket : Bet -> Answer -> Bracket -> Element.Element UI.Style.Style variation Msg
@@ -162,16 +163,16 @@ viewBracket bet answer bracket =
         champion =
             mkButtonChamp final
     in
-        Element.column UI.Style.None
-            [ spacing 10, width (px 600) ]
-            [ Element.row UI.Style.None [ spread ] [ m49, m50, m53, m54 ]
-            , Element.row UI.Style.None [ spread, paddingXY 76 0 ] [ m57, m58 ]
-            , Element.row UI.Style.None [ center ] [ m61 ]
-            , Element.row UI.Style.None [ alignRight, spacing 44 ] [ m64, champion ]
-            , Element.row UI.Style.None [ center ] [ m62 ]
-            , Element.row UI.Style.None [ spread, paddingXY 76 0 ] [ m59, m60 ]
-            , Element.row UI.Style.None [ spread ] [ m51, m52, m55, m56 ]
-            ]
+    Element.column UI.Style.None
+        [ spacing 10, width (px 600) ]
+        [ Element.row UI.Style.None [ spread ] [ m49, m50, m53, m54 ]
+        , Element.row UI.Style.None [ spread, paddingXY 76 0 ] [ m57, m58 ]
+        , Element.row UI.Style.None [ center ] [ m61 ]
+        , Element.row UI.Style.None [ alignRight, spacing 44 ] [ m64, champion ]
+        , Element.row UI.Style.None [ center ] [ m62 ]
+        , Element.row UI.Style.None [ spread, paddingXY 76 0 ] [ m59, m60 ]
+        , Element.row UI.Style.None [ spread ] [ m51, m52, m55, m56 ]
+        ]
 
 
 viewMatchWinner :
@@ -192,7 +193,7 @@ viewMatchWinner bet answer mBracket =
                 dash =
                     text " - "
             in
-                Element.row UI.Style.None [ spacing 7 ] [ homeButton, awayButton ]
+            Element.row UI.Style.None [ spacing 7 ] [ homeButton, awayButton ]
 
         _ ->
             Element.empty
@@ -230,7 +231,7 @@ mkButton answer wnnr slot isSelected bracket =
         team =
             B.qualifier bracket
     in
-        UI.Button.maybeTeamButton s msg team
+    UI.Button.maybeTeamButton s msg team
 
 
 mkButtonChamp : Maybe Bracket -> Element.Element UI.Style.Style variation msg
@@ -251,4 +252,4 @@ mkButtonChamp mBracket =
         attrs =
             []
     in
-        UI.Button.maybeTeamBadge s mTeam
+    UI.Button.maybeTeamBadge s mTeam

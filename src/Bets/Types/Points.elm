@@ -1,4 +1,4 @@
-module Bets.Types.Points exposing (encode, decode)
+module Bets.Types.Points exposing (decode, encode)
 
 import Bets.Json.Encode exposing (mIntEnc)
 import Bets.Types exposing (Points)

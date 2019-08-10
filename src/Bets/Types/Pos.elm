@@ -1,8 +1,8 @@
-module Bets.Types.Pos exposing (encode, decode)
+module Bets.Types.Pos exposing (decode, encode)
 
 import Bets.Types exposing (Pos(..))
+import Json.Decode exposing (Decoder, andThen, succeed)
 import Json.Encode
-import Json.Decode exposing (Decoder, succeed, andThen)
 
 
 toString : Pos -> String

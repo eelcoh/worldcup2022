@@ -1,12 +1,14 @@
-module Bets.Types.Candidates
-    exposing
-        ( candidates
-        , findCandidates
-        , findTeams
-        , mergeCandidates
-        )
+module Bets.Types.Candidates exposing
+    ( candidates
+    , findCandidates
+    , findTeams
+    , mergeCandidates
+    )
 
-import Bets.Types exposing (Answers, Answer, AnswerID, AnswerT(..), Pos(..), Team, Round, Draw, BestThirds, Points, Group, Candidates)
+import Bets.Init.Euro2020.Tournament exposing (initTeamData)
+import Bets.Types exposing (Answer, AnswerID, AnswerT(..), Answers, BestThirds, Candidates, Draw, Group, Match(..), Points, Pos(..), Round, SecondRoundCandidate(..), SecondRoundCandidates, Selected(..), Team)
+import Bets.Types.Team as Team
+
 
 
 {-
@@ -36,10 +38,71 @@ candidates answers (( aid, answr ) as answer) =
                 thirds =
                     allThirds answers
             in
-                mergeCandidates topThirds thirds
+            mergeCandidates topThirds thirds
 
         _ ->
             []
+
+
+secondRoundCandidates : Answers -> Answer -> SecondRoundCandidates
+secondRoundCandidates answers (( aid, answr ) as answer) =
+    case answr of
+        AnswerSecondRound (FirstPlace grp) draw _ ->
+            selectSecondRoundCandidates grp
+                |> annotateSecondRoundCandidates answers draw
+
+        AnswerSecondRound (SecondPlace grp) draw _ ->
+            selectSecondRoundCandidates grp
+                |> annotateSecondRoundCandidates answers draw
+
+        AnswerSecondRound (BestThirdFrom grps) draw _ ->
+            List.map selectSecondRoundCandidates grps
+                |> List.concat
+                |> annotateSecondRoundCandidates answers draw
+
+        _ ->
+            []
+
+
+selectSecondRoundCandidates : Group -> SecondRoundCandidates
+selectSecondRoundCandidates grp =
+    List.filter (\t -> t.group == grp) initTeamData
+        |> List.map (\t -> ( t.group, t.team, NotSelected ))
+
+
+annotateSecondRoundCandidates : Answers -> Draw -> SecondRoundCandidates -> SecondRoundCandidates
+annotateSecondRoundCandidates answers draw cands =
+    let
+        annotate t s =
+            List.map (singleAnnotation t s) cands
+
+        singleAnnotation t1 s1 ( g, t2, s2 ) =
+            if Team.equal t1 t2 then
+                ( g, t2, s1 )
+
+            else
+                ( g, t2, s2 )
+
+        determineSelected drawID =
+            if drawID == Tuple.first draw then
+                SelectedForThisSpot
+
+            else
+                SelectedForOtherSpot
+    in
+    case answers of
+        [] ->
+            cands
+
+        ( _, AnswerSecondRound _ ( _, Nothing ) _ ) :: rest ->
+            annotateSecondRoundCandidates rest draw cands
+
+        ( _, AnswerSecondRound _ ( drawID, Just t ) _ ) :: rest ->
+            annotate t (determineSelected drawID)
+                |> annotateSecondRoundCandidates rest draw
+
+        ( _, _ ) :: rest ->
+            annotateSecondRoundCandidates rest draw cands
 
 
 
@@ -55,22 +118,46 @@ findCandidates : Answers -> Group -> Pos -> List ( Group, Team, Pos )
 findCandidates answers grp pos =
     let
         groupPos =
-            flip List.member [ First, Second, Third ]
+            \a -> List.member a [ First, Second, Third ]
     in
-        case answers of
-            [] ->
-                []
+    case answers of
+        [] ->
+            []
 
-            ( _, answer ) :: rest ->
-                case answer of
-                    AnswerGroupPosition g pos ( drawID, Just t ) points ->
-                        if (g == grp) then
-                            ( g, t, pos ) :: (findCandidates rest grp pos)
-                        else
-                            findCandidates rest grp pos
+        ( _, answer ) :: rest ->
+            case answer of
+                AnswerGroupPosition g pos2 ( drawID, Just t ) points ->
+                    if g == grp then
+                        ( g, t, pos2 ) :: findCandidates rest grp pos
 
-                    _ ->
+                    else
                         findCandidates rest grp pos
+
+                _ ->
+                    findCandidates rest grp pos
+
+
+findCandidatesForSecondRound : Answers -> Group -> Pos -> List ( Group, Team, Pos )
+findCandidatesForSecondRound answers grp pos =
+    let
+        groupPos =
+            \a -> List.member a [ First, Second, Third ]
+    in
+    case answers of
+        [] ->
+            []
+
+        ( _, answer ) :: rest ->
+            case answer of
+                AnswerGroupPosition g pos2 ( drawID, Just t ) points ->
+                    if g == grp then
+                        ( g, t, pos2 ) :: findCandidates rest grp pos
+
+                    else
+                        findCandidates rest grp pos
+
+                _ ->
+                    findCandidates rest grp pos
 
 
 
@@ -82,7 +169,7 @@ findCandidates answers grp pos =
 
 
 mergeCandidates : Candidates -> Candidates -> Candidates
-mergeCandidates cands teams =
+mergeCandidates cands teams_ =
     let
         positionedTeams =
             List.map (\( _, a, _ ) -> a) cands
@@ -90,9 +177,9 @@ mergeCandidates cands teams =
         notSelected ( group, team, pos ) =
             not (List.member team positionedTeams)
     in
-        List.filter notSelected teams
-            |> List.append cands
-            |> List.sortBy (\( _, t, _ ) -> .teamName t)
+    List.filter notSelected teams_
+        |> List.append cands
+        |> List.sortBy (\( _, t, _ ) -> .teamName t)
 
 
 
@@ -112,7 +199,7 @@ allThirds answers =
                 _ ->
                     Nothing
     in
-        List.filterMap isThird answers
+    List.filterMap isThird answers
 
 
 
@@ -130,20 +217,21 @@ findTeams answers grp =
 
         ( _, answer ) :: rest ->
             case answer of
-                AnswerGroupMatch g ( ( _, mHome ), ( _, mAway ), _, _ ) _ _ ->
+                AnswerGroupMatch g (Match ( _, mHome ) ( _, mAway ) _ _) _ _ ->
                     if g == grp then
                         case ( mHome, mAway ) of
                             ( Just h, Just a ) ->
-                                ( g, h ) :: (( g, a ) :: (findTeams rest grp))
+                                ( g, h ) :: (( g, a ) :: findTeams rest grp)
 
                             ( Just h, Nothing ) ->
-                                ( g, h ) :: (findTeams rest grp)
+                                ( g, h ) :: findTeams rest grp
 
                             ( Nothing, Just a ) ->
-                                ( g, a ) :: (findTeams rest grp)
+                                ( g, a ) :: findTeams rest grp
 
                             ( Nothing, Nothing ) ->
                                 findTeams rest grp
+
                     else
                         findTeams rest grp
 
@@ -168,10 +256,11 @@ uniques : List Team -> List ( Group, Team ) -> List ( Group, Team )
 uniques found tms =
     case tms of
         ( group, team ) :: rest ->
-            if (List.member team found) then
+            if List.member team found then
                 uniques found rest
+
             else
-                ( group, team ) :: (uniques (team :: found) rest)
+                ( group, team ) :: uniques (team :: found) rest
 
         [] ->
             []

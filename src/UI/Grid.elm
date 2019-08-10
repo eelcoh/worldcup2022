@@ -1,23 +1,22 @@
-module UI.Grid
-    exposing
-        ( wrapper
-        , container
-        , row
-        , cell
-        , cell2
-        , Size(..)
-        , Color(..)
-        , Style(..)
-        , Align(..)
-        , button
-        , button2
-        , pill
-        , scoreButton
-        , txt
-        , score
-        )
+module UI.Grid exposing
+    ( Align(..)
+    , Color(..)
+    , Size(..)
+    , Style(..)
+    , button
+    , button2
+    , cell
+    , cell2
+    , container 
+    , pill
+    , row
+    , score
+    , scoreButton
+    , txt
+    , wrapper
+    )
 
-import Html exposing (Html, Attribute, div, span)
+import Html exposing (Attribute, Html, div, span)
 import Html.Attributes exposing (class)
 import String
 
@@ -67,7 +66,7 @@ addclass clstr attrs contents =
         cls =
             class clstr
     in
-        div (cls :: attrs) contents
+    div (cls :: attrs) contents
 
 
 toClasses : List Class -> Attribute msg
@@ -82,7 +81,7 @@ wrapper attrs contents =
         cls =
             class "wrapper"
     in
-        div (cls :: attrs) contents
+    div (cls :: attrs) contents
 
 
 container : Align -> List (Attribute msg) -> List (Html msg) -> Html msg
@@ -91,7 +90,7 @@ container align attrs contents =
         cls =
             containerStyle align
     in
-        div (cls :: attrs) contents
+    div (cls :: attrs) contents
 
 
 row : Align -> List (Attribute msg) -> List (Html msg) -> Html msg
@@ -100,17 +99,17 @@ row align attrs contents =
         cls =
             rowStyle align
     in
-        div (cls :: attrs) contents
+    div (cls :: attrs) contents
 
 
 containerStyle : Align -> Attribute msg
 containerStyle align =
-    class ("container " ++ (alignment align))
+    class ("container " ++ alignment align)
 
 
 rowStyle : Align -> Attribute msg
 rowStyle align =
-    class ("row " ++ (alignment align))
+    class ("row " ++ alignment align)
 
 
 alignment : Align -> String
@@ -132,9 +131,9 @@ alignment align =
             "justified"
 
 
-body : List (Attribute msg) -> List (Html msg) -> Html msg
-body attrs contents =
-    Html.body attrs contents
+-- body : List (Attribute msg) -> List (Html msg) -> Html msg
+-- body attrs contents =
+--     Html.body attrs contents
 
 
 cell : Size -> Color -> List (Attribute msg) -> List (Html msg) -> Html msg
@@ -150,7 +149,7 @@ cell sz colr attrs contents =
         attributes =
             classes :: attrs
     in
-        div attributes contents
+    div attributes contents
 
 
 cell2 : Size -> Color -> List (Attribute msg) -> List (Html msg) -> Html msg
@@ -166,7 +165,7 @@ cell2 sz colr attrs contents =
         attributes =
             classes :: attrs
     in
-        div attributes contents
+    div attributes contents
 
 
 toList : a -> List a
@@ -189,7 +188,7 @@ button sz colr attrs contents =
         attributes =
             classes :: attrs
     in
-        div attributes contents
+    div attributes contents
 
 
 button2 : Size -> Color -> List (Attribute msg) -> List (Html msg) -> Html msg
@@ -207,7 +206,7 @@ button2 sz colr attrs contents =
         attributes =
             classes :: attrs
     in
-        div attributes contents
+    div attributes contents
 
 
 pill : Color -> List (Attribute msg) -> List (Html msg) -> Html msg
@@ -228,7 +227,7 @@ pill colr attrs contents =
         attributes =
             classes :: attrs
     in
-        div attributes contents
+    div attributes contents
 
 
 scoreButton : Color -> List (Attribute msg) -> List (Html msg) -> Html msg
@@ -246,7 +245,7 @@ scoreButton colr attrs contents =
         attributes =
             classes :: attrs
     in
-        div attributes contents
+    div attributes contents
 
 
 score : Size -> Color -> List (Attribute msg) -> List (Html msg) -> Html msg
@@ -264,7 +263,7 @@ score sz colr attrs contents =
         attributes =
             classes :: attrs
     in
-        div attributes contents
+    div attributes contents
 
 
 txt : List String -> Size -> Color -> List (Attribute msg) -> List (Html msg) -> Html msg
@@ -281,7 +280,7 @@ txt clss sz colr attrs contents =
         attributes =
             classes :: attrs
     in
-        span attributes contents
+    span attributes contents
 
 
 size : Size -> Class

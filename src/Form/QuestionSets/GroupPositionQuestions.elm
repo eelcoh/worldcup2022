@@ -2,13 +2,13 @@ module Form.QuestionSets.GroupPositionQuestions exposing (Msg, update, view)
 
 import Bets.Bet exposing (candidates, setTeam)
 import Bets.Types exposing (Answer, AnswerID, AnswerT(..), Answers, Bet, Group, Pos(..), Team)
-import UI.Text
 import Bets.Types.Group as G
 import Element
-import Element.Attributes exposing (px, spacing, padding, width, height, center, verticalCenter)
+import Element.Attributes exposing (center, height, padding, px, spacing, verticalCenter, width)
 import Form.QuestionSets.Types exposing (ChangeCursor(..), Model, QuestionType(..), updateCursor)
 import UI.Button
 import UI.Style
+import UI.Text
 
 
 type Msg
@@ -48,7 +48,7 @@ view model bet mAnswer answers =
 
 displayHeader : Group -> Element.Element UI.Style.Style variation msg
 displayHeader grp =
-    UI.Text.displayHeader ("Voorspel de eindstand van poule " ++ (G.toString grp))
+    UI.Text.displayHeader ("Voorspel de eindstand van poule " ++ G.toString grp)
 
 
 introduction : Element.Element UI.Style.Style variation msg
@@ -92,25 +92,25 @@ viewAnswer model bet (( aid, answerT ) as answer) =
                 [ width (px 64), height (px 76), center, verticalCenter ]
                 (posText p)
     in
-        case answerT of
-            AnswerGroupPosition g pos ( drawID, mTeam ) _ ->
-                let
-                    buttons =
-                        List.map (mkButton answer g pos) cs
+    case answerT of
+        AnswerGroupPosition g pos ( drawID, mTeam ) _ ->
+            let
+                buttons =
+                    List.map (mkButton answer g pos) cs
 
-                    hdr =
-                        header g pos
+                hdr =
+                    header g pos
 
-                    rowItems =
-                        hdr :: buttons
-                in
-                    Element.row UI.Style.GroupPosition
-                        [ padding 10, spacing 7 ]
-                        rowItems
-                        |> Just
+                rowItems =
+                    hdr :: buttons
+            in
+            Element.row UI.Style.GroupPosition
+                [ padding 10, spacing 7 ]
+                rowItems
+                |> Just
 
-            _ ->
-                Nothing
+        _ ->
+            Nothing
 
 
 mkButton :
@@ -124,10 +124,11 @@ mkButton answer forGrp forPos ( grp, team, pos ) =
         c =
             if pos == forPos then
                 UI.Style.TBSelected
+
             else
                 UI.Style.TBPotential
 
         msg =
             SetTeam answer forGrp team
     in
-        UI.Button.teamButton c msg team
+    UI.Button.teamButton c msg team

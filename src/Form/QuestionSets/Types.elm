@@ -1,21 +1,20 @@
-module Form.QuestionSets.Types
-    exposing
-        ( QuestionType(..)
-        , Model
-        , ChangeCursor(..)
-        , matchScoreQuestions
-        , groupPositionQuestions
-        , findAnswers
-        , updateCursor
-        , isComplete
-        , display
-        )
+module Form.QuestionSets.Types exposing
+    ( ChangeCursor(..)
+    , Model
+    , QuestionType(..)
+    , display
+    , findAnswers
+    , groupPositionQuestions
+    , isComplete
+    , matchScoreQuestions
+    , updateCursor
+    )
 
-import Bets.Types exposing (AnswerID, Group(..), Bet, Answers)
-import Bets.Bet exposing (findGroupMatchAnswers, findGroupPositionAnswers, findAllGroupMatchAnswers)
-import List.Extra exposing (dropWhile)
+import Bets.Bet exposing (findAllGroupMatchAnswers, findGroupMatchAnswers, findGroupPositionAnswers)
+import Bets.Types exposing (AnswerID, Answers, Bet, Group(..))
 import Bets.Types.Answer
 import Bets.Types.Group as Group
+import List.Extra exposing (dropWhile)
 
 
 type QuestionType
@@ -82,16 +81,16 @@ nextAnswer answerId answers =
 
         -- `Maybe.andThen` List.head
     in
-        Maybe.withDefault answerId (findNext |> Maybe.andThen List.head)
+    Maybe.withDefault answerId (findNext |> Maybe.andThen List.head)
 
 
 updateCursor : Model -> Bet -> ChangeCursor -> Model
 updateCursor model bet changeCursor =
     let
-        newAnswer answers =
+        newAnswer answrs =
             case changeCursor of
                 Implicit ->
-                    nextAnswer model.cursor answers
+                    nextAnswer model.cursor answrs
 
                 Explicit newCur ->
                     newCur
@@ -109,7 +108,7 @@ updateCursor model bet changeCursor =
         prev =
             Just model.cursor
     in
-        { model | cursor = newCursor, prev = prev }
+    { model | cursor = newCursor, prev = prev }
 
 
 isComplete : Bet -> Model -> Bool
@@ -118,7 +117,7 @@ isComplete bet model =
         answers =
             findAnswers model bet
     in
-        List.all Bets.Types.Answer.isComplete answers
+    List.all Bets.Types.Answer.isComplete answers
 
 
 display : Model -> String
@@ -127,7 +126,7 @@ display model =
         MatchScore group ->
             case group of
                 A ->
-                    "Scores " ++ (Group.toString group)
+                    "Scores " ++ Group.toString group
 
                 _ ->
                     Group.toString group
@@ -135,7 +134,7 @@ display model =
         GroupPosition group ->
             case group of
                 A ->
-                    "Stand " ++ (Group.toString group)
+                    "Stand " ++ Group.toString group
 
                 _ ->
                     Group.toString group

@@ -1,23 +1,25 @@
 module Form.View exposing (view)
 
-import Form.Types exposing (..)
+import Browser
+import Element
+import Element.Attributes exposing (padding, paddingXY, spacing)
 import Form.Info
-import Form.Submit
 import Form.Question
-import Form.Questions.Types as QT
 import Form.QuestionSet
 import Form.QuestionSets.Types as QTS
-import Element
-import Element.Attributes exposing (padding, spacing, paddingXY)
-import UI.Style
-import UI.Button
+import Form.Questions.Types as QT
+import Form.Submit
+import Form.Types exposing (..)
 import Html exposing (Html)
+import UI.Button
+import UI.Style
+
 
 
 -- View
 
 
-view : Model Msg -> Html Msg
+view : Model Msg -> Browser.Document Msg
 view model =
     let
         getCard =
@@ -26,8 +28,8 @@ view model =
 
         makeCard mCard =
             case mCard of
-                Just card ->
-                    viewCard model model.idx card
+                Just card_ ->
+                    viewCard model model.idx card_
 
                 Nothing ->
                     Element.empty
@@ -35,9 +37,15 @@ view model =
         card =
             getCard
                 |> makeCard
+
+        body =
+            viewCardChrome model card model.idx
+                |> Element.layout UI.Style.stylesheet
+
+        title =
+            "Euro 2020"
     in
-        viewCardChrome model card model.idx
-            |> Element.layout UI.Style.stylesheet
+    { title = title, body = [ body ] }
 
 
 viewCard : Model Msg -> Int -> Card -> Element.Element UI.Style.Style variation Msg
@@ -54,8 +62,8 @@ viewCard model i card =
 
         SubmitCard ->
             let
-                isComplete card =
-                    case card of
+                isComplete card_ =
+                    case card_ of
                         IntroCard _ ->
                             True
 
@@ -71,7 +79,7 @@ viewCard model i card =
                 submittable =
                     List.all isComplete model.cards
             in
-                Element.map SubmitMsg (Form.Submit.view model.bet submittable model.submitted)
+            Form.Submit.view model submittable
 
 
 viewPill : Model Msg -> Int -> ( Int, Card ) -> Element.Element UI.Style.Style variation Msg
@@ -116,15 +124,15 @@ viewPill model idx ( i, card ) =
                 QuestionCard qModel ->
                     QT.display model.bet qModel
 
-                QuestionSetCard model ->
-                    QTS.display model
+                QuestionSetCard model_ ->
+                    QTS.display model_
 
                 SubmitCard ->
                     "Insturen"
     in
-        UI.Button.pill semantics
-            msg
-            contents
+    UI.Button.pill semantics
+        msg
+        contents
 
 
 viewCardChrome :
@@ -135,13 +143,13 @@ viewCardChrome :
 viewCardChrome model card i =
     let
         next =
-            Basics.min (i + 1) ((List.length model.cards) - 1)
+            Basics.min (i + 1) (List.length model.cards - 1)
 
         prev =
             Basics.max (i - 1) 0
 
         pills =
-            List.map (viewPill model i) (List.indexedMap (,) model.cards)
+            List.map (viewPill model i) (List.indexedMap (\a b -> ( a, b )) model.cards)
 
         prevPill =
             UI.Button.pill UI.Style.Irrelevant (NavigateTo prev) "vorige"
@@ -151,11 +159,11 @@ viewCardChrome model card i =
 
         pillsPlus =
             prevPill
-                :: (List.append pills [ nextPill ])
+                :: List.append pills [ nextPill ]
                 |> Element.wrappedRow UI.Style.None [ spacing 7, padding 0 ]
     in
-        Element.column UI.Style.None
-            [ spacing 20, paddingXY 70 20 ]
-            [ pillsPlus
-            , card
-            ]
+    Element.column UI.Style.None
+        [ spacing 20, paddingXY 70 20 ]
+        [ pillsPlus
+        , card
+        ]

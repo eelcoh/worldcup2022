@@ -1,15 +1,16 @@
-module Bets.Types.Round
-    exposing
-        ( toInt
-        , nextRound
-        , isSameOrANextRound
-        , encode
-        , decode
-        )
+module Bets.Types.Round exposing
+    ( decode
+    , encode
+    , isSameOrANextRound
+    , nextRound
+    , toInt
+    , toString
+    )
 
 import Bets.Types exposing (Round(..))
-import Json.Encode
 import Json.Decode exposing (Decoder, andThen, succeed)
+import Json.Encode
+
 
 
 -- MODEL
@@ -59,9 +60,14 @@ toRound i =
             VI
 
 
+toString : Round -> String
+toString =
+    toInt >> String.fromInt
+
+
 isSameOrANextRound : Round -> Round -> Bool
 isSameOrANextRound r1 r2 =
-    (toInt r1) >= (toInt r2)
+    toInt r1 >= toInt r2
 
 
 nextRound : Round -> Maybe Round

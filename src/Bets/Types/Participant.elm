@@ -1,20 +1,19 @@
-module Bets.Types.Participant
-    exposing
-        ( setName
-        , setAddress
-        , setPhoneNumber
-        , setEmail
-        , init
-        , isComplete
-        , encode
-        , decode
-        )
+module Bets.Types.Participant exposing
+    ( decode
+    , encode
+    , init
+    , isComplete
+    , setAddress
+    , setEmail
+    , setName
+    , setPhoneNumber
+    )
 
-import Json.Encode
-import Json.Decode exposing (Decoder, maybe, field)
-import Maybe.Extra as M
 import Bets.Json.Encode exposing (mStrEnc)
 import Bets.Types exposing (Participant)
+import Json.Decode exposing (Decoder, field, maybe)
+import Json.Encode
+import Maybe.Extra as M
 
 
 init : Participant

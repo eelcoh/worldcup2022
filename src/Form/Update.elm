@@ -1,14 +1,20 @@
 module Form.Update exposing (update)
 
-import Bets.Types exposing (Bet, AnswerID)
-import Form.Types exposing (..)
-import Form.Question
-import Form.Init as Init
+import API.Bets
+import Bets.Init
+import Bets.Types exposing (AnswerID, Bet)
+import Browser
+import Browser.Navigation as Navigation
 import Form.Info
-import Form.Submit
+import Form.Init as Init
+import Form.Question
 import Form.QuestionSet
 import Form.QuestionSets.Types as QS
+import Form.Submit
+import Form.Types exposing (..)
 import List.Extra exposing (find)
+import RemoteData exposing (RemoteData(..), WebData)
+import Url
 
 
 findCardByCardId : List Card -> Int -> Maybe Card
@@ -44,10 +50,10 @@ findCardIDByAnswerId model mAnswerId =
                     Nothing
 
                 Just answerId ->
-                    List.indexedMap (,) model.cards
+                    List.indexedMap (\a b -> ( a, b )) model.cards
                         |> find (isAnswer answerId)
     in
-        Maybe.map (\( i, _ ) -> i) mIndexedCard
+    Maybe.map (\( i, _ ) -> i) mIndexedCard
 
 
 update : Msg -> Model Msg -> ( Model Msg, Cmd Msg )
@@ -61,72 +67,131 @@ update msg state =
                 mCard =
                     findCardByCardId state.cards i
             in
-                case mCard of
-                    Just (QuestionCard qModel) ->
-                        let
-                            ( newBet, newQModel, fx ) =
-                                Form.Question.update act state.bet qModel
+            case mCard of
+                Just (QuestionCard qModel) ->
+                    let
+                        ( newBet, newQModel, fx ) =
+                            Form.Question.update act state.bet qModel
 
-                            next =
-                                .next qModel
+                        next =
+                            .next qModel
 
-                            idx =
-                                findCardIDByAnswerId state next
-                                    |> Maybe.withDefault state.idx
-                        in
-                            ( { state | bet = newBet, idx = idx, submitted = Dirty }, Cmd.map (Answered i) fx )
+                        idx =
+                            findCardIDByAnswerId state next
+                                |> Maybe.withDefault state.idx
+                    in
+                    ( { state | bet = newBet, idx = idx, betState = Dirty }, Cmd.map (Answered i) fx )
 
-                    _ ->
-                        ( state, Cmd.none )
+                _ ->
+                    ( state, Cmd.none )
 
         InfoMsg act ->
             let
                 ( newBet, fx ) =
                     Form.Info.update act state.bet
             in
-                ( { state | bet = newBet }, Cmd.map InfoMsg fx )
+            ( { state | bet = newBet }, Cmd.map InfoMsg fx )
 
-        SubmitMsg act ->
+        -- SubmitMsg act ->
+        --     let
+        --         ( newBet, fx, mSubmitModel ) =
+        --             Form.Submit.update act state.bet
+        --         submitModel =
+        --             case mSubmitModel of
+        --                 Just s ->
+        --                     s
+        --                 Nothing ->
+        --                     state.submitted
+        --         nwModel =
+        --             case submitModel of
+        --                 Reset ->
+        --                     Init.initModel
+        --                 _ ->
+        --                     { state | bet = newBet, submitted = submitModel }
+        --     in
+        --     ( nwModel, Cmd.map SubmitMsg fx )
+        SubmitMsg ->
             let
-                ( newBet, fx, mSubmitModel ) =
-                    Form.Submit.update act state.bet
+                cmd =
+                    API.Bets.placeBet state.bet
+            in
+            ( state, cmd )
 
-                submitModel =
-                    case mSubmitModel of
-                        Just s ->
-                            s
-
-                        Nothing ->
-                            state.submitted
-
-                nwModel =
-                    case submitModel of
-                        Reset ->
-                            Init.initModel
+        SubmittedBet savedBet ->
+            let
+                ( newBet, nwInputState ) =
+                    case savedBet of
+                        Success b ->
+                            ( b, Clean )
 
                         _ ->
-                            { state | bet = newBet, submitted = submitModel }
+                            ( state.bet, Dirty )
             in
-                ( nwModel, Cmd.map SubmitMsg fx )
+            ( { state | savedBet = savedBet, bet = newBet, betState = nwInputState }, Cmd.none )
 
         QuestionSetMsg cardId act ->
             let
                 ( newBet, cards, fx ) =
-                    case (findCardByCardId state.cards cardId) of
+                    case findCardByCardId state.cards cardId of
                         Just (QuestionSetCard model) ->
                             let
-                                ( newNewBet, newModel, fx ) =
+                                ( newNewBet, newModel, fx_ ) =
                                     Form.QuestionSet.update act model state.bet
 
-                                cards =
+                                cards_ =
                                     List.map (updateQuestionSetCard newModel) state.cards
                             in
-                                ( newNewBet, cards, fx )
+                            ( newNewBet, cards_, fx_ )
 
                         _ ->
                             ( state.bet, state.cards, Cmd.none )
             in
-                ( { state | bet = newBet, cards = cards, submitted = Dirty }, Cmd.map (QuestionSetMsg cardId) fx )
+            ( { state | bet = newBet, cards = cards, betState = Dirty }, Cmd.map (QuestionSetMsg cardId) fx )
+
+        NoOp ->
+            ( state, Cmd.none )
+
+        Restart ->
+            let
+                nwState =
+                    { state
+                        | bet = Bets.Init.bet
+                        , savedBet = NotAsked
+                        , betState = Clean
+                    }
+            in
+            ( nwState, Cmd.none )
+
+        UrlRequest urlRequest ->
+            case urlRequest of
+                Browser.Internal url ->
+                    case url.fragment of
+                        Nothing ->
+                            -- If we got a link that didn't include a fragment,
+                            -- it's from one of those (href "") attributes that
+                            -- we have to include to make the RealWorld CSS work.
+                            --
+                            -- In an application doing path routing instead of
+                            -- fragment-based routing, this entire
+                            -- `case url.fragment of` expression this comment
+                            -- is inside would be unnecessary.
+                            ( state, Cmd.none )
+
+                        Just _ ->
+                            ( state
+                            , Navigation.pushUrl state.navKey (Url.toString url)
+                            )
+
+                Browser.External href ->
+                    ( state
+                    , Navigation.load href
+                    )
+
+        UrlChange url ->
+            ( state, Cmd.none )
+
+        ScreenResize w h ->
+            ( state, Cmd.none )
 
 
 updateQuestionSetCard : QS.Model -> Card -> Card
@@ -137,12 +202,14 @@ updateQuestionSetCard qSmodel card =
                 ( QS.MatchScore g1, QS.MatchScore g2 ) ->
                     if g1 == g2 then
                         QuestionSetCard qSmodel
+
                     else
                         card
 
                 ( QS.GroupPosition g1, QS.GroupPosition g2 ) ->
                     if g1 == g2 then
                         QuestionSetCard qSmodel
+
                     else
                         card
 

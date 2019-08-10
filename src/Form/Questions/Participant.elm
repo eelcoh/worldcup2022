@@ -1,18 +1,17 @@
-module Form.Questions.Participant
-    exposing
-        ( Msg
-        , update
-        , view
-        )
+module Form.Questions.Participant exposing
+    ( Msg
+    , update
+    , view
+    )
 
 import Bets.Bet exposing (setParticipant)
 import Bets.Types exposing (Answer, AnswerID, AnswerT(..), Bet, Participant)
-import UI.Text
 import Element
-import UI.Style
-import Element.Attributes exposing (width, height, px, spacing, padding)
+import Element.Attributes exposing (height, padding, px, spacing, width)
 import Element.Input
 import Form.Questions.Types exposing (QState)
+import UI.Style
+import UI.Text
 
 
 type Attr
@@ -56,24 +55,24 @@ update msg bet qState =
             newParticipant attr participant
                 |> setParticipant bet answer
     in
-        case msg of
-            Set attr aid ->
-                let
-                    mAnswer =
-                        Bets.Bet.getAnswer bet aid
+    case msg of
+        Set attr aid ->
+            let
+                mAnswer =
+                    Bets.Bet.getAnswer bet aid
 
-                    newNewBet =
-                        case mAnswer of
-                            Just (( answerId, AnswerParticipant participant ) as answer) ->
-                                newBet answer attr participant
+                newNewBet =
+                    case mAnswer of
+                        Just (( answerId, AnswerParticipant participant ) as answer) ->
+                            newBet answer attr participant
 
-                            _ ->
-                                bet
-                in
-                    ( newNewBet, { qState | next = Nothing }, Cmd.none )
+                        _ ->
+                            bet
+            in
+            ( newNewBet, { qState | next = Nothing }, Cmd.none )
 
-            _ ->
-                ( bet, { qState | next = Nothing }, Cmd.none )
+        _ ->
+            ( bet, { qState | next = Nothing }, Cmd.none )
 
 
 view : Bet -> QState -> Element.Element UI.Style.Style variation Msg
@@ -88,7 +87,7 @@ view bet qState =
         values =
             case mAnswer of
                 Just ( _, AnswerParticipant p ) ->
-                    List.map (Maybe.withDefault "") [ (p.name), p.address, p.residence, p.email, p.phone, p.howyouknowus ]
+                    List.map (Maybe.withDefault "") [ p.name, p.address, p.residence, p.email, p.phone, p.howyouknowus ]
 
                 _ ->
                     [ "", "", "", "", "", "" ]
@@ -99,17 +98,17 @@ view bet qState =
         inputField ( k, v ) =
             let
                 inp =
-                    { onChange = (\val -> (Set (k val) qState.answerId))
-                    , value = (Tuple.second v)
+                    { onChange = \val -> Set (k val) qState.answerId
+                    , value = Tuple.second v
                     , label = placeholder (Tuple.first v)
                     , options = []
                     }
             in
-                Element.Input.text UI.Style.TextInput [ width (px 260), height (px 36) ] inp
+            Element.Input.text UI.Style.TextInput [ width (px 260), height (px 36) ] inp
 
         lines =
-            List.map2 (,) [ "Naam", "Adres", "Woonplaats", "Email", "Telefoonnummer", "Waar ken je ons van?" ] values
-                |> List.map2 (,) keys
+            List.map2 (\a b -> ( a, b )) [ "Naam", "Adres", "Woonplaats", "Email", "Telefoonnummer", "Waar ken je ons van?" ] values
+                |> List.map2 (\a b -> ( a, b )) keys
                 |> List.map inputField
 
         header =
@@ -121,4 +120,4 @@ view bet qState =
                 [ UI.Text.simpleText """Graag volledig invullen, zodat wij je goed kunnen bereiken als je gewonnen hebt."""
                 ]
     in
-        Element.column UI.Style.None [ spacing 7 ] (header :: introduction :: lines)
+    Element.column UI.Style.None [ spacing 7 ] (header :: introduction :: lines)

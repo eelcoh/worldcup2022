@@ -1,12 +1,12 @@
-module UI.Button exposing (..)
+module UI.Button exposing (button, maybeTeamBadge, maybeTeamButton, pill, scoreButton, submit, teamButton)
 
+import Bets.Types
 import Element exposing (..)
-import Element.Attributes exposing (center, fill, height, percent, px, verticalCenter, width, padding, center)
+import Element.Attributes exposing (center, fill, height, padding, percent, px, verticalCenter, width)
 import Element.Events exposing (onClick)
 import UI.Grid exposing (Size(..))
 import UI.Style exposing (ButtonSemantics, ScoreButtonSemantics, Style)
 import UI.Team
-import Bets.Types
 
 
 pill : ButtonSemantics -> msg -> String -> Element Style variation msg
@@ -18,7 +18,7 @@ pill semantics msg buttonText =
         textElement =
             Element.el UI.Style.Score [ padding 10 ] (text buttonText)
     in
-        Element.column (UI.Style.Button semantics) buttonLayout [ textElement ]
+    Element.column (UI.Style.Button semantics) buttonLayout [ textElement ]
 
 
 submit : ButtonSemantics -> msg -> String -> Element Style variation msg
@@ -30,7 +30,7 @@ submit semantics msg buttonText =
         textElement =
             Element.el UI.Style.Score [ padding 10 ] (text buttonText)
     in
-        Element.column (UI.Style.Button semantics) buttonLayout [ textElement ]
+    Element.column (UI.Style.Button semantics) buttonLayout [ textElement ]
 
 
 button : Size -> ButtonSemantics -> msg -> String -> Element Style variation msg
@@ -65,7 +65,7 @@ button sz semantics msg buttonText =
         buttonLayout =
             [ w, h, onClick msg, Element.Attributes.center, Element.Attributes.verticalCenter ]
     in
-        el (UI.Style.Button semantics) buttonLayout (text buttonText)
+    el (UI.Style.Button semantics) buttonLayout (text buttonText)
 
 
 scoreButton : ScoreButtonSemantics -> msg -> String -> Element Style variation msg
@@ -85,7 +85,7 @@ scoreButton semantics msg buttonText =
         textElement =
             Element.el UI.Style.Score [] (text buttonText)
     in
-        Element.column (UI.Style.ScoreButton semantics) buttonLayout [ textElement ]
+    Element.column (UI.Style.ScoreButton semantics) buttonLayout [ textElement ]
 
 
 teamButton :
@@ -114,9 +114,9 @@ maybeTeamButton semantics msg team =
             [ w, h, onClick msg, center, verticalCenter ]
 
         textElement =
-            Element.el UI.Style.TeamName [] (UI.Team.viewTeamEl (team))
+            Element.el UI.Style.TeamName [] (UI.Team.viewTeamEl team)
     in
-        Element.column (UI.Style.TeamButton semantics) buttonLayout [ textElement ]
+    Element.column (UI.Style.TeamButton semantics) buttonLayout [ textElement ]
 
 
 maybeTeamBadge :
@@ -135,6 +135,6 @@ maybeTeamBadge semantics team =
             [ w, h, center, verticalCenter ]
 
         textElement =
-            Element.el UI.Style.TeamName [] (UI.Team.viewTeamEl (team))
+            Element.el UI.Style.TeamName [] (UI.Team.viewTeamEl team)
     in
-        Element.column (UI.Style.TeamButton semantics) buttonLayout [ textElement ]
+    Element.column (UI.Style.TeamButton semantics) buttonLayout [ textElement ]
