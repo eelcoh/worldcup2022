@@ -26,7 +26,7 @@ init flags url navKey =
       , savedBet = NotAsked
       , idx = 0
       , card = div [] []
-      , formId = Nothing
+      , formId = flags.formId
       , betState = Clean
       , navKey = navKey
       }
@@ -37,11 +37,6 @@ init flags url navKey =
 subscriptions : Model Msg -> Sub Msg
 subscriptions model =
     Sub.batch [ Events.onResize ScreenResize ]
-
-
-type alias Flags =
-    { width : Int
-    }
 
 
 
