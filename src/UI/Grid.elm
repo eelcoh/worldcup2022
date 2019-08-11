@@ -1,20 +1,21 @@
-module UI.Grid exposing
-    ( Align(..)
-    , Color(..)
-    , Size(..)
-    , Style(..)
-    , button
-    , button2
-    , cell
-    , cell2
-    , container 
-    , pill
-    , row
-    , score
-    , scoreButton
-    , txt
-    , wrapper
-    )
+module UI.Grid exposing (button)
+
+-- ( Align(..)
+-- , Color(..)
+-- , Size(..)
+-- , Style(..)
+-- , button
+-- , button2
+-- , cell
+-- , cell2
+-- , container
+-- , pill
+-- , row
+-- , score
+-- , scoreButton
+-- , txt
+-- , wrapper
+-- )
 
 import Html exposing (Attribute, Html, div, span)
 import Html.Attributes exposing (class)
@@ -129,6 +130,7 @@ alignment align =
 
         Justified ->
             "justified"
+
 
 
 -- body : List (Attribute msg) -> List (Html msg) -> Html msg

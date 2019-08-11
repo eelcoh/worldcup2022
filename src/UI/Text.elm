@@ -1,36 +1,37 @@
 module UI.Text exposing (boldText, bulletText, displayHeader, simpleText)
 
-import Element
-import Element.Attributes exposing (alignLeft, padding, paddingBottom, paddingLeft, paddingTop, paddingXY, px, spacing, verticalCenter, width)
-import UI.Style
+import Element exposing (alignLeft, padding, paddingXY, px, spacing, width)
+import UI.Style as Style
 
 
-displayHeader : String -> Element.Element UI.Style.Style variation msg
+displayHeader : String -> Element.Element msg
 displayHeader txt =
-    Element.header UI.Style.Header2
-        [ width Element.Attributes.fill ]
+    Element.el
+        (Style.header2
+            ++ [ width Element.fill ]
+        )
         (Element.text txt)
 
 
-simpleText : String -> Element.Element UI.Style.Style variation msg
+simpleText : String -> Element.Element msg
 simpleText txt =
-    Element.el UI.Style.Text [] (Element.text txt)
+    Element.el Style.text (Element.text txt)
 
 
-bulletText : String -> Element.Element UI.Style.Style variation msg
+bulletText : String -> Element.Element msg
 bulletText txt =
     let
         bullet =
-            Element.column UI.Style.None
-                [ paddingTop 5 ]
-                [ Element.circle 3 UI.Style.Bullet [ alignLeft ] Element.empty ]
+            Element.column
+                [ Element.paddingEach { top = 5, right = 0, bottom = 0, left = 0 } ]
+                [ Element.el (Style.bullet ++ [ alignLeft ]) (Element.text "•") ]
 
         contents =
-            Element.paragraph UI.Style.Introduction [ width Element.Attributes.fill ] [ Element.text txt ]
+            Element.paragraph ([ width Element.fill ] ++ Style.introduction) [ Element.text txt ]
     in
-    Element.row UI.Style.None [ paddingLeft 5, spacing 7 ] [ bullet, contents ]
+    Element.row [ Element.paddingEach { top = 0, right = 0, bottom = 0, left = 5 }, spacing 7 ] [ bullet, contents ]
 
 
-boldText : String -> Element.Element UI.Style.Style variation msg
+boldText : String -> Element.Element msg
 boldText txt =
-    Element.el UI.Style.Emphasis [] (Element.text txt)
+    Element.el Style.emphasis (Element.text txt)

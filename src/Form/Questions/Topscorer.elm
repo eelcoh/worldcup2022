@@ -1,11 +1,10 @@
 module Form.Questions.Topscorer exposing (Msg, update, view)
 
 import Bets.Bet exposing (setTopscorer)
-import Bets.Types exposing (Answer, AnswerID, AnswerT(..), Bet, Player, Team, TeamData, TeamDatum, Topscorer)
 import Bets.Init.Euro2020.Tournament exposing (initTeamData)
+import Bets.Types exposing (Answer, AnswerID, AnswerT(..), Bet, Player, Team, TeamData, TeamDatum, Topscorer)
 import Bets.Types.Topscorer as TS
-import Element
-import Element.Attributes exposing (padding, px, spacing, width)
+import Element exposing (padding, px, spacing, width)
 import Form.Questions.Types exposing (QState)
 import List.Extra
 import UI.Button
@@ -66,7 +65,7 @@ update msg bet qState =
             ( newBet, { qState | next = Nothing }, Cmd.none )
 
 
-view : Bet -> QState -> Element.Element UI.Style.Style variation Msg
+view : Bet -> QState -> Element.Element Msg
 view bet qState =
     let
         mAnswer =
@@ -77,10 +76,10 @@ view bet qState =
             viewTopscorer bet answerId topscorer
 
         _ ->
-            Element.empty
+            Element.none
 
 
-viewTopscorer : Bet -> AnswerID -> Topscorer -> Element.Element UI.Style.Style variation Msg
+viewTopscorer : Bet -> AnswerID -> Topscorer -> Element.Element Msg
 viewTopscorer bet answerId topscorer =
     let
         teamData =
@@ -97,7 +96,7 @@ viewTopscorer bet answerId topscorer =
                         ( ys, zs ) =
                             List.Extra.span (eq x) xs
                     in
-                        (x :: ys) :: groupWhile eq zs
+                    (x :: ys) :: groupWhile eq zs
 
         groups : List (List ( TeamDatum, IsSelected ))
         groups =
@@ -119,13 +118,12 @@ viewTopscorer bet answerId topscorer =
                         ( t, NotSelected )
 
         forGroup teams =
-            Element.row UI.Style.None [ spacing 7, padding 10, width (px 600) ] (List.map (mkTeamButton (SelectTeam answerId)) teams)
+            Element.row (UI.Style.none [ spacing 7, padding 10, width (px 600) ]) (List.map (mkTeamButton (SelectTeam answerId)) teams)
 
         headertext =
             UI.Text.displayHeader "Wie wordt de topscorer?"
     in
-    Element.column UI.Style.None
-        []
+    Element.column (UI.Style.none [])
         ([ headertext
          , introduction
          , viewPlayers bet answerId topscorer teamData
@@ -134,10 +132,9 @@ viewTopscorer bet answerId topscorer =
         )
 
 
-introduction : Element.Element UI.Style.Style variation msg
+introduction : Element.Element Msg
 introduction =
-    Element.paragraph UI.Style.Introduction
-        [ width (px 600) ]
+    Element.paragraph (UI.Style.introduction [ width (px 600) ])
         [ UI.Text.simpleText """
     Voorspel de topscorer. Kies eerst het land, dan de speler. 9 punten als je het goed hebt.
     Let op: dit zijn de voorlopige selecties.
@@ -146,12 +143,7 @@ introduction =
         ]
 
 
-viewPlayers :
-    a
-    -> AnswerID
-    -> Topscorer
-    -> b
-    -> Element.Element UI.Style.Style variation Msg
+viewPlayers : a -> AnswerID -> Topscorer -> b -> Element.Element Msg
 viewPlayers bet answerId topscorer teamData =
     let
         isSelectedTeam teamDatum =
@@ -184,27 +176,23 @@ viewPlayers bet answerId topscorer teamData =
     in
     case selectedTeam of
         Nothing ->
-            Element.empty
+            Element.none
 
         Just teamWP ->
-            Element.wrappedRow UI.Style.None
-                [ width (px 600), padding 10, spacing 7 ]
+            Element.wrappedRow (UI.Style.none [ width (px 600), padding 10, spacing 7 ])
                 (List.map (mkPlayerButton (SelectPlayer answerId)) (players teamWP))
 
 
-mkTeamButton :
-    (Team -> a)
-    -> ( { b | team : Team }, IsSelected )
-    -> Element.Element UI.Style.Style variation a
+mkTeamButton : (Team -> Msg) -> ( { b | team : Team }, IsSelected ) -> Element.Element Msg
 mkTeamButton act ( teamDatum, isSelected ) =
     let
         c =
             case isSelected of
                 Selected ->
-                    UI.Style.TBSelected
+                    UI.Style.Selected
 
                 _ ->
-                    UI.Style.TBPotential
+                    UI.Style.Potential
 
         team =
             .team teamDatum
@@ -218,10 +206,7 @@ mkTeamButton act ( teamDatum, isSelected ) =
     UI.Button.teamButton c msg team
 
 
-mkPlayerButton :
-    (String -> a)
-    -> ( String, IsSelected )
-    -> Element.Element UI.Style.Style variation a
+mkPlayerButton : (String -> Msg) -> ( String, IsSelected ) -> Element.Element Msg
 mkPlayerButton act ( player, isSelected ) =
     let
         c =

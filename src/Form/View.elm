@@ -1,8 +1,7 @@
 module Form.View exposing (view)
 
 import Browser
-import Element
-import Element.Attributes exposing (padding, paddingXY, spacing)
+import Element exposing (padding, paddingXY, spacing)
 import Form.Info
 import Form.Question
 import Form.QuestionSet
@@ -32,7 +31,7 @@ view model =
                     viewCard model model.idx card_
 
                 Nothing ->
-                    Element.empty
+                    Element.none
 
         card =
             getCard
@@ -40,7 +39,7 @@ view model =
 
         body =
             viewCardChrome model card model.idx
-                |> Element.layout UI.Style.stylesheet
+                |> Element.layout (UI.Style.body [])
 
         title =
             "Euro 2020"
@@ -48,7 +47,7 @@ view model =
     { title = title, body = [ body ] }
 
 
-viewCard : Model Msg -> Int -> Card -> Element.Element UI.Style.Style variation Msg
+viewCard : Model Msg -> Int -> Card -> Element.Element Msg
 viewCard model i card =
     case card of
         IntroCard intro ->
@@ -82,7 +81,7 @@ viewCard model i card =
             Form.Submit.view model submittable
 
 
-viewPill : Model Msg -> Int -> ( Int, Card ) -> Element.Element UI.Style.Style variation Msg
+viewPill : Model Msg -> Int -> ( Int, Card ) -> Element.Element Msg
 viewPill model idx ( i, card ) =
     let
         semantics =
@@ -135,11 +134,7 @@ viewPill model idx ( i, card ) =
         contents
 
 
-viewCardChrome :
-    Model Msg
-    -> Element.Element UI.Style.Style variation Msg
-    -> Int
-    -> Element.Element UI.Style.Style variation Msg
+viewCardChrome : Model Msg -> Element.Element Msg -> Int -> Element.Element Msg
 viewCardChrome model card i =
     let
         next =
@@ -160,10 +155,9 @@ viewCardChrome model card i =
         pillsPlus =
             prevPill
                 :: List.append pills [ nextPill ]
-                |> Element.wrappedRow UI.Style.None [ spacing 7, padding 0 ]
+                |> Element.wrappedRow (UI.Style.none [ spacing 7, padding 0 ])
     in
-    Element.column UI.Style.None
-        [ spacing 20, paddingXY 70 20 ]
+    Element.column (UI.Style.none [ spacing 20, paddingXY 70 20 ])
         [ pillsPlus
         , card
         ]

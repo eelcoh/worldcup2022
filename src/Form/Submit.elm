@@ -44,7 +44,7 @@ import UI.Text
 --             ( Bets.Init.bet, Cmd.none, Just Reset )
 
 
-view : Model Msg -> Bool -> Element.Element UI.Style.Style variation Msg
+view : Model Msg -> Bool -> Element.Element Msg
 view model submittable =
     let
         isComplete card =
@@ -87,8 +87,7 @@ view model submittable =
         -- ( _, Reset ) ->
         --     ( introSubmitted, UI.Style.Inactive, Restart, "opnieuw" )
     in
-    Element.column UI.Style.None
-        []
+    Element.column (UI.Style.none [])
         [ introText
         , UI.Button.submit semantics msg buttonText
         ]
@@ -132,32 +131,31 @@ view model submittable =
 --         ]
 
 
-introSubmittable : Element.Element UI.Style.Style variation msg
+introSubmittable : Element.Element Msg
 introSubmittable =
-    Element.paragraph UI.Style.None [] [ UI.Text.simpleText "Het formulier is compleet. Klik op inzenden om het in te sturen" ]
+    Element.paragraph (UI.Style.none []) [ UI.Text.simpleText "Het formulier is compleet. Klik op inzenden om het in te sturen" ]
 
 
-introSubmitting : Element.Element UI.Style.Style variation msg
+introSubmitting : Element.Element Msg
 introSubmitting =
-    Element.paragraph UI.Style.None [] [ UI.Text.simpleText "Het formulier is compleet. Klik op inzenden om het in te sturen. Verzenden...." ]
+    Element.paragraph (UI.Style.none []) [ UI.Text.simpleText "Het formulier is compleet. Klik op inzenden om het in te sturen. Verzenden...." ]
 
 
-introNotReady : Element.Element UI.Style.Style variation msg
+introNotReady : Element.Element Msg
 introNotReady =
-    Element.paragraph UI.Style.None [] [ UI.Text.simpleText "Het formulier is nog niet helemaal ingevuld. Je kunt het nog niet insturen. Kijk op de 'tabs' bovenin welke er nog rood zijn." ]
+    Element.paragraph (UI.Style.none []) [ UI.Text.simpleText "Het formulier is nog niet helemaal ingevuld. Je kunt het nog niet insturen. Kijk op de 'tabs' bovenin welke er nog rood zijn." ]
 
 
-introSubmitted : Element.Element UI.Style.Style variation msg
+introSubmitted : Element.Element Msg
 introSubmitted =
-    Element.paragraph UI.Style.None
-        []
+    Element.paragraph (UI.Style.none [])
         [ UI.Text.simpleText "Dank voor het meedoen! Neem contact op met Arnaud of Eelco over het overmaken dan wel inleveren van de 5 euro inlegkosten."
         , UI.Text.simpleText "Misschien wil je nog een keer meedoen? Vul dan gewoon het "
-        , Element.link "/voetbalpool/formulier" <| Element.el UI.Style.Link [] (Element.text "formulier")
+        , Element.link [] { url = "/voetbalpool/formulier", label = Element.text "formulier" }
         , UI.Text.simpleText "opnieuw in."
         ]
 
 
-introSubmittedErr : Element.Element UI.Style.Style variation msg
+introSubmittedErr : Element.Element Msg
 introSubmittedErr =
-    Element.paragraph UI.Style.None [] [ UI.Text.simpleText "Whoops! Daar ging iets niet goed. " ]
+    Element.paragraph (UI.Style.none []) [ UI.Text.simpleText "Whoops! Daar ging iets niet goed. " ]

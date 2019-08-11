@@ -3,8 +3,7 @@ module Form.Questions.Bracket exposing (Msg, update, view)
 import Bets.Bet exposing (setTeam)
 import Bets.Types exposing (Answer, AnswerID, AnswerT(..), Bet, Bracket(..), Qualifier, Slot, Team, Winner(..))
 import Bets.Types.Bracket as B
-import Element
-import Element.Attributes exposing (alignRight, center, paddingXY, px, spacing, spread, width)
+import Element exposing (alignRight, centerX, paddingXY, px, spaceEvenly, spacing, width)
 import Form.Questions.Types exposing (QState)
 import Html exposing (..)
 import UI.Button
@@ -55,7 +54,7 @@ update msg bet qState =
             ( newBet, { qState | next = Nothing }, Cmd.none )
 
 
-view : Bet -> QState -> Element.Element UI.Style.Style variation Msg
+view : Bet -> QState -> Element.Element Msg
 view bet qQState =
     let
         mAnswer =
@@ -71,11 +70,11 @@ view bet qQState =
          kampioen 13 punten."""
 
         introduction =
-            Element.paragraph UI.Style.None [] [ UI.Text.simpleText introtext ]
+            Element.paragraph [] [ UI.Text.simpleText introtext ]
     in
     case mAnswer of
         Just (( answerId, AnswerBracket bracket _ ) as answer) ->
-            Element.column UI.Style.None
+            Element.column
                 []
                 [ header
                 , introduction
@@ -83,10 +82,10 @@ view bet qQState =
                 ]
 
         _ ->
-            Element.empty
+            Element.none
 
 
-viewBracket : Bet -> Answer -> Bracket -> Element.Element UI.Style.Style variation Msg
+viewBracket : Bet -> Answer -> Bracket -> Element.Element Msg
 viewBracket bet answer bracket =
     {-
        mn37 = MatchNode "m37" None tnra tnrc -- "2016/06/15 15:00" saintetienne (Just "W37")
@@ -163,15 +162,15 @@ viewBracket bet answer bracket =
         champion =
             mkButtonChamp final
     in
-    Element.column UI.Style.None
+    Element.column
         [ spacing 10, width (px 600) ]
-        [ Element.row UI.Style.None [ spread ] [ m49, m50, m53, m54 ]
-        , Element.row UI.Style.None [ spread, paddingXY 76 0 ] [ m57, m58 ]
-        , Element.row UI.Style.None [ center ] [ m61 ]
-        , Element.row UI.Style.None [ alignRight, spacing 44 ] [ m64, champion ]
-        , Element.row UI.Style.None [ center ] [ m62 ]
-        , Element.row UI.Style.None [ spread, paddingXY 76 0 ] [ m59, m60 ]
-        , Element.row UI.Style.None [ spread ] [ m51, m52, m55, m56 ]
+        [ Element.row [ spaceEvenly ] [ m49, m50, m53, m54 ]
+        , Element.row [ spaceEvenly, paddingXY 76 0 ] [ m57, m58 ]
+        , Element.row [ centerX ] [ m61 ]
+        , Element.row [ alignRight, spacing 44 ] [ m64, champion ]
+        , Element.row [ centerX ] [ m62 ]
+        , Element.row [ spaceEvenly, paddingXY 76 0 ] [ m59, m60 ]
+        , Element.row [ spaceEvenly ] [ m51, m52, m55, m56 ]
         ]
 
 
@@ -179,7 +178,7 @@ viewMatchWinner :
     a
     -> ( AnswerID, a2 )
     -> Maybe Bracket
-    -> Element.Element UI.Style.Style variation Msg
+    -> Element.Element Msg
 viewMatchWinner bet answer mBracket =
     case mBracket of
         Just (MatchNode slot winner home away rd _) ->
@@ -193,10 +192,10 @@ viewMatchWinner bet answer mBracket =
                 dash =
                     text " - "
             in
-            Element.row UI.Style.None [ spacing 7 ] [ homeButton, awayButton ]
+            Element.row [ spacing 7 ] [ homeButton, awayButton ]
 
         _ ->
-            Element.empty
+            Element.none
 
 
 mkButton :
@@ -205,19 +204,19 @@ mkButton :
     -> Slot
     -> IsWinner
     -> Bracket
-    -> Element.Element UI.Style.Style variation Msg
+    -> Element.Element Msg
 mkButton answer wnnr slot isSelected bracket =
     let
         s =
             case isSelected of
                 Yes ->
-                    UI.Style.TBSelected
+                    UI.Style.Selected
 
                 No ->
-                    UI.Style.TBPotential
+                    UI.Style.Potential
 
                 Undecided ->
-                    UI.Style.TBPotential
+                    UI.Style.Potential
 
         answerId =
             Tuple.first answer
@@ -234,7 +233,7 @@ mkButton answer wnnr slot isSelected bracket =
     UI.Button.maybeTeamButton s msg team
 
 
-mkButtonChamp : Maybe Bracket -> Element.Element UI.Style.Style variation msg
+mkButtonChamp : Maybe Bracket -> Element.Element Msg
 mkButtonChamp mBracket =
     let
         mTeam =
@@ -244,10 +243,10 @@ mkButtonChamp mBracket =
         s =
             case mTeam of
                 Just t ->
-                    UI.Style.TBSelected
+                    UI.Style.Selected
 
                 Nothing ->
-                    UI.Style.TBPotential
+                    UI.Style.Potential
 
         attrs =
             []
