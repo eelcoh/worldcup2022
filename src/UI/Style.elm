@@ -1,59 +1,57 @@
-module UI.Style exposing (ButtonSemantics(..), ScoreButtonSemantics(..), Style(..), TeamButtonSemantics(..), scale, stylesheet)
+module UI.Style exposing
+    ( ButtonSemantics(..)
+    , activeMatch
+    , body
+    , bullet
+    , button
+    , buttonActive
+    , buttonInactive
+    , buttonIrrelevant
+    , buttonPerhaps
+    , buttonPotential
+    , buttonRight
+    , buttonSelected
+    , buttonWrong
+    , emphasis
+    , error
+    , flag
+    , flagImage
+    , groupBadge
+    , groupPosition
+    , groupPositions
+    , header1
+    , header2
+    , introduction
+    , link
+    , matchRow
+    , matches
+    , menu
+    , none
+    , page
+    , score
+    , scoreButton
+    , scoreButtonSBPotential
+    , scoreButtonSBSelected
+    , scoreColumn
+    , scoreInput
+    , scoreRow
+    , teamButton
+    , teamButtonTBPotential
+    , teamButtonTBSelected
+    , teamName
+    , text
+    , textInput
+    , wrapper
+    )
 
--- import Color exposing (..)
-
-import Style exposing (..)
-import Style.Border as Border
-import Style.Color as Color
-import Style.Font as Font
-import Style.Scale as Scale
-import UI.Color exposing (..)
-
-
-type Style
-    = Button ButtonSemantics
-    | ScoreButton ScoreButtonSemantics
-    | TeamButton TeamButtonSemantics
-    | MatchRow ButtonSemantics
-    | Matches
-    | ActiveMatch
-    | TeamNameFull
-    | Flag
-    | FlagImage
-    | TeamName
-    | TeamBox
-    | Score
-    | ScoreRow
-    | ScoreColumn
-    | ScoreInput
-    | Introduction
-    | Text
-    | Menu
-    | Header1
-    | Header2
-    | Error
-    | ErrorText
-    | Page
-    | Emphasis
-    | Wrapper
-    | GroupBadge
-    | GroupPosition
-    | GroupPositions
-    | None
-    | Bullet
-    | TextInput
-    | Link
-
-
-type ScoreButtonSemantics
-    = SBPotential
-    | SBSelected
-
-
-type TeamButtonSemantics
-    = TBPotential
-    | TBSelected
-    | TBInactive
+import Element
+import Element.Background as Background
+import Element.Border as Border
+import Element.Events as Events
+import Element.Font as Font
+import Html.Attributes
+import UI.Color as Color
+import UI.Font exposing (scaled)
 
 
 type ButtonSemantics
@@ -67,362 +65,405 @@ type ButtonSemantics
     | Selected
 
 
+scoreButton semantics attrs =
+    case semantics of
+        Potential ->
+            scoreButtonSBPotential ++ attrs
 
--- grey : Color
--- grey =
---     rgb 96 125 139
--- potential : Color
--- potential =
---     UI.Color.white
--- browngrey : Color
--- browngrey =
---     rgb 215 204 200
--- UI.Color.white : Color
--- UI.Color.white =
---     rgb 255 255 255
--- grey : Color
--- grey =
---     rgb 96 125 139
--- potential : Color
--- potential =
---     UI.Color.white
--- browngrey : Color
--- browngrey =
---     rgb 215 204 200
--- UI.Color.white : Color
--- UI.Color.white =
---     rgb 255 255 255
--- UI.Color.orange : Color
--- UI.Color.orange =
---     rgb 230 74 25
--- selected : Color
--- selected =
---     black
--- primary : Color
--- primary =
---     rgb 0x00 0x60 0x64
--- primaryDark : Color
--- primaryDark =
---     rgb 0x00 0x36 0x3A
--- primaryLight : Color
--- primaryLight =
---     rgb 0x42 0x8E 0x92
--- secondary : Color
--- secondary =
---     rgb 0xBC 0xAA 0xA4
--- secondaryDark : Color
--- secondaryDark =
---     rgb 0x8C 0x7B 0x75
--- secondaryLight : Color
--- secondaryLight =
---     rgb 0xEF 0xDC 0xD5
--- primaryText : Color
--- primaryText =
---     rgb 0xFF 0xFF 0xFF
--- secondaryText : Color
--- secondaryText =
---     rgb 0 0 0
--- rgb 0 150 136
+        Selected ->
+            scoreButtonSBSelected ++ attrs
+
+        _ ->
+            buttonWrong ++ attrs
 
 
-scale : Int -> Float
-scale =
-    Scale.modular 16 1.618
+teamButton semantics attrs =
+    case semantics of
+        Potential ->
+            teamButtonTBPotential ++ attrs
+
+        Selected ->
+            teamButtonTBSelected ++ attrs
+
+        _ ->
+            buttonWrong ++ attrs
 
 
-stylesheet : StyleSheet Style variation
-stylesheet =
-    Style.styleSheet
-        [ style Header1
-            [ Font.size (scale 5)
-            , Color.text primaryText
-            , Color.background primary
-            , Font.typeface
-                [ Font.font "Asap"
-                , Font.cursive
-                ]
-            ]
-        , style Header2
-            [ Font.size 28
-            , Color.text secondaryText
-            , Font.typeface
-                [ Font.font "Asap"
-                , Font.cursive
-                ]
-            ]
-        , style Menu
-            [ Font.size 20
-            , Color.text primaryText
-            , Color.background primary
-            , Font.typeface
-                [ Font.font "Asap"
-                , Font.sansSerif
-                ]
-            ]
-        , style Error
-            [ Color.text red
-            , Color.background secondaryLight
-            , Border.all 1
-            , Color.border red
-            , Font.size 20
-            , Font.lineHeight 1.4
-            , Font.typeface
-                [ Font.font "Lora"
-                ]
-            ]
-        , style Text
-            [ Font.size 20
-            , Font.lineHeight 1.6
-            , Font.typeface
-                [ Font.font "Lora"
-                ]
-            ]
-        , style Introduction
-            [ Font.size 20
-            , Font.lineHeight 1.4
-            , Font.typeface
-                [ Font.font "Lora"
-                ]
-            ]
-        , style Page
-            []
-        , style (Button Active)
-            [ Color.background secondary
-            , Color.text secondaryText
-            , Border.all 1
-            , hover
-                [ cursor "pointer"
-                , Color.background secondaryLight
-                , Color.text secondaryText
-                ]
-            , Font.typeface
-                [ Font.font "Roboto Mono"
-                ]
-            ]
-        , style (Button Inactive)
-            [ Color.background secondaryDark
-            , Color.text secondaryText
-            , Border.all 1
-            , Font.lineHeight 1.0
-            , hover [ cursor "not-allowed" ]
-            , Font.typeface
-                [ Font.font "Roboto Mono"
-                ]
-            ]
-        , style (Button Wrong)
-            [ Color.text wrong
-            , Border.all 1
-            , hover [ cursor "pointer" ]
-            , Font.typeface
-                [ Font.font "Roboto Mono"
-                ]
-            ]
-        , style (Button Right)
-            [ Color.text secondaryText
-            , Border.all 1
-            , hover [ cursor "pointer" ]
-            , Font.typeface
-                [ Font.font "Roboto Mono"
-                ]
-            ]
-        , style (Button Perhaps)
-            [ Color.background secondary
-            , Color.text secondaryText
-            , Border.all 1
-            , hover [ cursor "pointer" ]
-            , Font.typeface
-                [ Font.font "Roboto Mono"
-                ]
-            ]
-        , style (Button Irrelevant)
-            [ Color.border secondaryLight
-            , Border.all 1
-            , Color.text secondaryText
-            , hover [ cursor "pointer" ]
-            , Font.typeface
-                [ Font.font "Roboto Mono"
-                ]
-            ]
-        , style (Button Potential)
-            [ Color.background secondary
-            , Color.text secondaryText
-            , Color.border secondary
-            , Border.all 1
-            , hover
-                [ cursor "pointer"
-                , Color.border secondaryLight
-                , Color.background primaryDark
-                , Color.text primaryText
-                ]
-            , Font.typeface
-                [ Font.font "Roboto Mono"
-                ]
-            ]
-        , style (Button Selected)
-            [ Color.background secondaryLight
-            , Color.text secondaryText
-            , Border.all 1
-            , Color.border UI.Color.primary
-            , hover
-                [ cursor "pointer"
-                , Color.background primaryDark
-                , Color.text primaryText
-                , Color.border UI.Color.orange
-                ]
-            , Font.typeface
-                [ Font.font "Roboto Mono"
-                ]
-            ]
-        , style (ScoreButton SBPotential)
-            [ Color.background secondary
-            , Color.text secondaryText
-            , Border.all 1
-            , Color.border secondary
-            , Font.lineHeight 1.0
-            , Font.center
-            , Font.size 15
-            , hover [ cursor "pointer" ]
-            , Font.typeface
-                [ Font.font "Roboto Mono"
-                ]
-            ]
-        , style (ScoreButton SBSelected)
-            [ Color.background secondaryLight
-            , Color.text secondaryText
-            , Border.all 1
-            , Color.border secondary
-            , Font.lineHeight 1.0
-            , Font.center
-            , Font.size 15
-            , hover [ cursor "pointer" ]
-            , Font.typeface
-                [ Font.font "Roboto Mono"
-                ]
-            ]
-        , style (TeamButton TBPotential)
-            [ Color.background secondaryLight
-            , Color.text secondaryText
-            , Border.all 1
-            , Color.border secondaryLight
-            , Font.lineHeight 1.0
-            , Font.center
-            , Font.size 15
-            , hover [ cursor "pointer" ]
-            , Font.typeface
-                [ Font.font "Roboto Mono"
-                ]
-            ]
-        , style (TeamButton TBSelected)
-            [ Color.background secondaryLight
-            , Color.text secondaryText
-            , Border.all 1
-            , Color.border UI.Color.primary
-            , Font.lineHeight 1.0
-            , Font.center
-            , Font.size 15
-            , hover [ cursor "pointer" ]
-            , Font.typeface
-                [ Font.font "Roboto Mono"
-                ]
-            ]
-        , style Flag
-            []
-        , style FlagImage
-            []
-        , style TeamName
-            [ Font.center
-            ]
-        , style TeamBox
-            []
-        , style ScoreRow
-            []
-        , style ScoreColumn
-            []
-        , style ScoreInput
-            [ Border.all 2
-            , Color.border secondaryLight
-            , Font.typeface
-                [ Font.font "Roboto Mono"
-                ]
-            ]
-        , style Score
-            [ Font.center
-            , Font.typeface
-                [ Font.font "Roboto Mono"
-                ]
-            ]
-        , style Matches
-            []
-        , style ActiveMatch
-            []
-        , style (MatchRow Active)
-            [ Color.background secondaryLight
-            , Color.text secondaryText
-            , Font.size (scale 1)
-            , Font.center
-            , hover [ cursor "pointer" ]
-            , Font.typeface
-                [ Font.font "Roboto Mono"
-                ]
-            ]
-        , style (MatchRow Selected)
-            [ Color.background secondaryLight
-            , Color.text secondaryText
-            , Font.size (scale 1)
-            , Font.center
-            , hover [ cursor "pointer" ]
-            , Font.typeface
-                [ Font.font "Roboto Mono"
-                ]
-            ]
-        , style (MatchRow Potential)
-            [ Color.background secondary
-            , Color.text secondaryText
-            , Font.size (scale 1)
-            , Font.center
-            , hover [ cursor "pointer" ]
-            , Font.typeface
-                [ Font.font "Roboto Mono"
-                ]
-            ]
-        , style TeamNameFull
-            [ Font.size 20
-            , Font.center
-            , Font.typeface
-                [ Font.font "Roboto Mono"
-                ]
-            ]
-        , style TeamBox
-            [ Color.background primaryDark
-            , Color.text primaryText
-            , Font.size (scale 1)
-            , Font.center
-            ]
-        , style Emphasis
-            [ Color.text UI.Color.orange
-            , Font.weight 700
-            ]
-        , style Wrapper
-            []
-        , style GroupBadge
-            []
-        , style GroupPosition
-            []
-        , style GroupPositions
-            []
-        , style None
-            []
-        , style Bullet
-            [ Color.background UI.Color.orange ]
-        , style TextInput
-            [ Border.all 2
-            , Color.border secondaryLight
-            , Font.typeface
-                [ Font.font "Asap"
-                ]
-            ]
-        , style Link
-            [ Color.text UI.Color.orange
-            , hover [ cursor "pointer" ]
-            ]
+button : ButtonSemantics -> List (Element.Attribute msg) -> List (Element.Attribute msg)
+button semantics attrs =
+    case semantics of
+        Active ->
+            buttonActive ++ attrs
+
+        Inactive ->
+            buttonInactive ++ attrs
+
+        Wrong ->
+            buttonWrong ++ attrs
+
+        Right ->
+            buttonRight ++ attrs
+
+        Perhaps ->
+            buttonPerhaps ++ attrs
+
+        Irrelevant ->
+            buttonIrrelevant ++ attrs
+
+        Potential ->
+            buttonPotential ++ attrs
+
+        Selected ->
+            buttonSelected ++ attrs
+
+
+header1 attrs =
+    attrs
+        ++ [ Background.color Color.primary
+           , Font.size (scaled 3)
+           , Font.color Color.primaryText
+           , UI.Font.asap
+           , Font.italic
+           ]
+
+
+header2 attrs =
+    attrs
+        ++ [ UI.Font.asap
+           , Font.italic
+           , Font.size (scaled 2)
+           , Font.color Color.secondaryText
+           ]
+
+
+body attrs =
+    []
+
+
+menu attrs =
+    attrs
+        ++ [ Background.color Color.primary
+           , Font.size (scaled 1)
+           , Font.color Color.primaryText
+           , UI.Font.asap
+           ]
+
+
+text attrs =
+    attrs
+        ++ [ UI.Font.lora
+           , Font.italic
+           , Font.size (scaled 1)
+           , Element.spacing 2
+           ]
+
+
+introduction attrs =
+    attrs
+        ++ [ UI.Font.lora
+           , Font.italic
+           , Font.size (scaled 1)
+           , Element.spacing 2
+           ]
+
+
+error attrs =
+    attrs
+        ++ [ Background.color Color.secondaryLight
+           , Border.width 1
+           , Border.color Color.red
+           , Font.color Color.red
+           , Font.size (scaled 1)
+           , Element.spacing 2
+           , UI.Font.lora
+           ]
+
+
+page attrs =
+    attrs
+        ++ []
+
+
+buttonActive =
+    [ Background.color Color.secondary
+    , Font.color Color.secondaryText
+    , Border.width 1
+    , Element.pointer
+    , Element.mouseOver
+        [ Background.color Color.secondaryLight
+        , Font.color Color.secondaryText
         ]
+    , UI.Font.button
+    ]
+
+
+buttonInactive =
+    [ Background.color Color.secondaryDark
+    , Font.color Color.secondaryText
+    , Border.width 1
+    , Element.spacing 10
+    , Element.htmlAttribute <| Html.Attributes.style "cursor" "not-allowed"
+    , UI.Font.button
+    ]
+
+
+buttonWrong =
+    [ Font.color Color.wrong
+    , Border.width 1
+    , Element.pointer
+    , UI.Font.button
+    ]
+
+
+buttonRight =
+    [ Font.color Color.secondaryText
+    , Border.width 1
+    , Element.pointer
+    , UI.Font.button
+    ]
+
+
+buttonPerhaps =
+    [ Background.color Color.secondary
+    , Font.color Color.secondaryText
+    , Border.width 1
+    , Element.pointer
+    , UI.Font.button
+    ]
+
+
+buttonIrrelevant =
+    [ Border.color Color.secondaryLight
+    , Border.width 1
+    , Font.color Color.secondaryText
+    , Element.pointer
+    , UI.Font.button
+    ]
+
+
+buttonPotential =
+    [ Background.color Color.secondary
+    , Font.color Color.secondaryText
+    , Border.color Color.secondary
+    , Border.width 1
+    , Element.pointer
+    , Element.mouseOver
+        [ Border.color Color.secondaryLight
+        , Background.color Color.primaryDark
+        , Font.color Color.primaryText
+        ]
+    , UI.Font.button
+    ]
+
+
+buttonSelected =
+    [ Background.color Color.secondaryLight
+    , Font.color Color.secondaryText
+    , Border.width 1
+    , Border.color Color.primary
+    , Element.pointer
+    , Element.mouseOver
+        [ Background.color Color.primaryDark
+        , Font.color Color.primaryText
+        , Border.color Color.orange
+        ]
+    , UI.Font.button
+    ]
+
+
+scoreButtonSBPotential =
+    [ Background.color Color.secondary
+    , Font.color Color.secondaryText
+    , Border.width 1
+    , Border.color Color.secondary
+    , Element.spacing 10
+    , Font.center
+    , Font.size (scaled 1)
+    , Element.pointer
+    , UI.Font.button
+    ]
+
+
+scoreButtonSBSelected =
+    [ Background.color Color.secondaryLight
+    , Font.color Color.secondaryText
+    , Border.width 1
+    , Border.color Color.secondary
+    , Element.spacing 10
+    , Font.center
+    , Font.size (scaled 1)
+    , Element.pointer
+    , UI.Font.button
+    ]
+
+
+teamButtonTBPotential =
+    [ Background.color Color.secondaryLight
+    , Font.color Color.secondaryText
+    , Border.width 1
+    , Border.color Color.secondaryLight
+    , Element.spacing 10
+    , Font.center
+    , Font.size (scaled 1)
+    , Element.pointer
+    , UI.Font.button
+    ]
+
+
+teamButtonTBSelected =
+    [ Background.color Color.secondaryLight
+    , Font.color Color.secondaryText
+    , Border.width 1
+    , Border.color Color.primary
+    , Element.spacing 10
+    , Font.center
+    , Font.size (scaled 1)
+    , Element.pointer
+    , UI.Font.button
+    ]
+
+
+flag attrs =
+    attrs
+        ++ []
+
+
+flagImage attrs =
+    attrs
+        ++ []
+
+
+teamName attrs =
+    attrs
+        ++ [ Font.center
+           ]
+
+
+scoreRow attrs =
+    attrs
+        ++ []
+
+
+scoreColumn attrs =
+    attrs
+        ++ []
+
+
+scoreInput attrs =
+    attrs
+        ++ [ Border.width 2
+           , Border.color Color.secondaryLight
+           , UI.Font.score
+           ]
+
+
+score attrs =
+    attrs
+        ++ [ Font.center
+           , UI.Font.score
+           ]
+
+
+matches attrs =
+    attrs
+        ++ []
+
+
+activeMatch attrs =
+    attrs
+        ++ []
+
+
+matchRow semantics attrs =
+    let
+        base =
+            case semantics of
+                Active ->
+                    matchRowActive
+
+                Selected ->
+                    matchRowSelected
+
+                Potential ->
+                    matchRowPotential
+
+                _ ->
+                    matchRowPotential
+    in
+    attrs ++ base
+
+
+matchRowActive =
+    [ Background.color Color.secondaryLight
+    , Font.color Color.secondaryText
+    , Font.size (scaled 1)
+    , Font.center
+    , Element.pointer
+    , UI.Font.match
+    ]
+
+
+matchRowSelected =
+    [ Background.color Color.secondaryLight
+    , Font.color Color.secondaryText
+    , Font.size (scaled 1)
+    , Font.center
+    , Element.pointer
+    , UI.Font.match
+    ]
+
+
+matchRowPotential =
+    [ Background.color Color.secondary
+    , Font.color Color.secondaryText
+    , Font.size (scaled 1)
+    , Font.center
+    , Element.pointer
+    , UI.Font.match
+    ]
+
+
+emphasis attrs =
+    attrs
+        ++ [ Font.color Color.orange
+           , Font.extraBold
+           ]
+
+
+wrapper attrs =
+    attrs
+
+
+groupBadge attrs =
+    attrs
+
+
+groupPosition attrs =
+    attrs
+
+
+groupPositions attrs =
+    attrs
+
+
+none attrs =
+    attrs
+
+
+bullet attrs =
+    [ Background.color Color.orange ] ++ attrs
+
+
+textInput attrs =
+    attrs
+        ++ [ Border.width 2
+           , Border.color Color.secondaryLight
+           , UI.Font.input
+           ]
+
+
+link attrs =
+    attrs
+        ++ [ Font.color Color.orange
+           , Element.pointer
+           ]

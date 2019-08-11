@@ -7,8 +7,7 @@ module Form.Info exposing
 import Bets.Types exposing (Bet)
 import Bets.Types.Group as Group
 import Bets.Types.Round as Round
-import Element
-import Element.Attributes exposing (height, padding, paddingBottom, paddingTop, px, spacing, width)
+import Element exposing (height, padding, px, spacing, width)
 import Form.Types exposing (FormInfoMsg(..), Info(..))
 import UI.Style
 import UI.Text
@@ -25,13 +24,13 @@ update act bet =
             ( bet, Cmd.none )
 
 
-view : Info -> Element.Element UI.Style.Style variation msg
+view : Info -> Element.Element Msg
 view info =
     let
         cardContents =
             case info of
                 Intro ->
-                    Element.column UI.Style.None [] introduction
+                    Element.column (UI.Style.none []) introduction
 
                 FirstRoundIntro ->
                     UI.Text.simpleText "Hello FirstRoundIntro"
@@ -66,22 +65,19 @@ view info =
     cardContents
 
 
-introduction : List (Element.Element UI.Style.Style variation msg)
+introduction : List (Element.Element Msg)
 introduction =
     [ UI.Text.displayHeader "Hier is de voetbalpool weer!"
-    , Element.paragraph UI.Style.Introduction
-        [ width (px 600), spacing 7 ]
+    , Element.paragraph (UI.Style.introduction [ width (px 600), spacing 7 ])
         [ Element.text "Welkom op het formulier voor de voetbalpool. Vul achtereenvolgens de volgende vragen in:" ]
-    , Element.column UI.Style.None
-        [ width (px 600), spacing 7, paddingTop 10, paddingBottom 10 ]
+    , Element.column (UI.Style.none [ width (px 600), spacing 7, Element.paddingXY 0 10 ])
         [ UI.Text.bulletText "Uitslagen van de wedstrijden voor iedere poule."
         , UI.Text.bulletText "De landen die de volgende ronde halen. Het is wat ingewikkeld. Eerst moet je de nummers 1 2 en 3 in de eindstand van een poule voorspellen. De nummers 1 en 2 gaan door. Van de zes nummers 3 gaan er maar vier door. Die moet je ook nog even voorspellen."
         , UI.Text.bulletText "Klik vervolgens het schema volledig bij elkaar."
         , UI.Text.bulletText "Selecteer je topscorer."
         , UI.Text.bulletText "En vertel ons wie je bent"
         ]
-    , Element.paragraph UI.Style.Introduction
-        [ width (px 600), spacing 7 ]
+    , Element.paragraph (UI.Style.introduction [ width (px 600), spacing 7 ])
         [ UI.Text.simpleText "Als voorgaande jaren is de inleg "
         , UI.Text.boldText "vijf euro"
         , UI.Text.simpleText ", en de verdeling 50%, 30% en 20% voor de winnaar, nummer 2 en nummer 3. Bij gelijke stand wordt de opbrengst gedeeld."

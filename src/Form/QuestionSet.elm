@@ -41,7 +41,7 @@ getAnswer cursor answers =
         |> List.head
 
 
-view : Model -> Bet -> Element.Element UI.Style.Style variation Msg
+view : Model -> Bet -> Element.Element Msg
 view model bet =
     let
         answers =

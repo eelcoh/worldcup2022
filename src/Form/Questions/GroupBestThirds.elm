@@ -2,8 +2,7 @@ module Form.Questions.GroupBestThirds exposing (Msg, update, view)
 
 import Bets.Bet exposing (candidates, getAnswer, setTeam)
 import Bets.Types exposing (Answer, AnswerID, AnswerT(..), Bet, Candidates, Group, Pos(..), Team)
-import Element exposing (layout)
-import Element.Attributes exposing (padding, px, spacing, width)
+import Element exposing (layout, padding, px, spacing, width)
 import Form.Questions.Types exposing (QState)
 import UI.Button
 import UI.Style
@@ -34,7 +33,7 @@ update msg bet qState =
             ( newBet, { qState | next = Nothing }, Cmd.none )
 
 
-view : Bet -> QState -> Element.Element UI.Style.Style variation Msg
+view : Bet -> QState -> Element.Element Msg
 view bet qState =
     let
         mAnswer =
@@ -56,44 +55,38 @@ view bet qState =
                         rowItems =
                             List.map (displayTeam (act answerId)) (cs answer)
                     in
-                    Element.row UI.Style.GroupPosition
-                        [ padding 10, spacing 7 ]
+                    Element.row (UI.Style.groupPosition [ padding 10, spacing 7 ])
                         rowItems
 
                 _ ->
-                    Element.empty
+                    Element.none
     in
-    Element.column UI.Style.None
-        [ width (px 600) ]
+    Element.column (UI.Style.none [ width (px 600) ])
         [ header
         , introduction
         , body
         ]
 
 
-introduction : Element.Element UI.Style.Style variation msg
+introduction : Element.Element Msg
 introduction =
-    Element.paragraph UI.Style.Introduction
-        [ width (px 600), spacing 7 ]
+    Element.paragraph (UI.Style.introduction [ width (px 600), spacing 7 ])
         [ Element.text "Van de zes beste nummers 3 gaan er vier door. Welke zijn dat? Voor elk land dat je juist hebt voorspeld voor de tweede ronde krijg je 1 punt." ]
 
 
-displayTeam :
-    (a -> Team -> b)
-    -> ( a, Team, Pos )
-    -> Element.Element UI.Style.Style variation b
+displayTeam : (a -> Team -> Msg) -> ( a, Team, Pos ) -> Element.Element Msg
 displayTeam act ( grp, team, pos ) =
     let
         c =
             case pos of
                 TopThird ->
-                    UI.Style.TBSelected
+                    UI.Style.Selected
 
                 Third ->
-                    UI.Style.TBPotential
+                    UI.Style.Potential
 
                 _ ->
-                    UI.Style.TBInactive
+                    UI.Style.Inactive
 
         msg =
             act grp team

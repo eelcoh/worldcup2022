@@ -1,88 +1,82 @@
-module UI.Team exposing (viewTeam, viewTeamEl, viewTeamFull, viewTeamLarge)
+module UI.Team exposing (viewTeam, viewTeamFull)
 
 import Bets.Types exposing (Team)
 import Bets.Types.Team as T
-import Element exposing (Element, column, el, image, layout, row)
-import Element.Attributes exposing (center, fill, height, padding, px, verticalCenter, verticalSpread, width)
-import Html exposing (Html, div, span, text)
-import Html.Attributes exposing (class)
-import UI.Style exposing (..)
+import Element exposing (Element, column, el, fill, height, image, layout, padding, px, row, width)
+import Element.Background as Background
+import Element.Border as Border
+import Element.Font as Font
+import UI.Color as Color
+import UI.Font exposing (scaled)
+import UI.Style as Style
 
 
-viewTeam_ : Maybe Team -> Html msg
-viewTeam_ team =
-    div [ class "team" ]
-        [ span [ class "flag" ] [ T.flag team ]
-        , Html.br [] []
-        , span [ class "team-name" ] [ text (T.mdisplay team) ]
-        ]
-
-
-viewTeam : Maybe Team -> Html msg
+viewTeam : Maybe Team -> Element msg
 viewTeam mTeam =
-    layout stylesheet <| viewTeamEl mTeam
-
-
-viewTeamEl : Maybe Team -> Element Style variation msg
-viewTeamEl team =
     let
-        teamName =
-            Maybe.map T.display team
+        teamNameTxt =
+            Maybe.map T.display mTeam
                 |> Maybe.withDefault "..."
 
+        flagUrl =
+            T.flagUrl mTeam
+
         img =
-            { src = T.flagUrl team
-            , caption =
-                teamName
+            { src = flagUrl
+            , description =
+                teamNameTxt
             }
     in
-    column TeamBox
-        [ verticalSpread, height (px 45), width (px 34) ]
-        [ row Flag
-            []
-            [ image FlagImage [] img
+    column teamBox
+        [ row [ Element.centerX ]
+            [ image [] img
             ]
-        , row TeamName
-            [ center ]
-            [ Element.el UI.Style.TeamName [ center ] (Element.text teamName) ]
+        , row teamName
+            [ Element.text teamNameTxt ]
         ]
 
 
-viewTeamFull : Maybe Team -> Element Style variation msg
+viewTeamFull : Maybe Team -> Element msg
 viewTeamFull team =
     let
-        teamName =
+        teamNameTxt =
             Maybe.map T.displayFull team
                 |> Maybe.withDefault "..."
 
         img =
             { src = T.flagUrl team
-            , caption =
-                teamName
+            , description =
+                teamNameTxt
             }
 
         w =
-            Element.Attributes.width (px 150)
+            Element.width (px 150)
 
         h =
-            Element.Attributes.height (px 82)
+            Element.height (px 82)
     in
-    column TeamBox
-        [ verticalSpread, h, w, center, padding 10 ]
-        [ row Flag
-            [ center ]
-            [ image FlagImage [] img
+    column teamBox
+        [ row [ Element.centerX ]
+            [ image [] img
             ]
-        , row TeamNameFull
-            [ center ]
-            [ Element.el UI.Style.TeamNameFull [ center ] (Element.text teamName) ]
+        , row teamName
+            [ Element.text teamNameTxt ]
         ]
 
 
-viewTeamLarge : Maybe Team -> Html msg
-viewTeamLarge team =
-    div [ class "team" ]
-        [ span [ class "flag" ] [ T.flag team ]
-        , Html.br [] []
-        , span [ class "team-name-lg" ] [ text (T.mdisplayFull team) ]
-        ]
+teamBox =
+    [ Element.spaceEvenly
+    , height (px 45)
+    , width (px 34)
+    , Background.color Color.primaryDark
+    , Font.color Color.primaryText
+    , Font.size (UI.Font.scaled 1)
+    , Font.center
+    ]
+
+
+teamName =
+    [ Font.center
+    , Font.size (UI.Font.scaled 1)
+    , Font.center
+    ]

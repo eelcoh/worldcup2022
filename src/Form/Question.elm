@@ -57,7 +57,7 @@ update msg bet qState =
             ( newBet, newQState, Cmd.map ParticipantAnswer fx )
 
 
-view : Bet -> QState -> Element.Element UI.Style.Style variation Msg
+view : Bet -> QState -> Element.Element Msg
 view bet qState =
     case qState.questionType of
         QGroupBestThirds ->
