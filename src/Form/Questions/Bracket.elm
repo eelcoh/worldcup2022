@@ -1,11 +1,16 @@
 module Form.Questions.Bracket exposing (Msg, update, view)
 
+import Arc2d exposing (Arc2d)
 import Bets.Bet exposing (setTeam)
 import Bets.Types exposing (Answer, AnswerID, AnswerT(..), Bet, Bracket(..), Qualifier, Slot, Team, Winner(..))
 import Bets.Types.Bracket as B
 import Element exposing (alignRight, centerX, paddingXY, px, spaceEvenly, spacing, width)
 import Form.Questions.Types exposing (QState)
+import Geometry.Svg as Svg
 import Html exposing (..)
+import Point2d exposing (Point2d)
+import Svg exposing (Svg)
+import Svg.Attributes as Attributes
 import UI.Button
 import UI.Style
 import UI.Text
