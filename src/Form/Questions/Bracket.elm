@@ -1,16 +1,19 @@
 module Form.Questions.Bracket exposing (Msg, update, view)
 
 import Arc2d exposing (Arc2d)
+import Basics.Extra exposing (inDegrees)
 import Bets.Bet exposing (setTeam)
 import Bets.Types exposing (Answer, AnswerID, AnswerT(..), Bet, Bracket(..), Qualifier, Slot, Team, Winner(..))
 import Bets.Types.Bracket as B
-import Element exposing (alignRight, centerX, paddingXY, px, spaceEvenly, spacing, width)
+import Element exposing (alignRight, centerX, height, paddingXY, px, spaceEvenly, spacing, width)
 import Form.Questions.Types exposing (QState)
-import Geometry.Svg as Svg
+import Geometry.Svg as Geo
 import Html exposing (..)
+import List.Extra as Extra
 import Point2d exposing (Point2d)
 import Svg exposing (Svg)
 import Svg.Attributes as Attributes
+import Svg.PathD exposing (Point, Segment(..), pathD)
 import UI.Button
 import UI.Style
 import UI.Text
@@ -84,6 +87,15 @@ view bet qQState =
                 [ header
                 , introduction
                 , viewBracket bet answer bracket
+                , Element.el [ width (px 600), height (px 600) ]
+                    (Element.html <|
+                        Svg.svg
+                            [ Attributes.width "600"
+                            , Attributes.height "600"
+                            , Attributes.viewBox "0 0 600 600"
+                            ]
+                            (arcs 250 16 ++ arcs 200 16 ++ arcs 150 8 ++ arcs 100 4 ++ arcs 50 2)
+                    )
                 ]
 
         _ ->
@@ -179,11 +191,7 @@ viewBracket bet answer bracket =
         ]
 
 
-viewMatchWinner :
-    a
-    -> ( AnswerID, a2 )
-    -> Maybe Bracket
-    -> Element.Element Msg
+viewMatchWinner : a -> ( AnswerID, a2 ) -> Maybe Bracket -> Element.Element Msg
 viewMatchWinner bet answer mBracket =
     case mBracket of
         Just (MatchNode slot winner home away rd _) ->
@@ -203,13 +211,7 @@ viewMatchWinner bet answer mBracket =
             Element.none
 
 
-mkButton :
-    ( AnswerID, a2 )
-    -> Winner
-    -> Slot
-    -> IsWinner
-    -> Bracket
-    -> Element.Element Msg
+mkButton : ( AnswerID, a2 ) -> Winner -> Slot -> IsWinner -> Bracket -> Element.Element Msg
 mkButton answer wnnr slot isSelected bracket =
     let
         s =
@@ -257,3 +259,314 @@ mkButtonChamp mBracket =
             []
     in
     UI.Button.maybeTeamBadge s mTeam
+
+
+arcs : Float -> Int -> List (Svg Msg)
+arcs radius segments =
+    let
+        segmentLength =
+            360
+                / toFloat segments
+
+        starts : List Float
+        starts =
+            List.range 0 (segments - 1)
+                |> List.map (toFloat >> (*) segmentLength)
+
+        ends =
+            List.map ((+) segmentLength) starts
+
+        reds =
+            Extra.cycle segments [ "#d3d2e6" ]
+
+        blues =
+            Extra.cycle segments [ "#f2f2f2" ]
+
+        clrs =
+            Extra.interweave reds blues
+
+        uncurry f ( a, b, c ) =
+            f a b c
+    in
+    Extra.zip3 starts ends clrs
+        |> List.map (uncurry (describeArc 300 300 radius))
+
+
+
+-- arc : Int -> Float -> Float -> String -> Svg Msg
+-- arc radius segmentLength startAngle clr =
+--     Geo.arc2d
+--         [ Attributes.stroke clr
+--         , Attributes.strokeWidth "48"
+--         , Attributes.fill "#fff"
+--         ]
+--         (Arc2d.with
+--             { centerPoint =
+--                 Point2d.fromCoordinates ( 400, 400 )
+--             , radius = toFloat radius
+--             , startAngle = degrees startAngle
+--             , sweptAngle = degrees segmentLength
+--             }
+--         )
+-- type Leaf
+--     = Home
+--     | Away
+--     | Entry
+-- segment : Round -> Int -> Leaf -> String -> Svg Msg
+-- segment rnd pos leaf name =
+--     let
+--         ( ring, maxPos ) =
+--             case rnd of
+--                 I ->
+--                     ( 5, 16 )
+--                 II ->
+--                     ( 4, 16 )
+--                 III ->
+--                     ( 3, 8 )
+--                 IV ->
+--                     ( 2, 4 )
+--                 V ->
+--                     ( 1, 2 )
+--                 VI ->
+--                     ( 0, 1 )
+--     in
+--     TypedSVG.path
+{-
+
+   cosinerule
+       r^2 = R^2 + R^2 - 2.R.R cos y
+
+       2 . R^2 . cos y = 2 . R^2 - r^2
+
+       cos y = (2 . R^2 - r^2) / (2 . R^2)
+
+       radians = acos (2 . R^2 - r^2) / (2 . R^2)
+-}
+
+
+calculateAngle r1 r2 r3 =
+    -- r1^2 = r2^2 + r3^2 - 2.r2.r3.cos alpha
+    -- alpha = acos (r2^2 + r3^2 - r1^2) / (2 . r2 . r3)
+    acos ((r2 ^ 2 + r3 ^ 2 - r1 ^ 2) / (2 * r2 * r3))
+
+
+roundedBorderAngle borderRadius mainRadius =
+    --acos ((2 * (mainRadius ^ 2)) - (borderRadius ^ 2)) / (2 * (mainRadius ^ 2))
+    calculateAngle borderRadius mainRadius mainRadius
+
+
+polarToCartesian centerX centerY radius angleInDegrees =
+    let
+        angleInRadians =
+            (angleInDegrees - 90) * pi / 180.0
+    in
+    ( centerX + (radius * cos angleInRadians)
+    , centerY + (radius * sin angleInRadians)
+    )
+
+
+describeArc x y innerRadius startAngle endAngle clr =
+    let
+        borderRadius =
+            10
+
+        startInner =
+            polarToCartesian x y innerRadius startAngle
+
+        endInner =
+            polarToCartesian x y innerRadius endAngle
+
+        gamma =
+            calculateAngle borderRadius (outerRadius - borderRadius) (outerRadius - borderRadius)
+                |> inDegrees
+
+        innerRadiusXY =
+            ( innerRadius, innerRadius )
+
+        outerRadius =
+            innerRadius + 40
+
+        outerRadiusXY =
+            ( outerRadius, outerRadius )
+
+        startOuter =
+            polarToCartesian x y outerRadius endAngle
+
+        endOuter =
+            polarToCartesian x y outerRadius (Debug.log "startAngle" startAngle + Debug.log "gamma" gamma)
+
+        ( bX, bY ) =
+            polarToCartesian x y (outerRadius - borderRadius) (startAngle + gamma)
+
+        beta =
+            let
+                beta_ =
+                    calculateAngle (outerRadius - borderRadius) borderRadius (outerRadius - borderRadius)
+                        |> inDegrees
+            in
+            180 - beta_
+
+        endBorder =
+            polarToCartesian bX bY borderRadius (Debug.log "s+g-b" (startAngle + gamma - Debug.log "beta" beta))
+
+        -- polarToCartesian x y outerRadius (startAngle + gamma)
+        borderRadiusXY =
+            ( borderRadius, borderRadius )
+
+        -- startRoundedBorder =
+        --     polarToCartesian centerRoundedBorderX centerRoundedBorderY borderRadius (1 - gamma)
+        largeArcFlagInner =
+            if endAngle - startAngle <= 180 then
+                False
+
+            else
+                True
+
+        largeArcFlagOuter =
+            if startAngle - endAngle <= 180 then
+                False
+
+            else
+                True
+
+        xAxisRotation =
+            0
+
+        sweepFlag =
+            False
+    in
+    Svg.path
+        [ Attributes.d <|
+            pathD
+                [ M startInner
+                , A innerRadiusXY 0 False (not largeArcFlagInner) endInner
+                , L startOuter
+                , A outerRadiusXY 0 False largeArcFlagOuter endOuter
+                , A borderRadiusXY 0 False False endBorder
+                , L startInner
+                , Z
+                ]
+        , Attributes.fill clr
+        ]
+        []
+
+
+describeArc2 x y innerRadius startAngle endAngle clr =
+    let
+        startInner =
+            polarToCartesian x y innerRadius endAngle
+
+        endInner =
+            polarToCartesian x y innerRadius startAngle
+
+        endRoundedBorder =
+            polarToCartesian x y (outerRadius - borderRadius) endAngle
+
+        gamma =
+            calculateAngle borderRadius (outerRadius - borderRadius) (outerRadius - borderRadius)
+
+        ( centerRoundedBorderX, centerRoundedBorderY ) =
+            polarToCartesian x y (innerRadius + borderRadius) (endAngle + gamma)
+
+        startRoundedBorder =
+            polarToCartesian centerRoundedBorderX centerRoundedBorderY borderRadius (1 - gamma)
+
+        innerRadiusXY =
+            ( innerRadius, innerRadius )
+
+        outerRadius =
+            innerRadius + 40
+
+        outerRadiusXY =
+            ( outerRadius, outerRadius )
+
+        startOuter =
+            polarToCartesian x y outerRadius endAngle
+
+        endOuter =
+            polarToCartesian x y outerRadius (startAngle + gamma)
+
+        borderRadius =
+            5
+
+        borderRadiusXY =
+            ( borderRadius, borderRadius )
+
+        largeArcFlagInner =
+            if endAngle - startAngle <= 180 then
+                False
+
+            else
+                True
+
+        largeArcFlagOuter =
+            if startAngle - endAngle <= 180 then
+                False
+
+            else
+                True
+
+        xAxisRotation =
+            0
+
+        sweepFlag =
+            False
+    in
+    Svg.path
+        [ Attributes.d <|
+            pathD
+                [ M startInner
+                , A innerRadiusXY 0 False largeArcFlagInner endInner
+                , L endOuter
+                , A outerRadiusXY 0 False (not largeArcFlagOuter) startRoundedBorder
+                , A borderRadiusXY 0 False False endRoundedBorder
+                , L startInner
+                , Z
+                ]
+        , Attributes.fill clr
+        ]
+        []
+
+
+
+-- Svg.path
+--     [ Attributes.d <|
+--         pathD
+--             [ M startInner
+--             , A innerRadiusXY 0 False largeArcFlagInner endInner
+--             , L endOuter
+--             , A outerRadiusXY 0 False (not largeArcFlagOuter) startOuter
+--             , L startInner
+--             , Z
+--             ]
+--     , Attributes.fill clr
+--     ]
+--     []
+-- String.join " "
+--     [ "M"
+--     , String.fromFloat startInner.x
+--     , String.fromFloat startInner.y
+--     , "A"
+--     , String.fromFloat innerRadius
+--     , String.fromFloat innerRadius
+--     , String.fromFloat xAxisRotation
+--     , String.fromInt largeArcFlag
+--     , String.fromInt sweepFlag
+--     , String.fromFloat endInner.x
+--     , String.fromFloat endInner.y
+--     , "L"
+--     , String.fromFloat endOuter.x
+--     , String.fromFloat endOuter.y
+--     , "A"
+--     , String.fromFloat outerRadius
+--     , String.fromFloat outerRadius
+--     , String.fromFloat xAxisRotation
+--     , String.fromInt largeArcFlag
+--     , String.fromInt sweepFlag
+--     , String.fromFloat startOuter.x
+--     , String.fromFloat startOuter.y
+--     , "L"
+--     , String.fromFloat startInner.x
+--     , String.fromFloat startOuter.x
+--     ]
+--     |> Svg.d
