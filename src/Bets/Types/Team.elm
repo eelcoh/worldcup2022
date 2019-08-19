@@ -7,7 +7,7 @@ module Bets.Types.Team exposing
     , equal
     , flag
     , flagUrl
-    , isComplete
+    , isComplete, mdisplayID
     , log
     , mdisplay
     , mdisplayFull
@@ -53,6 +53,11 @@ mdisplay mteam =
     Maybe.map display mteam
         |> Maybe.withDefault ""
 
+
+mdisplayID : Maybe Team -> String
+mdisplayID mteam =
+    Maybe.map .teamID  mteam
+        |> Maybe.withDefault "..."
 
 log : Team -> String
 log t =

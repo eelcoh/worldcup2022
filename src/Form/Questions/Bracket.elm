@@ -5,6 +5,7 @@ import Basics.Extra exposing (inDegrees)
 import Bets.Bet exposing (setTeam)
 import Bets.Types exposing (Answer, AnswerID, AnswerT(..), Bet, Bracket(..), Qualifier, Slot, Team, Winner(..))
 import Bets.Types.Bracket as B
+import Bets.Types.Team as T
 import Element exposing (alignRight, centerX, height, paddingXY, px, spaceEvenly, spacing, width)
 import Form.Questions.Types exposing (QState)
 import Geometry.Svg as Geo
@@ -86,15 +87,17 @@ view bet qQState =
                 []
                 [ header
                 , introduction
-                , viewBracket bet answer bracket
-                , Element.el [ width (px 600), height (px 600) ]
+                , viewRings bet answer bracket
+
+                -- , viewBracket bet answer bracket
+                , Element.el [ width (px 365), height (px 365) ]
                     (Element.html <|
                         Svg.svg
-                            [ Attributes.width "600"
-                            , Attributes.height "600"
-                            , Attributes.viewBox "0 0 600 600"
+                            [ Attributes.width "365"
+                            , Attributes.height "365"
+                            , Attributes.viewBox "0 0 365 365"
                             ]
-                            (arcs 250 16 ++ arcs 200 16 ++ arcs 150 8 ++ arcs 100 4 ++ arcs 50 2)
+                            (arcs 5 16 ++ arcs 4 16 ++ arcs 3 8 ++ arcs 2 4 ++ arcs 1 2)
                     )
                 ]
 
@@ -102,117 +105,234 @@ view bet qQState =
             Element.none
 
 
-viewBracket : Bet -> Answer -> Bracket -> Element.Element Msg
-viewBracket bet answer bracket =
-    {-
-       mn37 = MatchNode "m37" None tnra tnrc -- "2016/06/15 15:00" saintetienne (Just "W37")
-       mn38 = MatchNode "m38" None tnwb tnt2 -- "2016/06/15 15:00" paris (Just "W38")
-       mn39 = MatchNode "m39" None tnwd tnt4 -- "2016/06/15 15:00" lens (Just "W39")
-       mn40 = MatchNode "m40" None tnwa tnt1 -- "2016/06/15 15:00" lyon (Just "W40")
-       mn41 = MatchNode "m41" None tnwc tnt3 -- "2016/06/15 15:00" lille (Just "W41")
-       mn42 = MatchNode "m42" None tnwf tnre -- "2016/06/15 15:00" toulouse (Just "W42")
-       mn43 = MatchNode "m43" None tnwe tnrd -- "2016/06/15 15:00" saintdenis (Just "W43")
-       mn44 = MatchNode "m44" None tnrb tnrf -- "2016/06/15 15:00" nice (Just "W44")
 
-       mn45 = MatchNode "m45" None mn37 mn39 -- "2016/06/15 15:00" marseille (Just "W45")
-       mn46 = MatchNode "m46" None mn38 mn42 --  "2016/06/15 15:00" lille (Just "W46")
-       mn47 = MatchNode "m47" None mn41 mn43 -- "2016/06/15 15:00" bordeaux (Just "W47")
-       mn48 = MatchNode "m48" None mn40 mn44 -- "2016/06/15 15:00" saintdenis (Just "W48")
+-- viewBracket : Bet -> Answer -> Bracket -> Element.Element Msg
+-- viewBracket bet answer bracket =
+--     let
+--         v mb =
+--             viewMatchWinner bet answer mb
+--         final =
+--             B.get bracket "m51"
+--         m37 =
+--             v <| B.get bracket "m37"
+--         m38 =
+--             v <| B.get bracket "m38"
+--         m39 =
+--             v <| B.get bracket "m39"
+--         m40 =
+--             v <| B.get bracket "m40"
+--         m41 =
+--             v <| B.get bracket "m41"
+--         m42 =
+--             v <| B.get bracket "m42"
+--         m43 =
+--             v <| B.get bracket "m43"
+--         m44 =
+--             v <| B.get bracket "m44"
+--         -- quarter finals
+--         m45 =
+--             v <| B.get bracket "m45"
+--         m46 =
+--             v <| B.get bracket "m46"
+--         m47 =
+--             v <| B.get bracket "m47"
+--         m48 =
+--             v <| B.get bracket "m48"
+--         -- semi final
+--         m49 =
+--             v <| B.get bracket "m49"
+--         m50 =
+--             v <|
+--                 B.get bracket "m50"
+--         -- final
+--         m51 =
+--             v <| B.get bracket "m51"
+--         champion =
+--             mkButtonChamp final
+--     in
+--     Element.column
+--         [ spacing 10, width (px 600) ]
+--         [ Element.row [ spaceEvenly ] [ m41, m42, m37, m39 ]
+--         , Element.row [ spaceEvenly, paddingXY 76 0 ] [ m45, m46 ]
+--         , Element.row [ centerX ] [ m49 ]
+--         , Element.row [ alignRight, spacing 44 ] [ m51, champion ]
+--         , Element.row [ centerX ] [ m50 ]
+--         , Element.row [ spaceEvenly, paddingXY 76 0 ] [ m47, m48 ]
+--         , Element.row [ spaceEvenly ] [ m38, m40, m43, m44 ]
+--         ]
+-- viewMatchWinner : a -> ( AnswerID, a2 ) -> Maybe Bracket -> Element.Element Msg
+-- viewMatchWinner bet answer mBracket =
+--     case mBracket of
+--         Just (MatchNode slot winner home away rd _) ->
+--             let
+--                 homeButton =
+--                     mkButton answer HomeTeam slot (isWinner winner HomeTeam) home
+--                 awayButton =
+--                     mkButton answer AwayTeam slot (isWinner winner AwayTeam) away
+--                 dash =
+--                     text " - "
+--             in
+--             Element.row [ spacing 7 ] [ homeButton, awayButton ]
+--         _ ->
+--             Element.none
 
-       mn49 = MatchNode "m49" None mn45 mn46 -- "2016/06/15 15:00" lyon (Just "W49")
-       mn50 = MatchNode "m50" None mn47 mn48 -- "2016/06/15 15:00" marseille (Just "W50")
 
-       mn51 = MatchNode "m51" None mn49 mn50 -- "2016/06/15 15:00" saintdenis Nothing
-    -}
+viewRings : Bet -> Answer -> Bracket -> Element.Element Msg
+viewRings bet answer bracket =
     let
         v mb =
-            viewMatchWinner bet answer mb
+            viewRingMatch bet answer mb
 
         final =
-            B.get bracket "m64"
+            B.get bracket "m51"
 
+        m37 =
+            v <| B.get bracket "m37"
+
+        m38 =
+            v <| B.get bracket "m38"
+
+        m39 =
+            v <| B.get bracket "m39"
+
+        m40 =
+            v <| B.get bracket "m40"
+
+        m41 =
+            v <| B.get bracket "m41"
+
+        m42 =
+            v <| B.get bracket "m42"
+
+        m43 =
+            v <| B.get bracket "m43"
+
+        m44 =
+            v <| B.get bracket "m44"
+
+        -- quarter finals
+        m45 =
+            v <| B.get bracket "m45"
+
+        m46 =
+            v <| B.get bracket "m46"
+
+        m47 =
+            v <| B.get bracket "m47"
+
+        m48 =
+            v <| B.get bracket "m48"
+
+        -- semi final
         m49 =
             v <| B.get bracket "m49"
 
         m50 =
-            v <| B.get bracket "m50"
+            v <|
+                B.get bracket "m50"
 
+        -- final
         m51 =
             v <| B.get bracket "m51"
 
-        m52 =
-            v <| B.get bracket "m52"
+        -- champion =
+        --     mkButtonChamp final
+        applyValue a fs =
+            List.concatMap (\f -> f a) fs
 
-        m53 =
-            v <| B.get bracket "m53"
+        fn1 ( a, b ) ( c, d ) =
+            ( a + c, b )
 
-        m54 =
-            v <| B.get bracket "m54"
+        -- List.map (Tuple.pair segmentAngleSize) matches
+        mkRingData : Float -> Float -> List (Float -> Float -> Float -> Svg Msg) -> Svg Msg
+        mkRingData ring angle ms =
+            List.map (\_ -> angle) ms
+                |> Extra.scanl (+) 0
+                |> Extra.zip ms
+                |> List.map (\( a, b ) -> ( b + 90, a ))
+                |> List.map (\( angleStart, f ) -> f ring angle angleStart)
+                |> Svg.g []
 
-        m55 =
-            v <| B.get bracket "m55"
+        ring4 =
+            mkRingData 4 (360.0 / 8.0) [ m41, m42, m37, m39, m38, m40, m43, m44 ]
 
-        m56 =
-            v <| B.get bracket "m56"
+        ring3 =
+            mkRingData 3 (360.0 / 4.0) [ m45, m46, m47, m48 ]
 
-        m57 =
-            v <| B.get bracket "m57"
+        ring2 =
+            mkRingData 2 (360.0 / 2.0) [ m49, m50 ]
 
-        m58 =
-            v <| B.get bracket "m58"
+        ring1 =
+            mkRingData 1 (360.0 / 1.0) [ m51 ]
 
-        m59 =
-            v <| B.get bracket "m59"
-
-        m60 =
-            v <| B.get bracket "m60"
-
-        m61 =
-            v <| B.get bracket "m61"
-
-        m62 =
-            v <| B.get bracket "m62"
-
-        m64 =
-            v <| B.get bracket "m64"
-
-        champion =
-            mkButtonChamp final
+        rings =
+            [ ring4
+            , ring3
+            , ring2
+            , ring1
+            ]
     in
-    Element.column
-        [ spacing 10, width (px 600) ]
-        [ Element.row [ spaceEvenly ] [ m49, m50, m53, m54 ]
-        , Element.row [ spaceEvenly, paddingXY 76 0 ] [ m57, m58 ]
-        , Element.row [ centerX ] [ m61 ]
-        , Element.row [ alignRight, spacing 44 ] [ m64, champion ]
-        , Element.row [ centerX ] [ m62 ]
-        , Element.row [ spaceEvenly, paddingXY 76 0 ] [ m59, m60 ]
-        , Element.row [ spaceEvenly ] [ m51, m52, m55, m56 ]
-        ]
+    Element.el [ width (px 365), height (px 365) ]
+        (Element.html <|
+            Svg.svg
+                [ Attributes.width "365"
+                , Attributes.height "365"
+                , Attributes.viewBox "0 0 365 365"
+                ]
+                rings
+        )
 
 
-viewMatchWinner : a -> ( AnswerID, a2 ) -> Maybe Bracket -> Element.Element Msg
-viewMatchWinner bet answer mBracket =
+
+-- viewMatchRing : Bet -> Answer -> (Maybe Bracket) -> Float -> Float ->List (Svg Msg)
+-- viewMatchRing bet answer  matches segmentAngleSize segmentAngleSize  =
+--     let
+--     in
+--         List.concatMap (uncurry (viewRingMatch bet answer ring segmentAngleSize)) matchesAndAngles
+
+
+viewRingMatch : Bet -> Answer -> Maybe Bracket -> Float -> Float -> Float -> Svg Msg
+viewRingMatch bet answer mBracket ring segmentAngleSize matchAngle =
     case mBracket of
         Just (MatchNode slot winner home away rd _) ->
             let
-                homeButton =
-                    mkButton answer HomeTeam slot (isWinner winner HomeTeam) home
+                awayStartAngle =
+                    matchAngle + (segmentAngleSize / 2)
 
-                awayButton =
-                    mkButton answer AwayTeam slot (isWinner winner AwayTeam) away
+                awayEndAngle =
+                    matchAngle + segmentAngleSize
+
+                centerMatchAngle =
+                    awayStartAngle
+
+                homeLeaf =
+                    Leaf ring matchAngle awayStartAngle "#cecece" HomeLeaf slot
+
+                awayLeaf =
+                    Leaf ring awayStartAngle awayEndAngle "#ececec" AwayLeaf slot
 
                 dash =
                     text " - "
+
+                moveOut =
+                    if round ring < 2 then
+                        moveDiagonal2 ring (Debug.log "center angle" centerMatchAngle) 0
+
+                    else
+                        moveDiagonal2 ring (Debug.log "center angle" centerMatchAngle) 2
             in
-            Element.row [ spacing 7 ] [ homeButton, awayButton ]
+            List.concat
+                [ viewLeaf answer HomeTeam slot (isWinner winner HomeTeam) home homeLeaf
+                , viewLeaf answer AwayTeam slot (isWinner winner AwayTeam) away awayLeaf
+                ]
+                |> Svg.g []
 
         _ ->
-            Element.none
+            Svg.g [] []
 
 
-mkButton : ( AnswerID, a2 ) -> Winner -> Slot -> IsWinner -> Bracket -> Element.Element Msg
-mkButton answer wnnr slot isSelected bracket =
+viewLeaf : ( AnswerID, a2 ) -> Winner -> Slot -> IsWinner -> Bracket -> Leaf -> List (Svg Msg)
+viewLeaf answer wnnr slot isSelected bracket leaf =
     let
         s =
             case isSelected of
@@ -231,38 +351,75 @@ mkButton answer wnnr slot isSelected bracket =
         msg =
             SetWinner answerId slot wnnr
 
-        attrs =
-            []
-
         team =
             B.qualifier bracket
     in
-    UI.Button.maybeTeamButton s msg team
+    mkLeaf s msg team leaf
 
 
-mkButtonChamp : Maybe Bracket -> Element.Element Msg
-mkButtonChamp mBracket =
+leafToString : Leaf -> String
+leafToString { ring, startAngle, endAngle, leafType } =
     let
-        mTeam =
-            mBracket
-                |> Maybe.andThen B.winner
-
-        s =
-            case mTeam of
-                Just t ->
-                    UI.Style.Selected
-
-                Nothing ->
-                    UI.Style.Potential
-
         attrs =
-            []
+            [ String.fromInt <| round ring
+            , lt
+            , String.fromInt <| round startAngle
+            , String.fromInt <| round endAngle
+            ]
+
+        lt =
+            case leafType of
+                HomeLeaf ->
+                    "home"
+
+                AwayLeaf ->
+                    "away"
     in
-    UI.Button.maybeTeamBadge s mTeam
+    String.join " " attrs
+
+
+
+-- mkButton : ( AnswerID, a2 ) -> Winner -> Slot -> IsWinner -> Bracket -> Element.Element Msg
+-- mkButton answer wnnr slot isSelected bracket =
+--     let
+--         s =
+--             case isSelected of
+--                 Yes ->
+--                     UI.Style.Selected
+--                 No ->
+--                     UI.Style.Potential
+--                 Undecided ->
+--                     UI.Style.Potential
+--         answerId =
+--             Tuple.first answer
+--         msg =
+--             SetWinner answerId slot wnnr
+--         attrs =
+--             []
+--         team =
+--             B.qualifier bracket
+--     in
+--     UI.Button.maybeTeamButton s msg team
+-- mkButtonChamp : Maybe Bracket -> Element.Element Msg
+-- mkButtonChamp mBracket =
+--     let
+--         mTeam =
+--             mBracket
+--                 |> Maybe.andThen B.winner
+--         s =
+--             case mTeam of
+--                 Just t ->
+--                     UI.Style.Selected
+--                 Nothing ->
+--                     UI.Style.Potential
+--         attrs =
+--             []
+--     in
+--     UI.Button.maybeTeamBadge s mTeam
 
 
 arcs : Float -> Int -> List (Svg Msg)
-arcs radius segments =
+arcs ring segments =
     let
         segmentLength =
             360
@@ -271,83 +428,437 @@ arcs radius segments =
         starts : List Float
         starts =
             List.range 0 (segments - 1)
-                |> List.map (toFloat >> (*) segmentLength)
+                |> List.map (toFloat >> (*) segmentLength >> (+) 270)
 
         ends =
             List.map ((+) segmentLength) starts
 
-        reds =
-            Extra.cycle segments [ "#d3d2e6" ]
-
-        blues =
-            Extra.cycle segments [ "#f2f2f2" ]
-
         clrs =
-            Extra.interweave reds blues
+            Extra.cycle segments [ "#d3d2e6", "#d3d2e6", "#f2f2f2", "#f2f2f2" ]
 
-        uncurry f ( a, b, c ) =
-            f a b c
+        apply ( f, a ) =
+            f a
+
+        homeLeaf ( s, e, c ) =
+            Leaf ring s e c HomeLeaf c
+
+        awayLeaf ( s, e, c ) =
+            Leaf ring s e c AwayLeaf c
+
+        consLeafs =
+            Extra.cycle segments [ homeLeaf, awayLeaf ]
+
+        leafs =
+            Extra.zip3 starts ends clrs
+                |> Extra.zip consLeafs
+                |> List.map apply
+
+        renderLeafs =
+            List.map describeLeaf leafs
+
+        renderTexts =
+            List.map (setText Nothing) leafs
     in
-    Extra.zip3 starts ends clrs
-        |> List.map (uncurry (describeArc 300 300 radius))
+    renderLeafs ++ renderTexts
+
+
+mkLeaf s msg team leaf =
+    [ describeLeaf leaf, setText team leaf ]
 
 
 
--- arc : Int -> Float -> Float -> String -> Svg Msg
--- arc radius segmentLength startAngle clr =
---     Geo.arc2d
---         [ Attributes.stroke clr
---         , Attributes.strokeWidth "48"
---         , Attributes.fill "#fff"
---         ]
---         (Arc2d.with
---             { centerPoint =
---                 Point2d.fromCoordinates ( 400, 400 )
---             , radius = toFloat radius
---             , startAngle = degrees startAngle
---             , sweptAngle = degrees segmentLength
---             }
---         )
--- type Leaf
---     = Home
---     | Away
---     | Entry
--- segment : Round -> Int -> Leaf -> String -> Svg Msg
--- segment rnd pos leaf name =
---     let
---         ( ring, maxPos ) =
---             case rnd of
---                 I ->
---                     ( 5, 16 )
---                 II ->
---                     ( 4, 16 )
---                 III ->
---                     ( 3, 8 )
---                 IV ->
---                     ( 2, 4 )
---                 V ->
---                     ( 1, 2 )
---                 VI ->
---                     ( 0, 1 )
---     in
---     TypedSVG.path
-{-
+{- cosinerule
+   r^2 = R^2 + R^2 - 2.R.R cos y
 
-   cosinerule
-       r^2 = R^2 + R^2 - 2.R.R cos y
+   2 . R^2 . cos y = 2 . R^2 - r^2
 
-       2 . R^2 . cos y = 2 . R^2 - r^2
+   cos y = (2 . R^2 - r^2) / (2 . R^2)
 
-       cos y = (2 . R^2 - r^2) / (2 . R^2)
-
-       radians = acos (2 . R^2 - r^2) / (2 . R^2)
+   radians = acos (2 . R^2 - r^2) / (2 . R^2)
 -}
 
 
+type alias Leaf =
+    { ring : Float
+    , startAngle : Float
+    , endAngle : Float
+    , clr : String
+    , leafType : LeafType
+    , team : String
+    }
+
+
+type LeafType
+    = HomeLeaf
+    | AwayLeaf
+
+
+config =
+    { x = 170
+    , y = 170
+    , borderRadius = 5
+    , ringHeight = 25
+    , ringSpacing = 5
+    }
+
+
+
+-- describeLeaf2 : Leaf -> Svg.Svg Msg
+-- describeLeaf2 ({ ring, startAngle, endAngle, clr, leafType } as leaf) =
+--     let
+--         x =
+--             config.x
+--         y =
+--             config.y
+--         borderRadius =
+--             config.borderRadius
+--         innerRadius =
+--             ringRadius ring
+--         innerRadiusXY =
+--             ( innerRadius, innerRadius )
+--         outerRadius =
+--             innerRadius + config.ringHeight
+--         outerRadiusXY =
+--             ( outerRadius, outerRadius )
+--         upperBorderRadiusXY =
+--             ( borderRadius, borderRadius )
+--         lowerBorderRadiusXY =
+--             ( borderRadius, borderRadius )
+--         gamma =
+--             calculateAngle borderRadius (outerRadius - borderRadius) (outerRadius - borderRadius)
+--         lowerGamma =
+--             calculateAngle borderRadius (innerRadius + borderRadius) (innerRadius + borderRadius)
+--         upperBeta =
+--             let
+--                 beta_ =
+--                     calculateAngle (outerRadius - borderRadius) borderRadius (outerRadius - borderRadius)
+--             in
+--             case leafType of
+--                 HomeLeaf ->
+--                     180 - beta_
+--                 AwayLeaf ->
+--                     180 - beta_
+--         lowerBeta =
+--             let
+--                 beta_ =
+--                     calculateAngle (innerRadius + borderRadius) borderRadius (innerRadius + borderRadius)
+--             in
+--             case leafType of
+--                 HomeLeaf ->
+--                     180 - beta_
+--                 AwayLeaf ->
+--                     180 - beta_
+--         largeArcFlagInner =
+--             if endAngle - startAngle <= 180 then
+--                 False
+--             else
+--                 True
+--         sweepFlag =
+--             if startAngle - endAngle <= 180 then
+--                 False
+--             else
+--                 True
+--         largeArcFlagOuter =
+--             False
+--         xAxisRotation =
+--             0
+--         startInner =
+--             polarToCartesian x y innerRadius startAngle
+--         endInner =
+--             polarToCartesian x y innerRadius endAngle
+--         startOuter =
+--             case leafType of
+--                 HomeLeaf ->
+--                     polarToCartesian x y outerRadius endAngle
+--                 AwayLeaf ->
+--                     polarToCartesian x y outerRadius (endAngle - gamma)
+--         endOuter =
+--             case leafType of
+--                 HomeLeaf ->
+--                     polarToCartesian x y outerRadius (startAngle + gamma)
+--                 AwayLeaf ->
+--                     polarToCartesian x y outerRadius startAngle
+--         ( bX, bY ) =
+--             case leafType of
+--                 HomeLeaf ->
+--                     polarToCartesian x y (outerRadius - borderRadius) (startAngle + gamma)
+--                 AwayLeaf ->
+--                     polarToCartesian x y (outerRadius - borderRadius) (endAngle - gamma)
+--         upperBorderEnd =
+--             case leafType of
+--                 HomeLeaf ->
+--                     -- polarToCartesian bX bY borderRadius (Debug.log "s+g-b" (startAngle + gamma - Debug.log "upperBeta" upperBeta))
+--                     polarToCartesian bX bY borderRadius (startAngle + gamma - upperBeta)
+--                 AwayLeaf ->
+--                     polarToCartesian bX bY borderRadius (endAngle - gamma + upperBeta)
+--         segmentPath =
+--             case leafType of
+--                 HomeLeaf ->
+--                     [ M startInner
+--                     , A innerRadiusXY xAxisRotation False (not sweepFlag) endInner
+--                     , L startOuter
+--                     , A outerRadiusXY xAxisRotation False sweepFlag endOuter
+--                     , A upperBorderRadiusXY xAxisRotation False False upperBorderEnd
+--                     , L startInner
+--                     , Z
+--                     ]
+--                 AwayLeaf ->
+--                     [ M startInner
+--                     , A innerRadiusXY xAxisRotation False (not sweepFlag) endInner
+--                     , L upperBorderEnd
+--                     , A upperBorderRadiusXY xAxisRotation False sweepFlag startOuter
+--                     , A outerRadiusXY xAxisRotation False False endOuter
+--                     , L startInner
+--                     , Z
+--                     ]
+--         -- [ M endInner
+--         -- , L startOuter
+--         -- , A outerRadiusXY xAxisRotation False sweepFlag endOuter
+--         -- , A upperBorderRadiusXY xAxisRotation False False upperBorderEnd
+--         -- , L lowerBorderStart
+--         -- , A lowerBorderRadiusXY xAxisRotation False False startInner
+--         -- , A innerRadiusXY xAxisRotation False (not sweepFlag) endInner
+--         -- ]
+--         logging =
+--             Debug.log "leaf: " (leafToString leaf)
+--     in
+--     Svg.path
+--         [ Attributes.d <|
+--             pathD segmentPath
+--         , Attributes.fill clr
+--         , Attributes.stroke "#34fg23"
+--         ]
+--         []
+
+
+describeLeaf : Leaf -> Svg.Svg Msg
+describeLeaf ({ ring, startAngle, endAngle, clr, leafType } as leaf) =
+    let
+        x =
+            config.x
+
+        y =
+            config.y
+
+        borderRadius =
+            config.borderRadius
+
+        endInner =
+            case leafType of
+                HomeLeaf ->
+                    polarToCartesian x y innerRadius endAngle
+
+                AwayLeaf ->
+                    polarToCartesian x y innerRadius startAngle
+
+        innerRadius =
+            ringRadius ring
+
+        outerRadius =
+            innerRadius + config.ringHeight
+
+        innerRadiusXY =
+            ( innerRadius, innerRadius )
+
+        outerRadiusXY =
+            ( outerRadius, outerRadius )
+
+        borderRadiusXY =
+            ( borderRadius, borderRadius )
+
+        xAxisRotation =
+            0
+
+        startOuter =
+            case leafType of
+                HomeLeaf ->
+                    polarToCartesian x y outerRadius endAngle
+
+                AwayLeaf ->
+                    polarToCartesian x y outerRadius startAngle
+
+        endOuter =
+            case leafType of
+                HomeLeaf ->
+                    polarToCartesian x y outerRadius (startAngle + gamma)
+
+                AwayLeaf ->
+                    polarToCartesian x y outerRadius (endAngle - gamma)
+
+        gamma =
+            calculateAngle borderRadius (outerRadius - borderRadius) (outerRadius - borderRadius)
+
+        ( upperBorderX, upperBorderY ) =
+            case leafType of
+                HomeLeaf ->
+                    polarToCartesian x y (outerRadius - borderRadius) (startAngle + gamma)
+
+                AwayLeaf ->
+                    polarToCartesian x y (outerRadius - borderRadius) (endAngle - gamma)
+
+        upperBorderEnd =
+            case leafType of
+                HomeLeaf ->
+                    polarToCartesian upperBorderX upperBorderY borderRadius (startAngle + gamma - upperBeta)
+
+                AwayLeaf ->
+                    polarToCartesian upperBorderX upperBorderY borderRadius (endAngle - gamma + upperBeta)
+
+        upperBeta =
+            let
+                beta_ =
+                    calculateAngle (outerRadius - borderRadius) borderRadius (outerRadius - borderRadius)
+            in
+            case leafType of
+                HomeLeaf ->
+                    180 - beta_
+
+                AwayLeaf ->
+                    180 - beta_
+
+        ( lowerBorderX, lowerBorderY ) =
+            case leafType of
+                HomeLeaf ->
+                    polarToCartesian x y (innerRadius + borderRadius) (startAngle + gamma)
+
+                AwayLeaf ->
+                    polarToCartesian x y (innerRadius + borderRadius) (endAngle - gamma)
+
+        lowerBorderStart =
+            case leafType of
+                HomeLeaf ->
+                    polarToCartesian lowerBorderX lowerBorderY borderRadius (startAngle + gamma - upperBeta)
+
+                AwayLeaf ->
+                    polarToCartesian lowerBorderX lowerBorderY borderRadius (endAngle - gamma + upperBeta)
+
+        lowerBorderEnd =
+            case leafType of
+                HomeLeaf ->
+                    polarToCartesian lowerBorderX lowerBorderY borderRadius (startAngle + 180 + gamma)
+
+                AwayLeaf ->
+                    polarToCartesian lowerBorderX lowerBorderY borderRadius (endAngle + 180 - gamma)
+
+        sweepFlag =
+            if startAngle - endAngle <= 180 then
+                case leafType of
+                    HomeLeaf ->
+                        False
+
+                    AwayLeaf ->
+                        True
+
+            else
+                case leafType of
+                    HomeLeaf ->
+                        True
+
+                    AwayLeaf ->
+                        False
+
+        segmentPath =
+            [ M endInner
+            , L startOuter
+            , A outerRadiusXY xAxisRotation False sweepFlag endOuter
+            , A borderRadiusXY xAxisRotation False sweepFlag upperBorderEnd
+            , L lowerBorderStart
+            , A borderRadiusXY xAxisRotation False sweepFlag lowerBorderEnd
+            , A innerRadiusXY xAxisRotation False (not sweepFlag) endInner
+            ]
+
+        logging =
+            Debug.log "leaf: " (leafToString leaf)
+    in
+    Svg.path
+        [ Attributes.d <|
+            pathD segmentPath
+        , Attributes.fill clr
+        , Attributes.stroke "#34fg23"
+        ]
+        []
+
+
+setText : Qualifier -> Leaf -> Svg.Svg Msg
+setText qualifier { ring, startAngle, endAngle, team } =
+    let
+        teamId =
+            T.mdisplayID qualifier
+
+        x =
+            config.x
+
+        y =
+            config.y
+
+        innerRadius =
+            ring * config.ringHeight + ((ring - 1) * config.ringSpacing)
+
+        radius =
+            6 + innerRadius
+
+        radiusXY =
+            ( radius, radius )
+
+        startXY =
+            polarToCartesian x y radius startAngle
+
+        endXY =
+            polarToCartesian x y radius endAngle
+
+        sweepFlag =
+            if startAngle - endAngle <= 180 then
+                False
+
+            else
+                True
+
+        pathId =
+            "tp-" ++ String.fromInt (Basics.round startAngle) ++ "-" ++ String.fromInt (Basics.round radius)
+
+        textPath =
+            Svg.path
+                [ Attributes.d <|
+                    pathD
+                        [ M startXY
+                        , A radiusXY 0 False (not sweepFlag) endXY
+                        ]
+                , Attributes.stroke "transparent"
+                , Attributes.fill "none"
+                , Attributes.id pathId
+                ]
+                []
+
+        textActual =
+            Svg.text_
+                [ Attributes.fill "red"
+                , Attributes.fontFamily "Roboto Mono"
+                , Attributes.fontSize "18"
+                , Attributes.textAnchor "middle"
+                ]
+                [ Svg.textPath
+                    [ Attributes.xlinkHref ("#" ++ pathId)
+                    , Attributes.startOffset "50%"
+                    ]
+                    [ Svg.text (String.right 3 teamId) ]
+                ]
+    in
+    Svg.g []
+        [ textPath
+        , textActual
+        ]
+
+
+
+-- SVG Helpers
+
+
 calculateAngle r1 r2 r3 =
+    -- cosinerule:
     -- r1^2 = r2^2 + r3^2 - 2.r2.r3.cos alpha
     -- alpha = acos (r2^2 + r3^2 - r1^2) / (2 . r2 . r3)
     acos ((r2 ^ 2 + r3 ^ 2 - r1 ^ 2) / (2 * r2 * r3))
+        |> inDegrees
 
 
 roundedBorderAngle borderRadius mainRadius =
@@ -365,208 +876,49 @@ polarToCartesian centerX centerY radius angleInDegrees =
     )
 
 
-describeArc x y innerRadius startAngle endAngle clr =
+ringRadius ring =
+    ring * config.ringHeight + ((ring - 1) * config.ringSpacing)
+
+
+moveDiagonal : Float -> Float -> Svg.Attribute Msg
+moveDiagonal angle distance =
     let
-        borderRadius =
-            10
+        x =
+            cos angle * distance
 
-        startInner =
-            polarToCartesian x y innerRadius startAngle
-
-        endInner =
-            polarToCartesian x y innerRadius endAngle
-
-        gamma =
-            calculateAngle borderRadius (outerRadius - borderRadius) (outerRadius - borderRadius)
-                |> inDegrees
-
-        innerRadiusXY =
-            ( innerRadius, innerRadius )
-
-        outerRadius =
-            innerRadius + 40
-
-        outerRadiusXY =
-            ( outerRadius, outerRadius )
-
-        startOuter =
-            polarToCartesian x y outerRadius endAngle
-
-        endOuter =
-            polarToCartesian x y outerRadius (Debug.log "startAngle" startAngle + Debug.log "gamma" gamma)
-
-        ( bX, bY ) =
-            polarToCartesian x y (outerRadius - borderRadius) (startAngle + gamma)
-
-        beta =
-            let
-                beta_ =
-                    calculateAngle (outerRadius - borderRadius) borderRadius (outerRadius - borderRadius)
-                        |> inDegrees
-            in
-            180 - beta_
-
-        endBorder =
-            polarToCartesian bX bY borderRadius (Debug.log "s+g-b" (startAngle + gamma - Debug.log "beta" beta))
-
-        -- polarToCartesian x y outerRadius (startAngle + gamma)
-        borderRadiusXY =
-            ( borderRadius, borderRadius )
-
-        -- startRoundedBorder =
-        --     polarToCartesian centerRoundedBorderX centerRoundedBorderY borderRadius (1 - gamma)
-        largeArcFlagInner =
-            if endAngle - startAngle <= 180 then
-                False
-
-            else
-                True
-
-        largeArcFlagOuter =
-            if startAngle - endAngle <= 180 then
-                False
-
-            else
-                True
-
-        xAxisRotation =
-            0
-
-        sweepFlag =
-            False
+        y =
+            sin angle * distance
     in
-    Svg.path
-        [ Attributes.d <|
-            pathD
-                [ M startInner
-                , A innerRadiusXY 0 False (not largeArcFlagInner) endInner
-                , L startOuter
-                , A outerRadiusXY 0 False largeArcFlagOuter endOuter
-                , A borderRadiusXY 0 False False endBorder
-                , L startInner
-                , Z
-                ]
-        , Attributes.fill clr
-        ]
-        []
+    translate x y
 
 
-describeArc2 x y innerRadius startAngle endAngle clr =
+moveDiagonal2 : Float -> Float -> Float -> Svg.Attribute Msg
+moveDiagonal2 ring angle distance =
     let
-        startInner =
-            polarToCartesian x y innerRadius endAngle
+        radius =
+            ringRadius ring
 
-        endInner =
-            polarToCartesian x y innerRadius startAngle
+        vectorStart =
+            polarToCartesian config.x config.y radius angle
 
-        endRoundedBorder =
-            polarToCartesian x y (outerRadius - borderRadius) endAngle
+        vectorMove =
+            polarToCartesian config.x config.y (radius + distance) angle
 
-        gamma =
-            calculateAngle borderRadius (outerRadius - borderRadius) (outerRadius - borderRadius)
+        delta ( x1, y1 ) ( x2, y2 ) =
+            ( x2 - x1, y2 - y1 )
 
-        ( centerRoundedBorderX, centerRoundedBorderY ) =
-            polarToCartesian x y (innerRadius + borderRadius) (endAngle + gamma)
-
-        startRoundedBorder =
-            polarToCartesian centerRoundedBorderX centerRoundedBorderY borderRadius (1 - gamma)
-
-        innerRadiusXY =
-            ( innerRadius, innerRadius )
-
-        outerRadius =
-            innerRadius + 40
-
-        outerRadiusXY =
-            ( outerRadius, outerRadius )
-
-        startOuter =
-            polarToCartesian x y outerRadius endAngle
-
-        endOuter =
-            polarToCartesian x y outerRadius (startAngle + gamma)
-
-        borderRadius =
-            5
-
-        borderRadiusXY =
-            ( borderRadius, borderRadius )
-
-        largeArcFlagInner =
-            if endAngle - startAngle <= 180 then
-                False
-
-            else
-                True
-
-        largeArcFlagOuter =
-            if startAngle - endAngle <= 180 then
-                False
-
-            else
-                True
-
-        xAxisRotation =
-            0
-
-        sweepFlag =
-            False
+        ( x, y ) =
+            delta vectorStart vectorMove
     in
-    Svg.path
-        [ Attributes.d <|
-            pathD
-                [ M startInner
-                , A innerRadiusXY 0 False largeArcFlagInner endInner
-                , L endOuter
-                , A outerRadiusXY 0 False (not largeArcFlagOuter) startRoundedBorder
-                , A borderRadiusXY 0 False False endRoundedBorder
-                , L startInner
-                , Z
-                ]
-        , Attributes.fill clr
+    translate x y
+
+
+translate x y =
+    String.join ""
+        [ "translate("
+        , String.fromFloat x
+        , ","
+        , String.fromFloat y
+        , ")"
         ]
-        []
-
-
-
--- Svg.path
---     [ Attributes.d <|
---         pathD
---             [ M startInner
---             , A innerRadiusXY 0 False largeArcFlagInner endInner
---             , L endOuter
---             , A outerRadiusXY 0 False (not largeArcFlagOuter) startOuter
---             , L startInner
---             , Z
---             ]
---     , Attributes.fill clr
---     ]
---     []
--- String.join " "
---     [ "M"
---     , String.fromFloat startInner.x
---     , String.fromFloat startInner.y
---     , "A"
---     , String.fromFloat innerRadius
---     , String.fromFloat innerRadius
---     , String.fromFloat xAxisRotation
---     , String.fromInt largeArcFlag
---     , String.fromInt sweepFlag
---     , String.fromFloat endInner.x
---     , String.fromFloat endInner.y
---     , "L"
---     , String.fromFloat endOuter.x
---     , String.fromFloat endOuter.y
---     , "A"
---     , String.fromFloat outerRadius
---     , String.fromFloat outerRadius
---     , String.fromFloat xAxisRotation
---     , String.fromInt largeArcFlag
---     , String.fromInt sweepFlag
---     , String.fromFloat startOuter.x
---     , String.fromFloat startOuter.y
---     , "L"
---     , String.fromFloat startInner.x
---     , String.fromFloat startOuter.x
---     ]
---     |> Svg.d
+        |> Attributes.transform
