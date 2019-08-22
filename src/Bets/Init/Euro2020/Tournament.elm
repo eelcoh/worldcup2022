@@ -206,52 +206,52 @@ bracket : Bracket
 bracket =
     let
         tnwa =
-            TeamNode "WA" Nothing TBD
+            TeamNode "WA" (FirstPlace A) Nothing TBD
 
         tnwb =
-            TeamNode "WB" Nothing TBD
+            TeamNode "WB" (FirstPlace B) Nothing TBD
 
         tnwc =
-            TeamNode "WC" Nothing TBD
+            TeamNode "WC" (FirstPlace C) Nothing TBD
 
         tnwd =
-            TeamNode "WD" Nothing TBD
+            TeamNode "WD" (FirstPlace D) Nothing TBD
 
         tnwe =
-            TeamNode "WE" Nothing TBD
+            TeamNode "WE" (FirstPlace E) Nothing TBD
 
         tnwf =
-            TeamNode "WF" Nothing TBD
+            TeamNode "WF" (FirstPlace F) Nothing TBD
 
         tnra =
-            TeamNode "RA" Nothing TBD
+            TeamNode "RA" (SecondPlace A) Nothing TBD
 
         tnrb =
-            TeamNode "RB" Nothing TBD
+            TeamNode "RB" (SecondPlace B) Nothing TBD
 
         tnrc =
-            TeamNode "RC" Nothing TBD
+            TeamNode "RC" (SecondPlace C) Nothing TBD
 
         tnrd =
-            TeamNode "RD" Nothing TBD
+            TeamNode "RD" (SecondPlace D) Nothing TBD
 
         tnre =
-            TeamNode "RE" Nothing TBD
+            TeamNode "RE" (SecondPlace E) Nothing TBD
 
         tnrf =
-            TeamNode "RF" Nothing TBD
+            TeamNode "RF" (SecondPlace F) Nothing TBD
 
         tnt1 =
-            TeamNode "T1" Nothing TBD
+            TeamNode "T1" (BestThirdFrom [ A, B, C ]) Nothing TBD
 
         tnt2 =
-            TeamNode "T2" Nothing TBD
+            TeamNode "T2" (BestThirdFrom [ A, B, C, D ]) Nothing TBD
 
         tnt3 =
-            TeamNode "T3" Nothing TBD
+            TeamNode "T3" (BestThirdFrom [ A, D, E, F ]) Nothing TBD
 
         tnt4 =
-            TeamNode "T4" Nothing TBD
+            TeamNode "T4" (BestThirdFrom [ D, E, F ]) Nothing TBD
 
         -- Second round matches
         mn37 =

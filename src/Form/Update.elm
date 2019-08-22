@@ -5,6 +5,7 @@ import Bets.Init
 import Bets.Types exposing (AnswerID, Bet)
 import Browser
 import Browser.Navigation as Navigation
+import Form.Card as Card
 import Form.Info
 import Form.Init as Init
 import Form.Question
@@ -17,45 +18,6 @@ import RemoteData exposing (RemoteData(..), WebData)
 import Url
 
 
-findCardByCardId : List Card -> Int -> Maybe Card
-findCardByCardId cards idx =
-    List.drop idx cards
-        |> List.head
-
-
-findCardIDByAnswerId : Model Msg -> Maybe AnswerID -> Maybe Int
-findCardIDByAnswerId model mAnswerId =
-    let
-        getAnswerIds qsModel =
-            QS.findAnswers qsModel model.bet
-                |> List.map Tuple.first
-
-        isAnswer answerId ( i, card ) =
-            case card of
-                IntroCard _ ->
-                    False
-
-                QuestionCard qModel ->
-                    qModel.answerId == answerId
-
-                QuestionSetCard qsModel ->
-                    List.member answerId (getAnswerIds qsModel)
-
-                SubmitCard ->
-                    False
-
-        mIndexedCard =
-            case mAnswerId of
-                Nothing ->
-                    Nothing
-
-                Just answerId ->
-                    List.indexedMap (\a b -> ( a, b )) model.cards
-                        |> find (isAnswer answerId)
-    in
-    Maybe.map (\( i, _ ) -> i) mIndexedCard
-
-
 update : Msg -> Model Msg -> ( Model Msg, Cmd Msg )
 update msg state =
     case msg of
@@ -65,7 +27,7 @@ update msg state =
         Answered i act ->
             let
                 mCard =
-                    findCardByCardId state.cards i
+                    Card.findByCardId state.cards i
             in
             case mCard of
                 Just (QuestionCard qModel) ->
@@ -73,14 +35,20 @@ update msg state =
                         ( newBet, newQModel, fx ) =
                             Form.Question.update act state.bet qModel
 
+                        newCard =
+                            QuestionCard newQModel
+
+                        newCards =
+                            Card.update state.cards i newCard
+
                         next =
                             .next qModel
 
                         idx =
-                            findCardIDByAnswerId state next
+                            Card.findIDByAnswerId state next
                                 |> Maybe.withDefault state.idx
                     in
-                    ( { state | bet = newBet, idx = idx, betState = Dirty }, Cmd.map (Answered i) fx )
+                    ( { state | bet = newBet, cards = newCards, idx = idx, betState = Dirty }, Cmd.map (Answered i) fx )
 
                 _ ->
                     ( state, Cmd.none )
@@ -132,7 +100,7 @@ update msg state =
         QuestionSetMsg cardId act ->
             let
                 ( newBet, cards, fx ) =
-                    case findCardByCardId state.cards cardId of
+                    case Card.findByCardId state.cards cardId of
                         Just (QuestionSetCard model) ->
                             let
                                 ( newNewBet, newModel, fx_ ) =
