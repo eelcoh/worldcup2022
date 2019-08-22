@@ -5,6 +5,7 @@ import Basics.Extra exposing (inDegrees)
 import Bets.Bet exposing (setTeam)
 import Bets.Types exposing (Answer, AnswerID, AnswerT(..), Bet, Bracket(..), CurrentSlot(..), HasQualified(..), Qualifier, SecondRoundCandidate(..), Selection, Slot, Team, Winner(..))
 import Bets.Types.Bracket as B
+import Bets.Types.Group as G
 import Bets.Types.Team as T
 import Element exposing (alignRight, centerX, height, paddingXY, px, spaceEvenly, spacing, width)
 import Form.Questions.Types exposing (Angle, BracketState(..), QState, QuestionType(..))
@@ -32,6 +33,26 @@ type IsWinner
     = Yes
     | No
     | Undecided
+
+
+slots =
+    [ "WA"
+    , "WB"
+    , "WC"
+    , "WD"
+    , "WE"
+    , "WF"
+    , "RA"
+    , "RB"
+    , "RC"
+    , "RD"
+    , "RE"
+    , "RF"
+    , "T1"
+    , "T2"
+    , "T3"
+    , "T4"
+    ]
 
 
 isWinner : Winner -> Winner -> IsWinner
@@ -257,7 +278,9 @@ viewPositionRing bet answer bracket mSlot =
                 |> Svg.g []
 
         ring5 =
-            mkRingData [ wa, wb, wc, wd, we, wf, ra, rb, rc, rd, re, rf, t1, t2, t3, t4 ]
+            mkRingData [ wf, t1, rd, re, wa, rc, wb, t3, ra, rb, wc, t4, we, t2, wd, rf ]
+
+        -- mkRingData [ wf, .., .., .., .., rc, wb, .., rb, rd, re, rf, t1, t2, t3, t4 ]
     in
     [ ring5 ]
 
@@ -434,7 +457,7 @@ viewCandidatesCircle bet ( answerID, answer ) bracket slot candidates startAngle
             mkQualifierButton msg team.teamID currentSlot row col
 
         rows =
-            [ 0, 1, 2 ]
+            [ 0, 1, 2, 3 ]
 
         cols =
             [ 0, 1, 2, 3 ]
@@ -453,6 +476,19 @@ viewCandidatesCircle bet ( answerID, answer ) bracket slot candidates startAngle
 
         closeView =
             mkButton 200 300 40 25 "sluit" CloseQualifierView UI.Style.Active
+
+        ( positionString, groupString ) =
+            case candidates of
+                FirstPlace grp ->
+                    ( "winnaar groep", G.toString grp )
+
+                SecondPlace grp ->
+                    ( "tweede groep", G.toString grp )
+
+                BestThirdFrom grps ->
+                    List.map G.toString grps
+                        |> String.join "-"
+                        |> Tuple.pair "beste nr 3 uit"
     in
     [ Svg.circle
         [ Attributes.cx (String.fromFloat config.x)
@@ -461,6 +497,11 @@ viewCandidatesCircle bet ( answerID, answer ) bracket slot candidates startAngle
         , Attributes.fill fillColor
         ]
         []
+    , Svg.g
+        []
+        [ mkText positionString "white" ( 75, 80 ) ( 265, 80 )
+        , mkText groupString "white" ( 75, 100 ) ( 265, 100 )
+        ]
     , Svg.path
         [ Attributes.d <|
             pathD connectPath
@@ -492,7 +533,7 @@ mkQualifierButton msg teamID currentSlot row col =
                 |> toFloat
 
         y =
-            100
+            130
                 + row
                 * (h + 10)
                 |> toFloat
@@ -526,10 +567,10 @@ mkButton x y w h caption msg semantics =
         ( stroke, fill, txt ) =
             case Debug.log "current slot" semantics of
                 UI.Style.Selected ->
-                    ( config.colorSelected, config.colorSelected, "black" )
+                    ( "white", config.colorSelected, "white" )
 
                 UI.Style.Potential ->
-                    ( "orange", "grey", "black" )
+                    ( "white", "green", "white" )
 
                 _ ->
                     ( "white", "black", "white" )
@@ -547,7 +588,7 @@ mkButton x y w h caption msg semantics =
                 ]
                 []
     in
-    Svg.g [ Events.onClick msg ]
+    Svg.g [ Events.onClick msg, Attributes.cursor "pointer" ]
         [ Svg.rect
             [ Attributes.x <| String.fromFloat x
             , Attributes.y <| String.fromFloat y
@@ -559,7 +600,7 @@ mkButton x y w h caption msg semantics =
             []
         , textPath
         , Svg.text_
-            [ Attributes.fill "red"
+            [ Attributes.fill txt
             , Attributes.fontFamily "Roboto Mono"
             , Attributes.fontSize "18"
             , Attributes.textAnchor "middle"
@@ -569,6 +610,42 @@ mkButton x y w h caption msg semantics =
                 , Attributes.startOffset "50%"
                 ]
                 [ Svg.text caption ]
+            ]
+        ]
+
+
+mkText str clr (( x1, y1 ) as start) (( x2, y2 ) as end) =
+    let
+        p f =
+            round f |> String.fromInt
+
+        pathId =
+            String.join "-" [ "p", p x1, p y1, p x2, p y2 ]
+    in
+    Svg.g
+        []
+        [ Svg.path
+            [ Attributes.d <|
+                pathD
+                    [ M start
+                    , L end
+                    ]
+            , Attributes.stroke "transparent"
+            , Attributes.fill "none"
+            , Attributes.id pathId
+            ]
+            []
+        , Svg.text_
+            [ Attributes.fill clr
+            , Attributes.fontFamily "Roboto Mono"
+            , Attributes.fontSize "18"
+            , Attributes.textAnchor "middle"
+            ]
+            [ Svg.textPath
+                [ Attributes.xlinkHref ("#" ++ pathId)
+                , Attributes.startOffset "50%"
+                ]
+                [ Svg.text str ]
             ]
         ]
 
@@ -609,11 +686,10 @@ viewLeaf bet answer mBracket isSelected ring segmentAngleSize angle =
                 --     else
                 --         moveDiagonal2 ring (Debug.log "center angle" centerMatchAngle) 2
             in
-            List.concat
+            Svg.g []
                 [ viewMatchLeaf answer HomeTeam slot (isWinner winner HomeTeam) home homeLeaf
                 , viewMatchLeaf answer AwayTeam slot (isWinner winner AwayTeam) away awayLeaf
                 ]
-                |> Svg.g []
 
         Just (TeamNode slot candidate qualifier hasQualified) ->
             let
@@ -629,28 +705,29 @@ viewLeaf bet answer mBracket isSelected ring segmentAngleSize angle =
                 msg =
                     SetQualifier (Tuple.first answer) slot candidate angle endAngle
             in
-            List.concat
-                [ viewCandidateLeaf answer slot isSelected candidate qualifier hasQualified leaf
-                ]
-                |> Svg.g [ Events.onClick msg ]
+            mkLeaf isSelected qualifier leaf msg
 
+        -- List.concat
+        --     [ viewCandidateLeaf answer slot isSelected candidate qualifier hasQualified leaf msg
+        --     ]
+        --     |> Svg.g [ Events.onClick msg ]
         _ ->
             Svg.g [] []
 
 
-viewCandidateLeaf : ( AnswerID, a2 ) -> Slot -> UI.Style.ButtonSemantics -> SecondRoundCandidate -> Maybe Team -> HasQualified -> Leaf -> List (Svg Msg)
-viewCandidateLeaf answer slot isSelected candidate qualifier hasQualified leaf =
-    let
-        answerId =
-            Tuple.first answer
 
-        msg =
-            SetQualifier answerId slot candidate
-    in
-    mkLeaf isSelected qualifier leaf
+-- viewCandidateLeaf : ( AnswerID, a2 ) -> Slot -> UI.Style.ButtonSemantics -> SecondRoundCandidate -> Maybe Team -> HasQualified -> Leaf -> List (Svg Msg)
+-- viewCandidateLeaf answer slot isSelected candidate qualifier hasQualified leaf =
+--     let
+--         answerId =
+--             Tuple.first answer
+--         msg =
+--             SetQualifier answerId slot candidate
+--     in
+--     mkLeaf isSelected qualifier leaf
 
 
-viewMatchLeaf : ( AnswerID, a2 ) -> Winner -> Slot -> IsWinner -> Bracket -> Leaf -> List (Svg Msg)
+viewMatchLeaf : ( AnswerID, a2 ) -> Winner -> Slot -> IsWinner -> Bracket -> Leaf -> Svg Msg
 viewMatchLeaf answer wnnr slot isSelected bracket leaf =
     let
         s =
@@ -673,7 +750,7 @@ viewMatchLeaf answer wnnr slot isSelected bracket leaf =
         mTeam =
             B.qualifier bracket
     in
-    mkLeaf s mTeam leaf
+    mkLeaf s mTeam leaf msg
 
 
 leafToString : Leaf -> String
@@ -700,9 +777,10 @@ leafToString { ring, startAngle, endAngle, leafType } =
     String.join " " attrs
 
 
-mkLeaf : ButtonSemantics -> Maybe Team -> Leaf -> List (Svg Msg)
-mkLeaf s team leaf =
-    [ describeLeaf s leaf, setText s team leaf ]
+mkLeaf : ButtonSemantics -> Maybe Team -> Leaf -> Msg -> Svg Msg
+mkLeaf s team leaf msg =
+    Svg.g [ Events.onClick msg, Attributes.cursor "pointer" ]
+        [ describeLeaf s leaf, setText s team leaf ]
 
 
 type alias Leaf =
@@ -727,8 +805,8 @@ config =
     , borderRadius = 10
     , ringHeight = 25
     , ringSpacing = 5
-    , colorPotential = "#ececec"
-    , colorSelected = "#red"
+    , colorPotential = "blue"
+    , colorSelected = "red"
     }
 
 
@@ -987,7 +1065,7 @@ setText s qualifier { ring, startAngle, endAngle, team } =
 
         textActual =
             Svg.text_
-                [ Attributes.fill "black"
+                [ Attributes.fill "white"
                 , Attributes.fontFamily "Roboto Mono"
                 , Attributes.fontSize "18"
                 , Attributes.textAnchor "middle"
