@@ -9,6 +9,7 @@ module Bets.Bet exposing
     , setMatchScore
     , setMatchWinner
     , setParticipant
+    , setQualifier
     , setTeam
     , setTopscorer
     , setWinner
@@ -55,6 +56,12 @@ newBet bet newAnswers =
 setWinner : Bet -> Answer -> Slot -> Winner -> Bet
 setWinner bet answer slot winner =
     Bets.Types.Answers.setWinner bet.answers answer slot winner
+        |> newBet bet
+
+
+setQualifier : Bet -> Answer -> Slot -> Qualifier -> Bet
+setQualifier bet answer slot qualifier =
+    Bets.Types.Answers.setQualifier bet.answers answer slot qualifier
         |> newBet bet
 
 

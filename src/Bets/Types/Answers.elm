@@ -8,6 +8,7 @@ module Bets.Types.Answers exposing
     , setMatchScore
     , setMatchWinner
     , setParticipant
+    , setQualifier
     , setTeam
     , setTopscorer
     , setWinner
@@ -568,6 +569,30 @@ setWinner answers ( aid, answer ) slot homeOrAway =
             let
                 newBracket =
                     B.proceed bracket slot homeOrAway
+
+                newAnswer =
+                    Tuple.pair aid (AnswerBracket newBracket points)
+
+                newAnswers =
+                    setAnswer newAnswer answers
+            in
+            newAnswers
+
+        _ ->
+            answers
+
+
+setQualifier : Answers -> Answer -> Slot -> Qualifier -> Answers
+setQualifier answers ( aid, answer ) slot qualifier =
+    case answer of
+        AnswerBracket bracket points ->
+            let
+                newBracket =
+                    B.unsetQualifier bracket qualifier
+                        |> setSlot
+
+                setSlot br =
+                    B.set br slot qualifier
 
                 newAnswer =
                     Tuple.pair aid (AnswerBracket newBracket points)

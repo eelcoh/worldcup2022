@@ -1,9 +1,11 @@
 module Bets.Types.Bracket exposing
-    ( decode
+    ( candidatesForTeamNode
+    , decode
     , decodeWinner
     , display
     , encode
     , get
+    , getQualifiers
     , isComplete
     , proceed
     , proceedAway
@@ -15,9 +17,11 @@ module Bets.Types.Bracket exposing
     , winner
     )
 
-import Bets.Types exposing (Bracket(..), Group, HasQualified(..), Qualifier, Slot, Team, Winner(..))
+import Bets.Types exposing (Bracket(..), CurrentSlot(..), Group, HasQualified(..), Qualifier, SecondRoundCandidate, Selection, Slot, Team, Winner(..))
 import Bets.Types.Round as R
+import Bets.Types.SecondRoundCandidate as C
 import Bets.Types.Team as T
+import Dict
 import Json.Decode exposing (Decoder, fail, field, lazy, maybe)
 import Json.Encode
 import Maybe.Extra as M
@@ -41,8 +45,8 @@ reset newBracket prevWinner =
             -- should really reassess hasQ, but not necessary now since it can only be TBD
             MatchNode slot newWinner home away rnd hasQ
 
-        TeamNode slot qual hasQ ->
-            TeamNode slot qual hasQ
+        TeamNode slot pos qual hasQ ->
+            TeamNode slot pos qual hasQ
 
 
 proceedHome : Bracket -> Slot -> Bracket
@@ -98,7 +102,7 @@ winner bracket =
                 None ->
                     Nothing
 
-        TeamNode slot qual hasQ ->
+        TeamNode slot pos qual hasQ ->
             qual
 
 
@@ -121,9 +125,9 @@ set bracket slot qual =
             in
             reset newBracket currentWinner
 
-        TeamNode s mt hasQ ->
+        TeamNode s pos mt hasQ ->
             if s == slot then
-                TeamNode slot qual hasQ
+                TeamNode slot pos qual hasQ
 
             else
                 bracket
@@ -157,9 +161,9 @@ unsetQualifier bracket qual =
             in
             reset newBracket currentWinner
 
-        TeamNode slot mt hasQ ->
+        TeamNode slot pos mt hasQ ->
             if mt == qual then
-                TeamNode slot Nothing hasQ
+                TeamNode slot pos Nothing hasQ
 
             else
                 bracket
@@ -179,7 +183,7 @@ qualifier bracket =
                 None ->
                     Nothing
 
-        TeamNode s q _ ->
+        TeamNode s p q _ ->
             q
 
 
@@ -197,12 +201,22 @@ get brkt slot =
                 in
                 oneOf [ get away slot, get home slot ]
 
-        TeamNode s q hasQ ->
+        TeamNode s p q hasQ ->
             if s == slot then
                 Just brkt
 
             else
                 Nothing
+
+
+getQualifiers : Bracket -> List ( Slot, Qualifier )
+getQualifiers brkt =
+    case brkt of
+        MatchNode s w home away round hasQ ->
+            List.concat [ getQualifiers away, getQualifiers home ]
+
+        TeamNode s p q hasQ ->
+            [ ( s, q ) ]
 
 
 display : Bracket -> String
@@ -213,7 +227,7 @@ display bracket =
 isComplete : Bracket -> Bool
 isComplete brkt =
     case brkt of
-        TeamNode slot qual hasQ ->
+        TeamNode slot pos qual hasQ ->
             M.isJust qual
 
         MatchNode slot w home away round hasQ ->
@@ -223,6 +237,47 @@ isComplete brkt =
 
                 _ ->
                     isComplete home && isComplete away
+
+
+candidatesForTeamNode : Bracket -> SecondRoundCandidate -> Slot -> List Selection
+candidatesForTeamNode brkt position slot =
+    let
+        candidates =
+            C.get position
+
+        -- returns Dict (TeamID, Slot)
+        qualifiers =
+            getQualifiers brkt
+                |> List.map justify
+                |> M.values
+                |> Dict.fromList
+
+        justify ( a, m ) =
+            case m of
+                Just b ->
+                    Just ( b.teamID, a )
+
+                Nothing ->
+                    Nothing
+
+        assess : ( Group, Team ) -> Selection
+        assess ( g, t ) =
+            case Dict.get t.teamID qualifiers of
+                Just s ->
+                    if s == slot then
+                        Selection ThisSlot g t
+
+                    else
+                        Selection (OtherSlot s) g t
+
+                Nothing ->
+                    Selection NoSlot g t
+    in
+    List.map assess candidates
+
+
+
+-- JSON
 
 
 encodeWinner : Winner -> Json.Encode.Value
@@ -241,10 +296,11 @@ encodeWinner wnnr =
 encode : Bracket -> Json.Encode.Value
 encode bracket =
     case bracket of
-        TeamNode slot qual hasQ ->
+        TeamNode slot pos qual hasQ ->
             Json.Encode.object
                 [ ( "node", Json.Encode.string "team" )
                 , ( "slot", Json.Encode.string slot )
+                , ( "candidates", C.encode pos )
                 , ( "qualifier", T.encodeMaybe qual )
                 , ( "hasQualified", encodeHasQualified hasQ )
                 ]
@@ -268,8 +324,9 @@ decode =
             (\node ->
                 case node of
                     "team" ->
-                        Json.Decode.map3 TeamNode
+                        Json.Decode.map4 TeamNode
                             (field "slot" Json.Decode.string)
+                            (field "candidates" C.decode)
                             (field "qualifier" (maybe T.decode))
                             (field "hasQualified" decodeHasQualified)
 

@@ -1,8 +1,13 @@
-module Bets.Types.Group exposing (decode, encode, toGroup, toString)
+module Bets.Types.Group exposing (decode, encode, equal, toGroup, toString)
 
 import Bets.Types exposing (Group(..))
 import Json.Decode exposing (Decoder)
 import Json.Encode
+
+
+equal : Group -> Group -> Bool
+equal g1 g2 =
+    g1 == g2
 
 
 toString : Group -> String

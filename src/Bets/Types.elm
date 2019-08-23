@@ -9,6 +9,7 @@ module Bets.Types exposing
     , Bet
     , Bracket(..)
     , Candidates
+    , CurrentSlot(..)
     , Date
     , DateString
     , DateTime(..)
@@ -29,6 +30,7 @@ module Bets.Types exposing
     , SecondRoundCandidate(..)
     , SecondRoundCandidates
     , Selected(..)
+    , Selection
     , Slot
     , Stadium
     , Team
@@ -172,7 +174,7 @@ type Match
 
 type Bracket
     = MatchNode Slot Winner Home Away Round HasQualified
-    | TeamNode Slot Qualifier HasQualified
+    | TeamNode Slot SecondRoundCandidate Qualifier HasQualified
 
 
 type HasQualified
@@ -201,6 +203,19 @@ type alias Qualifier =
 
 type alias Slot =
     DrawID
+
+
+type CurrentSlot
+    = ThisSlot
+    | OtherSlot Slot
+    | NoSlot
+
+
+type alias Selection =
+    { currentSlot : CurrentSlot
+    , group : Group
+    , team : Team
+    }
 
 
 
