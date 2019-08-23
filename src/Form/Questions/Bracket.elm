@@ -378,9 +378,46 @@ viewMatchRings bet answer bracket =
             , ring3
             , ring2
             , ring1
+            , viewChampion bet answer bracket
             ]
     in
     rings
+
+
+viewChampion bet answer bracket =
+    case
+        B.qualifier bracket
+    of
+        Just team ->
+            let
+                radius =
+                    ringRadius 1 - config.ringSpacing
+
+                x =
+                    Attributes.cx <| String.fromFloat config.x
+
+                y =
+                    Attributes.cy <| String.fromFloat config.y
+
+                r =
+                    Attributes.r <| String.fromFloat radius
+
+                c1 =
+                    ( config.x - radius, config.y + 6 )
+
+                c2 =
+                    ( config.x + radius, config.y + 6 )
+
+                clr =
+                    Attributes.fill config.colorSelected
+            in
+            Svg.g []
+                [ Svg.circle [ x, y, r, clr ] []
+                , mkText team.teamID "white" c1 c2
+                ]
+
+        _ ->
+            Svg.g [] []
 
 
 viewCandidatesCircle : Bet -> Answer -> Bracket -> Slot -> SecondRoundCandidate -> Angle -> Angle -> List (Svg Msg)
