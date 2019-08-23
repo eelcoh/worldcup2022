@@ -1,13 +1,13 @@
-module Bets.Types.SecondRoundCandidate exposing (decode, encode, get)
+module Bets.Types.Candidate exposing (decode, encode, get)
 
 import Bets.Init.Euro2020.Tournament as Tournament
-import Bets.Types exposing (Bracket(..), Group, SecondRoundCandidate(..), Slot, Team)
+import Bets.Types exposing (Bracket(..), Candidate(..), Group, Slot, Team)
 import Bets.Types.Group as Group
 import Json.Decode exposing (Decoder, andThen, field, map2, map4, maybe)
 import Json.Encode
 
 
-get : SecondRoundCandidate -> List ( Group, Team )
+get : Candidate -> List ( Group, Team )
 get position =
     let
         teams g =
@@ -27,7 +27,7 @@ get position =
             List.concatMap teams grps
 
 
-encode : SecondRoundCandidate -> Json.Encode.Value
+encode : Candidate -> Json.Encode.Value
 encode spot =
     case spot of
         FirstPlace grp ->
@@ -49,13 +49,13 @@ encode spot =
                 ]
 
 
-decode : Decoder SecondRoundCandidate
+decode : Decoder Candidate
 decode =
     field "candidate-type" Json.Decode.string
         |> andThen decodeAnswerTDetails
 
 
-decodeAnswerTDetails : String -> Decoder SecondRoundCandidate
+decodeAnswerTDetails : String -> Decoder Candidate
 decodeAnswerTDetails s =
     case s of
         "first-place" ->

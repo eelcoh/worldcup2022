@@ -1,6 +1,6 @@
 module UI.Text exposing (boldText, bulletText, displayHeader, simpleText)
 
-import Element exposing (alignLeft, padding, paddingXY, px, spacing, width)
+import Element exposing (alignLeft, spacing, width)
 import UI.Style as Style
 
 

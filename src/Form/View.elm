@@ -9,7 +9,6 @@ import Form.QuestionSets.Types as QTS
 import Form.Questions.Types as QT
 import Form.Submit
 import Form.Types exposing (..)
-import Html exposing (Html)
 import UI.Button
 import UI.Style
 

@@ -1,7 +1,7 @@
 module Bets.Init.Euro2020.Bet exposing (answers)
 
 import Bets.Init.Euro2020.Tournament exposing (bracket, matches)
-import Bets.Init.Lib exposing (answerGroupMatch, answerSecondRound)
+import Bets.Init.Lib exposing (answerGroupMatch)
 import Bets.Types exposing (..)
 import Bets.Types.DateTime exposing (date, time)
 import Bets.Types.Draw as Draw
@@ -54,24 +54,6 @@ answers =
     , answerGroupMatch "m23" F m.m23
     , answerGroupMatch "m36" F m.m36
     , answerGroupMatch "m35" F m.m35
-
-    -- SecondPlace rounders
-    , answerSecondRound "wa" (FirstPlace A)
-    , answerSecondRound "ra" (SecondPlace A)
-    , answerSecondRound "wb" (FirstPlace B)
-    , answerSecondRound "rb" (SecondPlace B)
-    , answerSecondRound "wc" (FirstPlace C)
-    , answerSecondRound "rc" (SecondPlace C)
-    , answerSecondRound "wd" (FirstPlace D)
-    , answerSecondRound "rd" (SecondPlace D)
-    , answerSecondRound "we" (FirstPlace E)
-    , answerSecondRound "re" (SecondPlace E)
-    , answerSecondRound "wf" (FirstPlace F)
-    , answerSecondRound "rf" (SecondPlace F)
-    , answerSecondRound "t1" (BestThirdFrom [ A, B, C ])
-    , answerSecondRound "t2" (BestThirdFrom [ A, B, C, D ])
-    , answerSecondRound "t3" (BestThirdFrom [ A, D, E, F ])
-    , answerSecondRound "t4" (BestThirdFrom [ D, E, F ])
 
     -- bracket
     , pair "br" (AnswerBracket bracket Nothing)

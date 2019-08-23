@@ -1,4 +1,4 @@
-module Bets.Init.Lib exposing (answerGroupMatch, answerMatchWinnerInit, answerSecondRound)
+module Bets.Init.Lib exposing (answerGroupMatch)
 
 import Bets.Types exposing (..)
 import Bets.Types.DateTime as DateTime
@@ -21,33 +21,3 @@ answerGroupMatch drawID group match =
             AnswerGroupMatch group match score points
     in
     pair drawID question
-
-
-answerSecondRound : DrawID -> SecondRoundCandidate -> Answer
-answerSecondRound drawID candidate =
-    let
-        draw =
-            Draw.init drawID
-
-        question =
-            AnswerSecondRound candidate draw Nothing
-    in
-    pair drawID question
-
-
-answerMatchWinnerInit : Round -> Draw -> Draw -> Date -> Time -> Stadium -> Maybe DrawID -> AnswerT
-answerMatchWinnerInit round home away date time stadium mNextId =
-    let
-        dt =
-            DateTime.toPosix date time
-
-        points =
-            Nothing
-
-        team =
-            Nothing
-
-        match =
-            Match home away dt stadium
-    in
-    AnswerMatchWinner round match mNextId team points

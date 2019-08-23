@@ -11,7 +11,7 @@ import Element.Input as Input
 import Form.QuestionSets.Types exposing (ChangeCursor(..), Model, updateCursor)
 import UI.Button
 import UI.Style
-import UI.Team exposing (viewTeam, viewTeamFull)
+import UI.Team
 import UI.Text
 
 

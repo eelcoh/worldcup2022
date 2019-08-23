@@ -8,17 +8,15 @@ module Bets.Types.Answer exposing
 
 import Bets.Json.Encode exposing (mStrEnc)
 import Bets.Types exposing (Answer, AnswerID, AnswerT(..))
-import Bets.Types.BestThirds
 import Bets.Types.Bracket
+import Bets.Types.Candidate
 import Bets.Types.Draw
 import Bets.Types.Group
 import Bets.Types.Match
 import Bets.Types.Participant
 import Bets.Types.Points
-import Bets.Types.Pos
 import Bets.Types.Round
 import Bets.Types.Score
-import Bets.Types.SecondRoundCandidate
 import Bets.Types.Team
 import Bets.Types.Topscorer
 import Json.Decode exposing (Decoder, andThen, field, map2, map4, maybe)
@@ -30,18 +28,6 @@ isComplete ( answerId, answer ) =
     case answer of
         AnswerGroupMatch group match mScore points ->
             Bets.Types.Score.isComplete mScore
-
-        AnswerGroupPosition group pos draw points ->
-            Bets.Types.Draw.isComplete draw
-
-        AnswerGroupBestThirds bestThirds points ->
-            Bets.Types.BestThirds.isComplete bestThirds
-
-        AnswerMatchWinner round match nextID mTeam points ->
-            Bets.Types.Match.isComplete match mTeam
-
-        AnswerSecondRound secondRoundCandidates draw points ->
-            Bets.Types.Draw.isComplete draw
 
         AnswerBracket bracket points ->
             Bets.Types.Bracket.isComplete bracket
@@ -58,18 +44,6 @@ summary ( answerId, answer ) =
     case answer of
         AnswerGroupMatch group match mScore points ->
             "Wedstrijden " ++ Bets.Types.Group.toString group
-
-        AnswerGroupPosition group pos draw points ->
-            "Stand " ++ Bets.Types.Group.toString group
-
-        AnswerGroupBestThirds bestThirds points ->
-            "Beste nummers 3"
-
-        AnswerSecondRound secondRoundCandidates draw points ->
-            "Tweede ronde"
-
-        AnswerMatchWinner round match nextID mTeam points ->
-            "MatchWinner"
 
         -- should be ++ match id
         AnswerBracket bracket points ->
@@ -107,40 +81,6 @@ encodeAnswerT answerT =
                 , ( "points", Bets.Types.Points.encode points )
                 ]
 
-        AnswerGroupPosition group pos draw points ->
-            Json.Encode.object
-                [ ( "answerType", Json.Encode.string "answer-group-position" )
-                , ( "group", Bets.Types.Group.encode group )
-                , ( "pos", Bets.Types.Pos.encode pos )
-                , ( "draw", Bets.Types.Draw.encode draw )
-                , ( "points", Bets.Types.Points.encode points )
-                ]
-
-        AnswerGroupBestThirds bestThirds points ->
-            Json.Encode.object
-                [ ( "answerType", Json.Encode.string "answer-group-best-thirds" )
-                , ( "best-thirds", Bets.Types.BestThirds.encode bestThirds )
-                , ( "points", Bets.Types.Points.encode points )
-                ]
-
-        AnswerSecondRound secondRoundCandidates draw points ->
-            Json.Encode.object
-                [ ( "answerType", Json.Encode.string "answer-second-round" )
-                , ( "secondRoundCandidate", Bets.Types.SecondRoundCandidate.encode secondRoundCandidates )
-                , ( "draw", Bets.Types.Draw.encode draw )
-                , ( "points", Bets.Types.Points.encode points )
-                ]
-
-        AnswerMatchWinner round match nextID mTeam points ->
-            Json.Encode.object
-                [ ( "answerType", Json.Encode.string "answer-match-winner" )
-                , ( "round", Bets.Types.Round.encode round )
-                , ( "match", Bets.Types.Match.encode match )
-                , ( "next-id", mStrEnc nextID )
-                , ( "team", Bets.Types.Team.encodeMaybe mTeam )
-                , ( "points", Bets.Types.Points.encode points )
-                ]
-
         AnswerBracket bracket points ->
             Json.Encode.object
                 [ ( "answerType", Json.Encode.string "answer-bracket" )
@@ -162,31 +102,6 @@ encodeAnswerT answerT =
                 ]
 
 
-
-{-
-
-   toAnswer : AnswerID -> AnswerT -> Answer
-   toAnswer =
-     (,)
-
-   decode : Decoder Answer
-   decode =
-     Json.Decode.tuple2
-       toAnswer
-       (Json.Decode.string)
-       (decodeAnswerT)
-
-
-   decode : Decoder Answer
-   decode =
-     Json.Decode.map2
-       toAnswer              -- AnswerID -> AnswerT -> Answer
-   --    Json.Decode.string    -- Decoder AnswerID
-       ("id"  Json.Decode.string)
-       ("answer"  decodeAnswerT)         -- Decoder AnswerT
--}
-
-
 decode : Decoder AnswerT
 decode =
     field "answerType" Json.Decode.string
@@ -201,26 +116,6 @@ decodeAnswerTDetails s =
                 (field "group" Bets.Types.Group.decode)
                 (field "match" Bets.Types.Match.decode)
                 (field "score" (maybe Bets.Types.Score.decode))
-                (field "points" Bets.Types.Points.decode)
-
-        "answer-group-position" ->
-            Json.Decode.map4 AnswerGroupPosition
-                (field "group" Bets.Types.Group.decode)
-                (field "pos" Bets.Types.Pos.decode)
-                (field "draw" Bets.Types.Draw.decode)
-                (field "points" Bets.Types.Points.decode)
-
-        "answer-group-best-thirds" ->
-            Json.Decode.map2 AnswerGroupBestThirds
-                (field "best-thirds" Bets.Types.BestThirds.decode)
-                (field "points" Bets.Types.Points.decode)
-
-        "answer-match-winner" ->
-            Json.Decode.map5 AnswerMatchWinner
-                (field "round" Bets.Types.Round.decode)
-                (field "match" Bets.Types.Match.decode)
-                (field "next-id" (maybe Json.Decode.string))
-                (field "team" (maybe Bets.Types.Team.decode))
                 (field "points" Bets.Types.Points.decode)
 
         "answer-bracket" ->

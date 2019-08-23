@@ -1,16 +1,12 @@
 module Bets.Bet exposing
-    ( candidates
-    , decode
+    ( decode
     , encode
     , findAllGroupMatchAnswers
     , findGroupMatchAnswers
-    , findGroupPositionAnswers
     , getAnswer
     , setMatchScore
-    , setMatchWinner
     , setParticipant
     , setQualifier
-    , setTeam
     , setTopscorer
     , setWinner
     )
@@ -18,7 +14,6 @@ module Bets.Bet exposing
 import Bets.Json.Encode exposing (mIntEnc, mStrEnc)
 import Bets.Types exposing (..)
 import Bets.Types.Answers
-import Bets.Types.Candidates
 import Json.Decode exposing (Decoder, fail, field, maybe)
 import Json.Encode
 
@@ -28,9 +23,10 @@ getAnswer bet answerId =
     Bets.Types.Answers.getAnswer bet.answers answerId
 
 
-candidates : Bet -> Answer -> Candidates
-candidates bet answer =
-    Bets.Types.Candidates.candidates bet.answers answer
+
+-- candidates : Bet -> Answer -> Candidates
+-- candidates bet answer =
+--     Bets.Types.Candidates.candidates bet.answers answer
 
 
 findAllGroupMatchAnswers : Bet -> Answers
@@ -41,11 +37,6 @@ findAllGroupMatchAnswers bet =
 findGroupMatchAnswers : Group -> Bet -> Answers
 findGroupMatchAnswers group bet =
     Bets.Types.Answers.findGroupMatchAnswers group bet.answers
-
-
-findGroupPositionAnswers : Group -> Bet -> Answers
-findGroupPositionAnswers group bet =
-    Bets.Types.Answers.findGroupPositionAnswers group bet.answers
 
 
 newBet : Bet -> Answers -> Bet
@@ -65,21 +56,16 @@ setQualifier bet answer slot qualifier =
         |> newBet bet
 
 
-setTeam : Bet -> Answer -> Group -> Team -> Bet
-setTeam bet answer group team =
-    Bets.Types.Answers.setTeam bet.answers answer group team
-        |> newBet bet
+
+-- setTeam : Bet -> Answer -> Group -> Team -> Bet
+-- setTeam bet answer group team =
+--     Bets.Types.Answers.setTeam bet.answers answer group team
+--         |> newBet bet
 
 
 setMatchScore : Bet -> Answer -> Score -> Bet
 setMatchScore bet answer score =
     Bets.Types.Answers.setMatchScore bet.answers answer score
-        |> newBet bet
-
-
-setMatchWinner : Bet -> Answer -> Team -> Bet
-setMatchWinner bet answer team =
-    Bets.Types.Answers.setMatchWinner bet.answers answer team
         |> newBet bet
 
 

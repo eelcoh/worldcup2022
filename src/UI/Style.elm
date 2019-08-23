@@ -47,7 +47,6 @@ module UI.Style exposing
 import Element
 import Element.Background as Background
 import Element.Border as Border
-import Element.Events as Events
 import Element.Font as Font
 import Html.Attributes
 import UI.Color as Color

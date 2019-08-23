@@ -4,13 +4,12 @@ module Form.QuestionSets.Types exposing
     , QuestionType(..)
     , display
     , findAnswers
-    , groupPositionQuestions
     , isComplete
     , matchScoreQuestions
     , updateCursor
     )
 
-import Bets.Bet exposing (findAllGroupMatchAnswers, findGroupMatchAnswers, findGroupPositionAnswers)
+import Bets.Bet exposing ( findGroupMatchAnswers)
 import Bets.Types exposing (AnswerID, Answers, Bet, Group(..))
 import Bets.Types.Answer
 import Bets.Types.Group as Group
@@ -19,7 +18,6 @@ import List.Extra exposing (dropWhile)
 
 type QuestionType
     = MatchScore Group
-    | GroupPosition Group
 
 
 
@@ -54,19 +52,11 @@ matchScoreQuestions grp cursor =
     init (MatchScore grp) cursor
 
 
-groupPositionQuestions : Group -> AnswerID -> Model
-groupPositionQuestions grp cursor =
-    init (GroupPosition grp) cursor
-
-
 findAnswers : Model -> Bet -> Answers
 findAnswers model bet =
     case model.questionType of
         MatchScore grp ->
             findGroupMatchAnswers grp bet
-
-        GroupPosition grp ->
-            findGroupPositionAnswers grp bet
 
 
 nextAnswer : AnswerID -> List AnswerID -> AnswerID
@@ -127,14 +117,6 @@ display model =
             case group of
                 A ->
                     "Scores " ++ Group.toString group
-
-                _ ->
-                    Group.toString group
-
-        GroupPosition group ->
-            case group of
-                A ->
-                    "Stand " ++ Group.toString group
 
                 _ ->
                     Group.toString group
