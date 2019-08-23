@@ -17,7 +17,6 @@ import Form.QuestionSet
 import Form.QuestionSets.Types as QuestionSets
 import Form.Questions.Types as Questions
 import Html exposing (Html)
-import Http
 import RemoteData exposing (WebData)
 import Url
 

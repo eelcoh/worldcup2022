@@ -1,7 +1,7 @@
-module Form.Questions.Types exposing (Angle, BracketState(..), Model, QState, QuestionType(..), display, isComplete, qBracket, qGroupBestThirds, qParticipant, qTopscorer, question)
+module Form.Questions.Types exposing (Angle, BracketState(..), Model, QState, QuestionType(..), display, isComplete, qBracket, qParticipant, qTopscorer, question)
 
 import Bets.Bet
-import Bets.Types exposing (AnswerID, Bet, SecondRoundCandidate, Slot)
+import Bets.Types exposing (AnswerID, Bet, Candidate, Slot)
 import Bets.Types.Answer
 
 
@@ -22,12 +22,11 @@ type alias Angle =
 
 type BracketState
     = ShowMatches
-    | ShowSecondRoundSelection Slot SecondRoundCandidate Angle Angle
+    | ShowSecondRoundSelection Slot Candidate Angle Angle
 
 
 type QuestionType
     = QBracket BracketState
-    | QGroupBestThirds
     | QParticipant
     | QTopscorer
 
@@ -40,11 +39,6 @@ question questionType answerId =
 qBracket : AnswerID -> QState
 qBracket answerId =
     question (QBracket ShowMatches) answerId
-
-
-qGroupBestThirds : AnswerID -> QState
-qGroupBestThirds answerId =
-    question QGroupBestThirds answerId
 
 
 qParticipant : AnswerID -> QState

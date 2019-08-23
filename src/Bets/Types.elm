@@ -4,10 +4,9 @@ module Bets.Types exposing
     , AnswerT(..)
     , Answers
     , Away
-    , BestThird
-    , BestThirds
     , Bet
     , Bracket(..)
+    , Candidate(..)
     , Candidates
     , CurrentSlot(..)
     , Date
@@ -23,12 +22,9 @@ module Bets.Types exposing
     , Participant
     , Player
     , Points
-    , Pos(..)
     , Qualifier
     , Round(..)
     , Score
-    , SecondRoundCandidate(..)
-    , SecondRoundCandidates
     , Selected(..)
     , Selection
     , Slot
@@ -150,14 +146,6 @@ type alias Draw =
     ( DrawID, Maybe Team )
 
 
-type alias BestThird =
-    ( Group, Team, DrawID )
-
-
-type alias BestThirds =
-    List BestThird
-
-
 type alias Stadium =
     { stadium : String
     , town : String
@@ -174,7 +162,7 @@ type Match
 
 type Bracket
     = MatchNode Slot Winner Home Away Round HasQualified
-    | TeamNode Slot SecondRoundCandidate Qualifier HasQualified
+    | TeamNode Slot Candidate Qualifier HasQualified
 
 
 type HasQualified
@@ -220,21 +208,15 @@ type alias Selection =
 
 
 {- Types for GroupPosition -}
-
-
-type Pos
-    = First
-    | Second
-    | Third
-    | TopThird
-    | Free
+-- type Pos
+--     = First
+--     | Second
+--     | Third
+--     | TopThird
+--     | Free
 
 
 type alias Candidates =
-    List ( Group, Team, Pos )
-
-
-type alias SecondRoundCandidates =
     List ( Group, Team, Selected )
 
 
@@ -250,16 +232,12 @@ type Selected
 
 type AnswerT
     = AnswerGroupMatch Group Match (Maybe Score) Points
-    | AnswerGroupPosition Group Pos Draw Points
-    | AnswerGroupBestThirds BestThirds Points
-    | AnswerSecondRound SecondRoundCandidate Draw Points
-    | AnswerMatchWinner Round Match NextID (Maybe Team) Points
     | AnswerBracket Bracket Points
     | AnswerTopscorer Topscorer Points
     | AnswerParticipant Participant
 
 
-type SecondRoundCandidate
+type Candidate
     = FirstPlace Group
     | SecondPlace Group
     | BestThirdFrom (List Group)

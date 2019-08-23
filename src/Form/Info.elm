@@ -7,7 +7,7 @@ module Form.Info exposing
 import Bets.Types exposing (Bet)
 import Bets.Types.Group as Group
 import Bets.Types.Round as Round
-import Element exposing (height, padding, px, spacing, width)
+import Element exposing ( px, spacing, width)
 import Form.Types exposing (FormInfoMsg(..), Info(..))
 import UI.Style
 import UI.Text

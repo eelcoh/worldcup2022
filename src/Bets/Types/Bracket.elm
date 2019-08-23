@@ -17,9 +17,9 @@ module Bets.Types.Bracket exposing
     , winner
     )
 
-import Bets.Types exposing (Bracket(..), CurrentSlot(..), Group, HasQualified(..), Qualifier, SecondRoundCandidate, Selection, Slot, Team, Winner(..))
+import Bets.Types exposing (Bracket(..), Candidate, CurrentSlot(..), Group, HasQualified(..), Qualifier, Selection, Slot, Team, Winner(..))
+import Bets.Types.Candidate as C
 import Bets.Types.Round as R
-import Bets.Types.SecondRoundCandidate as C
 import Bets.Types.Team as T
 import Dict
 import Json.Decode exposing (Decoder, fail, field, lazy, maybe)
@@ -239,7 +239,7 @@ isComplete brkt =
                     isComplete home && isComplete away
 
 
-candidatesForTeamNode : Bracket -> SecondRoundCandidate -> Slot -> List Selection
+candidatesForTeamNode : Bracket -> Candidate -> Slot -> List Selection
 candidatesForTeamNode brkt position slot =
     let
         candidates =

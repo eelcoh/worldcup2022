@@ -6,7 +6,7 @@ module Form.Questions.Participant exposing
 
 import Bets.Bet exposing (setParticipant)
 import Bets.Types exposing (Answer, AnswerID, AnswerT(..), Bet, Participant)
-import Element exposing (height, padding, px, spacing, width)
+import Element exposing (height, px, spacing, width)
 import Element.Input
 import Form.Questions.Types exposing (QState)
 import UI.Style

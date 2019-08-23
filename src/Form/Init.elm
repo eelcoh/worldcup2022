@@ -1,27 +1,11 @@
 module Form.Init exposing (cards)
 
-import Bets.Init
 import Bets.Types exposing (Group(..), Round(..))
 import Form.QuestionSets.Types as QSet
 import Form.Questions.Types as Q
 import Form.Types exposing (..)
-import Html exposing (div)
 
 
-
--- init : Flags -> ( Model Msg, Cmd Msg )
--- init flags =
---     ( { initModel | formId = flags.formId }, Cmd.none )
--- initModel : Model Msg
--- initModel =
---     { cards = cards
---     , bet = Bets.Init.bet
---     , idx = 0
---     , card = div [] []
---     , formId = Nothing
---     , inputState = Clean
---     , navKey
---     }
 
 
 cards : List Card

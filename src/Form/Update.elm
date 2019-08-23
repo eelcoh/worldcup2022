@@ -2,18 +2,14 @@ module Form.Update exposing (update)
 
 import API.Bets
 import Bets.Init
-import Bets.Types exposing (AnswerID, Bet)
 import Browser
 import Browser.Navigation as Navigation
 import Form.Card as Card
 import Form.Info
-import Form.Init as Init
 import Form.Question
 import Form.QuestionSet
 import Form.QuestionSets.Types as QS
-import Form.Submit
 import Form.Types exposing (..)
-import List.Extra exposing (find)
 import RemoteData exposing (RemoteData(..), WebData)
 import Url
 
@@ -60,24 +56,6 @@ update msg state =
             in
             ( { state | bet = newBet }, Cmd.map InfoMsg fx )
 
-        -- SubmitMsg act ->
-        --     let
-        --         ( newBet, fx, mSubmitModel ) =
-        --             Form.Submit.update act state.bet
-        --         submitModel =
-        --             case mSubmitModel of
-        --                 Just s ->
-        --                     s
-        --                 Nothing ->
-        --                     state.submitted
-        --         nwModel =
-        --             case submitModel of
-        --                 Reset ->
-        --                     Init.initModel
-        --                 _ ->
-        --                     { state | bet = newBet, submitted = submitModel }
-        --     in
-        --     ( nwModel, Cmd.map SubmitMsg fx )
         SubmitMsg ->
             let
                 cmd =
@@ -173,16 +151,6 @@ updateQuestionSetCard qSmodel card =
 
                     else
                         card
-
-                ( QS.GroupPosition g1, QS.GroupPosition g2 ) ->
-                    if g1 == g2 then
-                        QuestionSetCard qSmodel
-
-                    else
-                        card
-
-                _ ->
-                    card
 
         _ ->
             card

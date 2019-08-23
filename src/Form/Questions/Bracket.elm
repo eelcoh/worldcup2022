@@ -1,30 +1,25 @@
 module Form.Questions.Bracket exposing (Msg, update, view)
 
-import Arc2d exposing (Arc2d)
 import Basics.Extra exposing (inDegrees)
-import Bets.Bet exposing (setTeam)
-import Bets.Types exposing (Answer, AnswerID, AnswerT(..), Bet, Bracket(..), CurrentSlot(..), HasQualified(..), Qualifier, SecondRoundCandidate(..), Selection, Slot, Team, Winner(..))
+import Bets.Bet
+import Bets.Types exposing (Answer, AnswerID, AnswerT(..), Bet, Bracket(..), Candidate(..), CurrentSlot(..), HasQualified(..), Qualifier, Selection, Slot, Team, Winner(..))
 import Bets.Types.Bracket as B
 import Bets.Types.Group as G
 import Bets.Types.Team as T
-import Element exposing (alignRight, centerX, height, paddingXY, px, spaceEvenly, spacing, width)
+import Element exposing (centerX, height, px, width)
 import Form.Questions.Types exposing (Angle, BracketState(..), QState, QuestionType(..))
-import Geometry.Svg as Geo
-import Html exposing (..)
 import List.Extra as Extra
-import Point2d exposing (Point2d)
 import Svg exposing (Svg)
 import Svg.Attributes as Attributes
 import Svg.Events as Events
-import Svg.PathD exposing (Point, Segment(..), pathD)
-import UI.Button
+import Svg.PathD exposing (Segment(..), l, m, pathD)
 import UI.Style exposing (ButtonSemantics(..))
 import UI.Text
 
 
 type Msg
     = SetWinner AnswerID Slot Winner
-    | SetQualifier AnswerID Slot SecondRoundCandidate Angle Angle
+    | SetQualifier AnswerID Slot Candidate Angle Angle
     | SetSlot Slot Team
     | CloseQualifierView
 
@@ -420,7 +415,7 @@ viewChampion bet answer bracket =
             Svg.g [] []
 
 
-viewCandidatesCircle : Bet -> Answer -> Bracket -> Slot -> SecondRoundCandidate -> Angle -> Angle -> List (Svg Msg)
+viewCandidatesCircle : Bet -> Answer -> Bracket -> Slot -> Candidate -> Angle -> Angle -> List (Svg Msg)
 viewCandidatesCircle bet ( answerID, answer ) bracket slot candidates startAngle endAngle =
     let
         x =
@@ -753,7 +748,7 @@ viewLeaf bet answer mBracket isSelected ring segmentAngleSize angle =
 
 
 
--- viewCandidateLeaf : ( AnswerID, a2 ) -> Slot -> UI.Style.ButtonSemantics -> SecondRoundCandidate -> Maybe Team -> HasQualified -> Leaf -> List (Svg Msg)
+-- viewCandidateLeaf : ( AnswerID, a2 ) -> Slot -> UI.Style.ButtonSemantics -> Candidate -> Maybe Team -> HasQualified -> Leaf -> List (Svg Msg)
 -- viewCandidateLeaf answer slot isSelected candidate qualifier hasQualified leaf =
 --     let
 --         answerId =

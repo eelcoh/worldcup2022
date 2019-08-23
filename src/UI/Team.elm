@@ -2,13 +2,11 @@ module UI.Team exposing (viewTeam, viewTeamFull)
 
 import Bets.Types exposing (Team)
 import Bets.Types.Team as T
-import Element exposing (Element, column, el, fill, height, image, layout, padding, px, row, width)
+import Element exposing (Element, column, height, image,  px, row, width)
 import Element.Background as Background
-import Element.Border as Border
 import Element.Font as Font
 import UI.Color as Color
-import UI.Font exposing (scaled)
-import UI.Style as Style
+import UI.Font
 
 
 viewTeam : Maybe Team -> Element msg
