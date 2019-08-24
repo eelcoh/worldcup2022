@@ -42,21 +42,12 @@ getAnswer answers answerID =
 setMatchScore : Answers -> Answer -> Score -> Answers
 setMatchScore answers ( answerID, answer ) score =
     let
-        mergeScores mCurScore newScore =
-            case mCurScore of
-                Nothing ->
-                    Just newScore
-
-                Just curScore ->
-                    S.merge newScore curScore
-                        |> Just
-
         newAnswer =
             case answer of
                 AnswerGroupMatch grp match s points ->
                     let
                         newScore =
-                            mergeScores s score
+                            Maybe.map (S.merge score) s
                     in
                     Tuple.pair answerID (AnswerGroupMatch grp match newScore points)
 
@@ -170,19 +161,6 @@ unsetTeamsMatch match teams =
     List.foldr (\b a -> unsetTeamMatch a b) match teams
 
 
-
-{- case teams of
-   (t::rest) ->
-     let
-       newMatch =
-         unsetTeamMatch match t
-     in
-       unsetTeamsMatch newMatch rest
-   [] ->
-     match
--}
-
-
 unsetTeams : Answers -> Maybe Round -> List Team -> Answers
 unsetTeams answers mRound teams =
     case mRound of
@@ -191,12 +169,6 @@ unsetTeams answers mRound teams =
 
         Just r ->
             List.map (unsetTeamAnswer teams r) answers
-
-
-
-{-
-   Updating the bracket.
--}
 
 
 setDrawMatchWinner : Draw -> Answer -> Answer
@@ -273,39 +245,6 @@ updateMatchWinner drawID mTeam answers =
 updateBracket : DrawID -> Maybe Team -> Answers -> Answers
 updateBracket drawID mTeam answers =
     setDraw ( drawID, mTeam ) answers
-
-
-
-{-
-   Set the best thirds, clean the rest of the answers if anything changes, proceed
-   the best thirds to the next round (first round in the bracket.)
--}
--- updateBracketAnswerBestThirds : Answers -> BestThirds -> Answers
--- updateBracketAnswerBestThirds answers newBestThirds =
---     let
---         takenSlots =
---             List.map (\( _, t, d ) -> ( d, Just t )) newBestThirds
---         takenSlotIds =
---             List.map Tuple.first takenSlots
---         openSlots =
---             List.filter (\s -> not (List.member s takenSlotIds)) [ "T1", "T2", "T3", "T4" ]
---                 |> List.map (\s -> ( s, Nothing ))
---         allSlots =
---             List.append takenSlots openSlots
---         mBrktAnswer =
---             getAnswer answers "br"
---     in
---     case mBrktAnswer of
---         Just ( bracketAnswerId, AnswerBracket brkt points ) ->
---             let
---                 newBrkt =
---                     B.setBulk brkt allSlots
---                 newAnswer =
---                     ( bracketAnswerId, AnswerBracket newBrkt points )
---             in
---             setAnswer newAnswer answers
---         _ ->
---             answers
 
 
 setWinner : Answers -> Answer -> Slot -> Winner -> Answers

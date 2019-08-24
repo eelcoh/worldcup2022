@@ -26,7 +26,7 @@ score h a =
 
 
 merge : Score -> Score -> Score
-merge newScore oldScore =
+merge oldScore newScore =
     let
         ( newHome, newAway ) =
             newScore
@@ -95,6 +95,6 @@ encodeMaybe mScore =
 encode : Score -> Json.Encode.Value
 encode ( mHome, mAway ) =
     Json.Encode.list mIntEnc
-        [  mHome
-        ,  mAway
+        [ mHome
+        , mAway
         ]

@@ -76,14 +76,6 @@ type alias Model msg =
     }
 
 
-
--- type SubmitMsgType
---     = PlaceBet
---     | BetPlaced (Result Http.Error Bet)
---     | NoOp
---     | Again
-
-
 type FormInfoMsg
     = NoOps
 

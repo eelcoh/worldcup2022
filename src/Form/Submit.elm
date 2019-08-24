@@ -1,6 +1,5 @@
 module Form.Submit exposing (view)
 
-
 import Element
 import Form.QuestionSets.Types as QS
 import Form.Questions.Types as Q
@@ -9,7 +8,6 @@ import RemoteData exposing (RemoteData(..), WebData)
 import UI.Button
 import UI.Style
 import UI.Text
-
 
 
 view : Model Msg -> Bool -> Element.Element Msg
@@ -51,16 +49,11 @@ view model submittable =
 
                 ( _, _, Clean ) ->
                     ( introNotReady, ( UI.Style.Inactive, NoOp, "inzenden" ) )
-
-        -- ( _, Reset ) ->
-        --     ( introSubmitted, UI.Style.Inactive, Restart, "opnieuw" )
     in
     Element.column (UI.Style.none [])
         [ introText
         , UI.Button.submit semantics msg buttonText
         ]
-
-
 
 
 introSubmittable : Element.Element Msg

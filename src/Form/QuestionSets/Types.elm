@@ -9,7 +9,7 @@ module Form.QuestionSets.Types exposing
     , updateCursor
     )
 
-import Bets.Bet exposing ( findGroupMatchAnswers)
+import Bets.Bet exposing (findGroupMatchAnswers)
 import Bets.Types exposing (AnswerID, Answers, Bet, Group(..))
 import Bets.Types.Answer
 import Bets.Types.Group as Group
@@ -68,8 +68,6 @@ nextAnswer answerId answers =
         findNext =
             dropWhile isNotAnswer answers
                 |> List.tail
-
-        -- `Maybe.andThen` List.head
     in
     Maybe.withDefault answerId (findNext |> Maybe.andThen List.head)
 
