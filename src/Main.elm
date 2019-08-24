@@ -52,21 +52,3 @@ main =
         , onUrlRequest = UrlRequest
         , onUrlChange = UrlChange
         }
-
-
-
--- http
-{-
-      port loader : Task Http.Error (List Score)
-      port loader =
-        getForms
-
-
-   port formId : Maybe String
-
-
-   port tasks : Signal (Task.Task Never ())
-   port tasks =
-       app.tasks
--}
---port toElm : (Value -> msg) -> Sub msg
