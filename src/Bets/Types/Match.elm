@@ -14,7 +14,7 @@ import Bets.Types exposing (Date, Draw, Match(..), Stadium, Team, Time)
 import Bets.Types.DateTime as DateTime
 import Bets.Types.Draw
 import Bets.Types.Stadium
-import Json.Decode exposing (Decoder, index)
+import Json.Decode exposing (Decoder)
 import Json.Encode
 
 
@@ -33,12 +33,6 @@ match home away date time stadium =
     let
         dt =
             DateTime.toPosix date time
-
-        points =
-            Nothing
-
-        score =
-            Nothing
     in
     Match home away dt stadium
 

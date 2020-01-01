@@ -64,6 +64,7 @@ type ButtonSemantics
     | Selected
 
 
+scoreButton : ButtonSemantics -> List (Element.Attribute msg) -> List (Element.Attribute msg)
 scoreButton semantics attrs =
     case semantics of
         Potential ->
@@ -76,6 +77,7 @@ scoreButton semantics attrs =
             buttonWrong ++ attrs
 
 
+teamButton : ButtonSemantics -> List (Element.Attribute msg) -> List (Element.Attribute msg)
 teamButton semantics attrs =
     case semantics of
         Potential ->
@@ -116,6 +118,7 @@ button semantics attrs =
             buttonSelected ++ attrs
 
 
+header1 : List (Element.Attribute msg) -> List (Element.Attribute msg)
 header1 attrs =
     attrs
         ++ [ Background.color Color.primary
@@ -126,6 +129,7 @@ header1 attrs =
            ]
 
 
+header2 : List (Element.Attribute msg) -> List (Element.Attribute msg)
 header2 attrs =
     attrs
         ++ [ UI.Font.asap
@@ -135,10 +139,12 @@ header2 attrs =
            ]
 
 
-body attrs =
+body : List (Element.Attribute msg) -> List (Element.Attribute msg)
+body _ =
     []
 
 
+menu : List (Element.Attribute msg) -> List (Element.Attribute msg)
 menu attrs =
     attrs
         ++ [ Background.color Color.primary
@@ -148,6 +154,7 @@ menu attrs =
            ]
 
 
+text : List (Element.Attribute msg) -> List (Element.Attribute msg)
 text attrs =
     attrs
         ++ [ UI.Font.lora
@@ -157,6 +164,7 @@ text attrs =
            ]
 
 
+introduction : List (Element.Attribute msg) -> List (Element.Attribute msg)
 introduction attrs =
     attrs
         ++ [ UI.Font.lora
@@ -166,6 +174,7 @@ introduction attrs =
            ]
 
 
+error : List (Element.Attribute msg) -> List (Element.Attribute msg)
 error attrs =
     attrs
         ++ [ Background.color Color.secondaryLight
@@ -178,11 +187,13 @@ error attrs =
            ]
 
 
+page : List (Element.Attribute msg) -> List (Element.Attribute msg)
 page attrs =
     attrs
         ++ []
 
 
+buttonActive : List (Element.Attribute msg)
 buttonActive =
     [ Background.color Color.secondary
     , Font.color Color.secondaryText
@@ -196,6 +207,7 @@ buttonActive =
     ]
 
 
+buttonInactive : List (Element.Attribute msg)
 buttonInactive =
     [ Background.color Color.secondaryDark
     , Font.color Color.secondaryText
@@ -206,6 +218,7 @@ buttonInactive =
     ]
 
 
+buttonWrong : List (Element.Attribute msg)
 buttonWrong =
     [ Font.color Color.wrong
     , Border.width 1
@@ -214,6 +227,7 @@ buttonWrong =
     ]
 
 
+buttonRight : List (Element.Attribute msg)
 buttonRight =
     [ Font.color Color.secondaryText
     , Border.width 1
@@ -222,6 +236,7 @@ buttonRight =
     ]
 
 
+buttonPerhaps : List (Element.Attribute msg)
 buttonPerhaps =
     [ Background.color Color.secondary
     , Font.color Color.secondaryText
@@ -231,6 +246,7 @@ buttonPerhaps =
     ]
 
 
+buttonIrrelevant : List (Element.Attribute msg)
 buttonIrrelevant =
     [ Border.color Color.secondaryLight
     , Border.width 1
@@ -240,6 +256,7 @@ buttonIrrelevant =
     ]
 
 
+buttonPotential : List (Element.Attribute msg)
 buttonPotential =
     [ Background.color Color.secondary
     , Font.color Color.secondaryText
@@ -255,6 +272,7 @@ buttonPotential =
     ]
 
 
+buttonSelected : List (Element.Attribute msg)
 buttonSelected =
     [ Background.color Color.secondaryLight
     , Font.color Color.secondaryText
@@ -270,6 +288,7 @@ buttonSelected =
     ]
 
 
+scoreButtonSBPotential : List (Element.Attribute msg)
 scoreButtonSBPotential =
     [ Background.color Color.secondary
     , Font.color Color.secondaryText
@@ -283,6 +302,7 @@ scoreButtonSBPotential =
     ]
 
 
+scoreButtonSBSelected : List (Element.Attribute msg)
 scoreButtonSBSelected =
     [ Background.color Color.secondaryLight
     , Font.color Color.secondaryText
@@ -296,6 +316,7 @@ scoreButtonSBSelected =
     ]
 
 
+teamButtonTBPotential : List (Element.Attribute msg)
 teamButtonTBPotential =
     [ Background.color Color.secondaryLight
     , Font.color Color.secondaryText
@@ -309,6 +330,7 @@ teamButtonTBPotential =
     ]
 
 
+teamButtonTBSelected : List (Element.Attribute msg)
 teamButtonTBSelected =
     [ Background.color Color.secondaryLight
     , Font.color Color.secondaryText
@@ -322,32 +344,38 @@ teamButtonTBSelected =
     ]
 
 
+flag : List (Element.Attribute msg) -> List (Element.Attribute msg)
 flag attrs =
     attrs
         ++ []
 
 
+flagImage : List (Element.Attribute msg) -> List (Element.Attribute msg)
 flagImage attrs =
     attrs
         ++ []
 
 
+teamName : List (Element.Attribute msg) -> List (Element.Attribute msg)
 teamName attrs =
     attrs
         ++ [ Font.center
            ]
 
 
+scoreRow : List (Element.Attribute msg) -> List (Element.Attribute msg)
 scoreRow attrs =
     attrs
         ++ []
 
 
+scoreColumn : List (Element.Attribute msg) -> List (Element.Attribute msg)
 scoreColumn attrs =
     attrs
         ++ []
 
 
+scoreInput : List (Element.Attribute msg) -> List (Element.Attribute msg)
 scoreInput attrs =
     attrs
         ++ [ Border.width 2
@@ -356,6 +384,7 @@ scoreInput attrs =
            ]
 
 
+score : List (Element.Attribute msg) -> List (Element.Attribute msg)
 score attrs =
     attrs
         ++ [ Font.center
@@ -363,16 +392,19 @@ score attrs =
            ]
 
 
+matches : List (Element.Attribute msg) -> List (Element.Attribute msg)
 matches attrs =
     attrs
         ++ []
 
 
+activeMatch : List (Element.Attribute msg) -> List (Element.Attribute msg)
 activeMatch attrs =
     attrs
         ++ []
 
 
+matchRow : ButtonSemantics -> List (Element.Attribute msg) -> List (Element.Attribute msg)
 matchRow semantics attrs =
     let
         base =
@@ -392,6 +424,7 @@ matchRow semantics attrs =
     attrs ++ base
 
 
+matchRowActive : List (Element.Attribute msg)
 matchRowActive =
     [ Background.color Color.secondaryLight
     , Font.color Color.secondaryText
@@ -402,6 +435,7 @@ matchRowActive =
     ]
 
 
+matchRowSelected : List (Element.Attribute msg)
 matchRowSelected =
     [ Background.color Color.secondaryLight
     , Font.color Color.secondaryText
@@ -412,6 +446,7 @@ matchRowSelected =
     ]
 
 
+matchRowPotential : List (Element.Attribute msg)
 matchRowPotential =
     [ Background.color Color.secondary
     , Font.color Color.secondaryText
@@ -422,6 +457,7 @@ matchRowPotential =
     ]
 
 
+emphasis : List (Element.Attribute msg) -> List (Element.Attribute msg)
 emphasis attrs =
     attrs
         ++ [ Font.color Color.orange
@@ -429,30 +465,37 @@ emphasis attrs =
            ]
 
 
+wrapper : List (Element.Attribute msg) -> List (Element.Attribute msg)
 wrapper attrs =
     attrs
 
 
+groupBadge : List (Element.Attribute msg) -> List (Element.Attribute msg)
 groupBadge attrs =
     attrs
 
 
+groupPosition : List (Element.Attribute msg) -> List (Element.Attribute msg)
 groupPosition attrs =
     attrs
 
 
+groupPositions : List (Element.Attribute msg) -> List (Element.Attribute msg)
 groupPositions attrs =
     attrs
 
 
+none : List (Element.Attribute msg) -> List (Element.Attribute msg)
 none attrs =
     attrs
 
 
+bullet : List (Element.Attribute msg) -> List (Element.Attribute msg)
 bullet attrs =
-    [ Background.color Color.orange ] ++ attrs
+    Background.color Color.orange :: attrs
 
 
+textInput : List (Element.Attribute msg) -> List (Element.Attribute msg)
 textInput attrs =
     attrs
         ++ [ Border.width 2
@@ -461,6 +504,7 @@ textInput attrs =
            ]
 
 
+link : List (Element.Attribute msg) -> List (Element.Attribute msg)
 link attrs =
     attrs
         ++ [ Font.color Color.orange

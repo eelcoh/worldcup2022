@@ -20,7 +20,7 @@ import Url
 
 
 init : Flags -> Url.Url -> Navigation.Key -> ( Model Msg, Cmd Msg )
-init flags url navKey =
+init flags _ navKey =
     ( { cards = cards
       , bet = Bets.Init.bet
       , savedBet = NotAsked
@@ -35,7 +35,7 @@ init flags url navKey =
 
 
 subscriptions : Model Msg -> Sub Msg
-subscriptions model =
+subscriptions _ =
     Sub.batch [ Events.onResize ScreenResize ]
 
 

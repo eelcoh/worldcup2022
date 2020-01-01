@@ -5,6 +5,7 @@ module Bets.Types.Participant exposing
     , isComplete
     , setAddress
     , setEmail
+    , setHowyouknowus
     , setName
     , setPhoneNumber
     )

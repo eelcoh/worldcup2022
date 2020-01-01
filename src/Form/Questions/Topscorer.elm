@@ -2,14 +2,13 @@ module Form.Questions.Topscorer exposing (Msg, update, view)
 
 import Bets.Bet exposing (setTopscorer)
 import Bets.Init.Euro2020.Tournament exposing (initTeamData)
-import Bets.Types exposing (Answer, AnswerID, AnswerT(..), Bet, Player, Team, TeamData, TeamDatum, Topscorer)
+import Bets.Types exposing (AnswerID, AnswerT(..), Bet, Team, TeamDatum, Topscorer)
 import Bets.Types.Topscorer as TS
 import Element exposing (padding, px, spacing, width)
 import Form.Questions.Types exposing (QState)
 import List.Extra
 import UI.Button
 import UI.Style
-import UI.Team exposing (viewTeam)
 import UI.Text
 
 
@@ -72,7 +71,7 @@ view bet qState =
             Bets.Bet.getAnswer bet qState.answerId
     in
     case mAnswer of
-        Just (( answerId, AnswerTopscorer topscorer _ ) as answer) ->
+        Just ( answerId, AnswerTopscorer topscorer _ ) ->
             viewTopscorer bet answerId topscorer
 
         _ ->
@@ -144,7 +143,7 @@ introduction =
 
 
 viewPlayers : a -> AnswerID -> Topscorer -> b -> Element.Element Msg
-viewPlayers bet answerId topscorer teamData =
+viewPlayers _ answerId topscorer _ =
     let
         isSelectedTeam teamDatum =
             case TS.getTeam topscorer of
@@ -199,9 +198,6 @@ mkTeamButton act ( teamDatum, isSelected ) =
 
         msg =
             act team
-
-        contents =
-            [ viewTeam (Just team) ]
     in
     UI.Button.teamButton c msg team
 
@@ -219,8 +215,5 @@ mkPlayerButton act ( player, isSelected ) =
 
         msg =
             act player
-
-        contents =
-            player
     in
     UI.Button.pill c msg player

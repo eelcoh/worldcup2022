@@ -1,9 +1,7 @@
 module Bets.Init exposing (bet)
 
 import Bets.Init.Euro2020.Bet exposing (answers)
-import Bets.Types exposing (..)
-import Bets.Types.Participant as P
-import Bets.Types.Team exposing (team)
+import Bets.Types exposing (Bet)
 
 
 bet : Bet

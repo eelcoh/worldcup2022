@@ -4,12 +4,12 @@ module Form.Question exposing
     , view
     )
 
-import Bets.Types exposing (Answer, AnswerID, AnswerT(..), Bet, Group, Round)
+import Bets.Types exposing (AnswerT(..), Bet)
 import Element
 import Form.Questions.Bracket
 import Form.Questions.Participant
 import Form.Questions.Topscorer
-import Form.Questions.Types exposing (..)
+import Form.Questions.Types exposing (QState, QuestionType(..))
 
 
 type Msg
@@ -24,9 +24,9 @@ update msg bet qState =
         BracketAnswer act ->
             let
                 ( newBet, newQState, fx ) =
-                    Form.Questions.Bracket.update (Debug.log "action" act) bet (Debug.log "Question.elm - update - incoming qState" qState)
+                    Form.Questions.Bracket.update act bet qState
             in
-            ( newBet, Debug.log "Question.elm - update - new qState" newQState, Cmd.map BracketAnswer fx )
+            ( newBet, newQState, Cmd.map BracketAnswer fx )
 
         TopscorerAnswer act ->
             let
@@ -49,12 +49,8 @@ view bet qState =
         QTopscorer ->
             Element.map TopscorerAnswer (Form.Questions.Topscorer.view bet qState)
 
-        QBracket bracketState ->
-            let
-                br =
-                    Debug.log "Question.elm - view - bracketState" bracketState
-            in
-            Element.map BracketAnswer (Form.Questions.Bracket.view bet (Debug.log "Question.elm - view - qState" qState))
+        QBracket _ ->
+            Element.map BracketAnswer (Form.Questions.Bracket.view bet qState)
 
         QParticipant ->
             Element.map ParticipantAnswer (Form.Questions.Participant.view bet qState)

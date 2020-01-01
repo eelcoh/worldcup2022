@@ -9,7 +9,7 @@ module Form.Types exposing
     , Page
     )
 
-import Bets.Types exposing (AnswerID, Bet, Group, Round)
+import Bets.Types exposing (Bet, Group, Round)
 import Browser
 import Browser.Navigation as Navigation
 import Form.Question
@@ -47,16 +47,8 @@ type Info
     | ThankYou
 
 
-type alias Cursor =
-    Int
-
-
 type alias Page =
     Int
-
-
-type alias State msg =
-    Model msg
 
 
 type InputState

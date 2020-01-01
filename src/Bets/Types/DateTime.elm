@@ -1,9 +1,8 @@
 module Bets.Types.DateTime exposing (date, decode, encode, time, toPosix)
 
-import Bets.Types exposing (Date, DateTime, Time)
+import Bets.Types exposing (Date, Time)
 import Json.Decode exposing (Decoder)
 import Json.Encode
-import Result
 import Time
 import Time.Extra as TimeX
 import TimeZone exposing (europe__amsterdam)

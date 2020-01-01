@@ -11,11 +11,10 @@ module Bets.Types.Answers exposing
     , setWinner
     )
 
-import Bets.Types exposing (..)
+import Bets.Types exposing (Answer, AnswerID, AnswerT(..), Answers, Group, Participant, Qualifier, Score, Slot, Topscorer, Winner)
 import Bets.Types.Answer
 import Bets.Types.Bracket as B
 import Bets.Types.Match exposing (..)
-import Bets.Types.Round exposing (isSameOrANextRound, nextRound)
 import Bets.Types.Score as S
 import Dict
 import Json.Decode exposing (Decoder)
@@ -136,115 +135,20 @@ setAnswer answer answers =
      List.map (unsetTeamAnswer round team) answers
 
 -}
-
-
-unsetTeamAnswer : List Team -> Round -> Answer -> Answer
-unsetTeamAnswer teams rnd answer =
-    case answer of
-        ( answerID, AnswerBracket bracket points ) ->
-            let
-                newBracket =
-                    List.map Just teams
-                        |> List.foldr (\b a -> B.unsetQualifier a b) bracket
-
-                newAnswer =
-                    ( answerID, AnswerBracket newBracket points )
-            in
-            newAnswer
-
-        _ ->
-            answer
-
-
-unsetTeamsMatch : Match -> List Team -> Match
-unsetTeamsMatch match teams =
-    List.foldr (\b a -> unsetTeamMatch a b) match teams
-
-
-unsetTeams : Answers -> Maybe Round -> List Team -> Answers
-unsetTeams answers mRound teams =
-    case mRound of
-        Nothing ->
-            answers
-
-        Just r ->
-            List.map (unsetTeamAnswer teams r) answers
-
-
-setDrawMatchWinner : Draw -> Answer -> Answer
-setDrawMatchWinner (( drawID, mTeam ) as draw) ( answerID, answer ) =
-    let
-        nextTeam mTm match =
-            case mTm of
-                Nothing ->
-                    Nothing
-
-                Just t ->
-                    if List.member t (teamsInMatch match) then
-                        Just t
-
-                    else
-                        Nothing
-    in
-    case answer of
-        AnswerBracket bracket points ->
-            let
-                newBracket =
-                    B.set bracket drawID mTeam
-
-                newAnswer =
-                    AnswerBracket newBracket points
-            in
-            Tuple.pair answerID newAnswer
-
-        _ ->
-            Tuple.pair answerID answer
-
-
-
+-- unsetTeamsMatch : Match -> List Team -> Match
+-- unsetTeamsMatch match teams =
+--     List.foldr (\b a -> unsetTeamMatch a b) match teams
+-- unsetTeams : Answers -> Maybe Round -> List Team -> Answers
+-- unsetTeams answers mRound teams =
+--     case mRound of
+--         Nothing ->
+--             answers
+--         Just r ->
+--             List.map (unsetTeamAnswer teams r) answers
 {-
    Toplevel function for assigning a team to a slot in the bracket.
    This maps over all answers. One of these will be updated.
 -}
-
-
-setDraw : Draw -> Answers -> Answers
-setDraw draw answers =
-    List.map (setDrawMatchWinner draw) answers
-
-
-setDraws : List Draw -> Answers -> Answers
-setDraws draws answers =
-    case draws of
-        [] ->
-            answers
-
-        draw :: rest ->
-            let
-                newAnswers =
-                    setDraw draw answers
-            in
-            setDraws rest newAnswers
-
-
-setNext : NextID -> Team -> Answers -> Answers
-setNext nextID team answers =
-    case nextID of
-        Just drawID ->
-            setDraw ( drawID, Just team ) answers
-
-        _ ->
-            answers
-
-
-updateMatchWinner : DrawID -> Maybe Team -> Answers -> Answers
-updateMatchWinner drawID mTeam answers =
-    setDraw ( drawID, mTeam ) answers
-
-
-updateBracket : DrawID -> Maybe Team -> Answers -> Answers
-updateBracket drawID mTeam answers =
-    setDraw ( drawID, mTeam ) answers
 
 
 setWinner : Answers -> Answer -> Slot -> Winner -> Answers

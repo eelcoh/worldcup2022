@@ -2,7 +2,7 @@ module UI.Team exposing (viewTeam, viewTeamFull)
 
 import Bets.Types exposing (Team)
 import Bets.Types.Team as T
-import Element exposing (Element, column, height, image,  px, row, width)
+import Element exposing (Element, column, height, image, px, row, width)
 import Element.Background as Background
 import Element.Font as Font
 import UI.Color as Color
@@ -46,12 +46,6 @@ viewTeamFull team =
             , description =
                 teamNameTxt
             }
-
-        w =
-            Element.width (px 150)
-
-        h =
-            Element.height (px 82)
     in
     column teamBox
         [ row [ Element.centerX ]
@@ -62,6 +56,7 @@ viewTeamFull team =
         ]
 
 
+teamBox : List (Element.Attribute msg)
 teamBox =
     [ Element.spaceEvenly
     , height (px 45)
@@ -73,6 +68,7 @@ teamBox =
     ]
 
 
+teamName : List (Element.Attribute msg)
 teamName =
     [ Font.center
     , Font.size (UI.Font.scaled 1)

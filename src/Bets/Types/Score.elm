@@ -31,7 +31,7 @@ merge oldScore newScore =
         ( newHome, newAway ) =
             newScore
 
-        ( oldHome, oldAway ) =
+        ( oldHome, _ ) =
             oldScore
 
         home =

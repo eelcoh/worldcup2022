@@ -2,11 +2,8 @@ module Bets.Init.Euro2020.Bet exposing (answers)
 
 import Bets.Init.Euro2020.Tournament exposing (bracket, matches)
 import Bets.Init.Lib exposing (answerGroupMatch)
-import Bets.Types exposing (..)
-import Bets.Types.DateTime exposing (date, time)
-import Bets.Types.Draw as Draw
+import Bets.Types exposing (AnswerT(..), Answers, Group(..))
 import Bets.Types.Participant as P
-import Bets.Types.Team exposing (team)
 import Time exposing (Month(..))
 import Tuple exposing (pair)
 
