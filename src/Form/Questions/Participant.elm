@@ -5,7 +5,7 @@ module Form.Questions.Participant exposing
     )
 
 import Bets.Bet exposing (setParticipant)
-import Bets.Types exposing (Answer, AnswerID, AnswerT(..), Bet, Participant)
+import Bets.Types exposing (AnswerID, AnswerT(..), Bet)
 import Element exposing (height, px, spacing, width)
 import Element.Input
 import Form.Questions.Types exposing (QState)
@@ -24,7 +24,6 @@ type Attr
 
 type Msg
     = Set Attr AnswerID
-    | NoOp
 
 
 update : Msg -> Bet -> QState -> ( Bet, QState, Cmd Msg )
@@ -62,16 +61,13 @@ update msg bet qState =
 
                 newNewBet =
                     case mAnswer of
-                        Just (( answerId, AnswerParticipant participant ) as answer) ->
+                        Just (( _, AnswerParticipant participant ) as answer) ->
                             newBet answer attr participant
 
                         _ ->
                             bet
             in
             ( newNewBet, { qState | next = Nothing }, Cmd.none )
-
-        _ ->
-            ( bet, { qState | next = Nothing }, Cmd.none )
 
 
 view : Bet -> QState -> Element.Element Msg

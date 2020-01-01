@@ -1,6 +1,6 @@
 module Form.QuestionSet exposing (Msg, update, view)
 
-import Bets.Types exposing (Answer, AnswerID, AnswerT(..), Answers, Bet, Group, Round)
+import Bets.Types exposing (Answer, AnswerID, AnswerT(..), Answers, Bet)
 import Element
 import Form.QuestionSets.MatchScoreQuestions
 import Form.QuestionSets.Types exposing (ChangeCursor(..), Model, QuestionType(..), findAnswers)
@@ -39,6 +39,6 @@ view model bet =
             getAnswer model.cursor answers
     in
     case model.questionType of
-        MatchScore grp ->
+        MatchScore _ ->
             Form.QuestionSets.MatchScoreQuestions.view model bet mCurrentAnswer answers
                 |> Element.map UpdateMatchScoreQuestions

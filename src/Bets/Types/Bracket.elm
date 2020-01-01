@@ -91,7 +91,7 @@ proceed bracket slot wnnr =
 winner : Bracket -> Qualifier
 winner bracket =
     case bracket of
-        MatchNode slot w home away _ _ ->
+        MatchNode _ w home away _ _ ->
             case w of
                 HomeTeam ->
                     winner home
@@ -102,7 +102,7 @@ winner bracket =
                 None ->
                     Nothing
 
-        TeamNode slot pos qual hasQ ->
+        TeamNode _ _ qual _ ->
             qual
 
 
@@ -125,7 +125,7 @@ set bracket slot qual =
             in
             reset newBracket currentWinner
 
-        TeamNode s pos mt hasQ ->
+        TeamNode s pos _ hasQ ->
             if s == slot then
                 TeamNode slot pos qual hasQ
 
@@ -172,7 +172,7 @@ unsetQualifier bracket qual =
 qualifier : Bracket -> Qualifier
 qualifier bracket =
     case bracket of
-        MatchNode s w home away round hasQ ->
+        MatchNode _ w home away _ _ ->
             case w of
                 HomeTeam ->
                     qualifier home
@@ -183,14 +183,14 @@ qualifier bracket =
                 None ->
                     Nothing
 
-        TeamNode s p q _ ->
+        TeamNode _ _ q _ ->
             q
 
 
 get : Bracket -> Slot -> Maybe Bracket
 get brkt slot =
     case brkt of
-        MatchNode s w home away round hasQ ->
+        MatchNode s _ home away _ _ ->
             if s == slot then
                 Just brkt
 
@@ -201,7 +201,7 @@ get brkt slot =
                 in
                 oneOf [ get away slot, get home slot ]
 
-        TeamNode s p q hasQ ->
+        TeamNode s _ _ _ ->
             if s == slot then
                 Just brkt
 
@@ -212,10 +212,10 @@ get brkt slot =
 getQualifiers : Bracket -> List ( Slot, Qualifier )
 getQualifiers brkt =
     case brkt of
-        MatchNode s w home away round hasQ ->
+        MatchNode _ _ home away _ _ ->
             List.concat [ getQualifiers away, getQualifiers home ]
 
-        TeamNode s p q hasQ ->
+        TeamNode s _ q _ ->
             [ ( s, q ) ]
 
 
@@ -227,10 +227,10 @@ display bracket =
 isComplete : Bracket -> Bool
 isComplete brkt =
     case brkt of
-        TeamNode slot pos qual hasQ ->
+        TeamNode _ _ qual _ ->
             M.isJust qual
 
-        MatchNode slot w home away round hasQ ->
+        MatchNode _ w home away _ _ ->
             case w of
                 None ->
                     False

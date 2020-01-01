@@ -9,8 +9,8 @@ import Form.Info
 import Form.Question
 import Form.QuestionSet
 import Form.QuestionSets.Types as QS
-import Form.Types exposing (..)
-import RemoteData exposing (RemoteData(..), WebData)
+import Form.Types exposing (Card(..), InputState(..), Model, Msg(..))
+import RemoteData exposing (RemoteData(..))
 import Url
 
 
@@ -133,10 +133,10 @@ update msg state =
                     , Navigation.load href
                     )
 
-        UrlChange url ->
+        UrlChange _ ->
             ( state, Cmd.none )
 
-        ScreenResize w h ->
+        ScreenResize _ _ ->
             ( state, Cmd.none )
 
 

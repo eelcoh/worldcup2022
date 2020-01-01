@@ -5,7 +5,7 @@ module API.Bets exposing (placeBet)
 import Bets.Bet
 import Bets.Types exposing (Bet)
 import Form.Types exposing (Msg(..))
-import RemoteData exposing (RemoteData(..), WebData)
+import RemoteData exposing (RemoteData(..))
 import RemoteData.Http as Http
 
 

@@ -7,17 +7,18 @@ module Bets.Types.Team exposing
     , equal
     , flag
     , flagUrl
-    , isComplete, mdisplayID
+    , isComplete
     , log
     , mdisplay
     , mdisplayFull
+    , mdisplayID
     , team
     )
 
-import Bets.Types exposing (Group(..), Team, TeamData, TeamDatum, TeamID)
+import Bets.Types exposing (Group(..), Team, TeamID)
 import Html exposing (..)
-import Html.Attributes exposing (class, src, style)
-import Json.Decode exposing (Decoder, maybe)
+import Html.Attributes exposing (src)
+import Json.Decode exposing (Decoder)
 import Json.Encode
 import Maybe.Extra as M
 
@@ -39,7 +40,7 @@ displayFull t =
 
 equal : Team -> Team -> Bool
 equal t1 t2 =
-    (t1.teamID == t2.teamID) && ( t1.teamName == t2.teamName )
+    (t1.teamID == t2.teamID) && (t1.teamName == t2.teamName)
 
 
 mdisplayFull : Maybe Team -> String
@@ -56,8 +57,9 @@ mdisplay mteam =
 
 mdisplayID : Maybe Team -> String
 mdisplayID mteam =
-    Maybe.map .teamID  mteam
+    Maybe.map .teamID mteam
         |> Maybe.withDefault "..."
+
 
 log : Team -> String
 log t =

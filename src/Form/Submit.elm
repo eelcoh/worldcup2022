@@ -1,10 +1,8 @@
 module Form.Submit exposing (view)
 
 import Element
-import Form.QuestionSets.Types as QS
-import Form.Questions.Types as Q
 import Form.Types exposing (Card(..), Info(..), InputState(..), Model, Msg(..))
-import RemoteData exposing (RemoteData(..), WebData)
+import RemoteData exposing (RemoteData(..))
 import UI.Button
 import UI.Style
 import UI.Text
@@ -13,20 +11,6 @@ import UI.Text
 view : Model Msg -> Bool -> Element.Element Msg
 view model submittable =
     let
-        isComplete card =
-            case card of
-                IntroCard _ ->
-                    True
-
-                QuestionCard qModel ->
-                    Q.isComplete model.bet qModel
-
-                QuestionSetCard qModel ->
-                    QS.isComplete model.bet qModel
-
-                SubmitCard ->
-                    True
-
         ( introText, ( semantics, msg, buttonText ) ) =
             case ( submittable, model.savedBet, model.betState ) of
                 ( True, _, Dirty ) ->

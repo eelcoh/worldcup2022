@@ -1,10 +1,6 @@
 module Bets.Init.Lib exposing (answerGroupMatch)
 
-import Bets.Types exposing (..)
-import Bets.Types.DateTime as DateTime
-import Bets.Types.Draw as Draw
-import Bets.Types.Participant as P
-import Bets.Types.Team exposing (team)
+import Bets.Types exposing (Answer, AnswerT(..), DrawID, Group, Match)
 import Tuple exposing (pair)
 
 

@@ -8,7 +8,7 @@ module Bets.Types.Round exposing
     )
 
 import Bets.Types exposing (Round(..))
-import Json.Decode exposing (Decoder, andThen, succeed)
+import Json.Decode exposing (Decoder)
 import Json.Encode
 
 

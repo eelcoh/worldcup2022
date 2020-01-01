@@ -1,7 +1,7 @@
 module Form.QuestionSets.MatchScoreQuestions exposing (Msg, update, view)
 
 import Bets.Bet exposing (setMatchScore)
-import Bets.Types exposing (Answer, AnswerID, AnswerT(..), Answers, Bet, Group, Match, Score, Team)
+import Bets.Types exposing (Answer, AnswerID, AnswerT(..), Bet, Group, Score, Team)
 import Bets.Types.Group as G
 import Bets.Types.Match as M
 import Bets.Types.Score as S
@@ -48,9 +48,9 @@ view :
     -> Maybe ( AnswerID, AnswerT )
     -> List ( AnswerID, AnswerT )
     -> Element.Element Msg
-view model bet mAnswer answers =
+view model _ mAnswer answers =
     case mAnswer of
-        Just (( answerId, AnswerGroupMatch g match mScore points ) as answer) ->
+        Just (( _, AnswerGroupMatch g match mScore _ ) as answer) ->
             Element.column (UI.Style.page [ width (px 650), spacing 20 ])
                 [ displayHeader g
                 , introduction
@@ -166,7 +166,7 @@ viewInput :
     -> Maybe Team
     -> Maybe Score
     -> Element.Element Msg
-viewInput model answer homeTeam awayTeam mScore =
+viewInput _ answer homeTeam awayTeam mScore =
     let
         makeAction act val =
             case String.toInt val of
@@ -219,7 +219,7 @@ viewInput model answer homeTeam awayTeam mScore =
 
 
 viewKeyboard : a -> Answer -> Element.Element Msg
-viewKeyboard model answer =
+viewKeyboard _ answer =
     let
         toButton ( _, ( h, a, t ) ) =
             scoreButton UI.Style.Potential answer h a t
@@ -264,17 +264,6 @@ displayMatch cursor ( answerId, answer ) =
 
         disp match mScore =
             let
-                c =
-                    case ( cursor == answerId, S.isComplete mScore ) of
-                        ( True, _ ) ->
-                            3
-
-                        ( _, True ) ->
-                            12
-
-                        ( _, False ) ->
-                            13
-
                 handler =
                     Element.Events.onClick (SelectMatch answerId)
 
@@ -291,7 +280,7 @@ displayMatch cursor ( answerId, answer ) =
                 [ home, sc, away ]
     in
     case answer of
-        AnswerGroupMatch g match mScore _ ->
+        AnswerGroupMatch _ match mScore _ ->
             Just <| disp match mScore
 
         _ ->

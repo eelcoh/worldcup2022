@@ -12,9 +12,9 @@ module Bets.Bet exposing
     )
 
 import Bets.Json.Encode exposing (mIntEnc, mStrEnc)
-import Bets.Types exposing (..)
+import Bets.Types exposing (Answer, AnswerID, Answers, Bet, Group, Participant, Qualifier, Score, Slot, Topscorer, Winner)
 import Bets.Types.Answers
-import Json.Decode exposing (Decoder, fail, field, maybe)
+import Json.Decode exposing (Decoder, field, maybe)
 import Json.Encode
 
 

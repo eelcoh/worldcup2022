@@ -8,7 +8,7 @@ import Form.QuestionSet
 import Form.QuestionSets.Types as QTS
 import Form.Questions.Types as QT
 import Form.Submit
-import Form.Types exposing (..)
+import Form.Types exposing (Card(..), Model, Msg(..))
 import UI.Button
 import UI.Style
 
@@ -85,7 +85,7 @@ viewPill model idx ( i, card ) =
     let
         semantics =
             case card of
-                IntroCard intro ->
+                IntroCard _ ->
                     UI.Style.Perhaps
 
                 QuestionCard qModel ->
@@ -116,7 +116,7 @@ viewPill model idx ( i, card ) =
 
         contents =
             case card of
-                IntroCard intro ->
+                IntroCard _ ->
                     "Start"
 
                 QuestionCard qModel ->

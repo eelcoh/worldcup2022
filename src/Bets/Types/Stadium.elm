@@ -1,7 +1,7 @@
 module Bets.Types.Stadium exposing (decode, encode)
 
 import Bets.Types exposing (Stadium)
-import Json.Decode exposing (Decoder, field, maybe)
+import Json.Decode exposing (Decoder, field)
 import Json.Encode
 
 

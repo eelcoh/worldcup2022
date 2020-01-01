@@ -2,7 +2,7 @@ module Bets.Types.Draw exposing (decode, encode, init, isComplete, team)
 
 import Bets.Types exposing (Draw, DrawID, Team)
 import Bets.Types.Team as T
-import Json.Decode exposing (Decoder, index, map2, maybe)
+import Json.Decode exposing (Decoder, map2, maybe)
 import Json.Encode
 
 

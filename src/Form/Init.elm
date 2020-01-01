@@ -3,9 +3,7 @@ module Form.Init exposing (cards)
 import Bets.Types exposing (Group(..), Round(..))
 import Form.QuestionSets.Types as QSet
 import Form.Questions.Types as Q
-import Form.Types exposing (..)
-
-
+import Form.Types exposing (Card(..), Info(..))
 
 
 cards : List Card

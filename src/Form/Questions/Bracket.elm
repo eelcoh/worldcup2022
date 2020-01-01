@@ -6,13 +6,13 @@ import Bets.Types exposing (Answer, AnswerID, AnswerT(..), Bet, Bracket(..), Can
 import Bets.Types.Bracket as B
 import Bets.Types.Group as G
 import Bets.Types.Team as T
-import Element exposing (centerX, height, px, width)
+import Element exposing (height, px, width)
 import Form.Questions.Types exposing (Angle, BracketState(..), QState, QuestionType(..))
 import List.Extra as Extra
 import Svg exposing (Svg)
 import Svg.Attributes as Attributes
 import Svg.Events as Events
-import Svg.PathD exposing (Segment(..), l, m, pathD)
+import Svg.PathD exposing (Segment(..), pathD)
 import UI.Style exposing (ButtonSemantics(..))
 import UI.Text
 
@@ -28,26 +28,6 @@ type IsWinner
     = Yes
     | No
     | Undecided
-
-
-slots =
-    [ "WA"
-    , "WB"
-    , "WC"
-    , "WD"
-    , "WE"
-    , "WF"
-    , "RA"
-    , "RB"
-    , "RC"
-    , "RD"
-    , "RE"
-    , "RF"
-    , "T1"
-    , "T2"
-    , "T3"
-    , "T4"
-    ]
 
 
 isWinner : Winner -> Winner -> IsWinner
@@ -82,7 +62,7 @@ update msg bet qState =
             in
             ( newBet, { qState | next = Nothing }, Cmd.none )
 
-        SetQualifier answerId slot candidates startAngle endAngle ->
+        SetQualifier _ slot candidates startAngle endAngle ->
             let
                 bracketState =
                     ShowSecondRoundSelection slot candidates startAngle endAngle
@@ -100,7 +80,7 @@ update msg bet qState =
                 newBet =
                     case mAnswer of
                         Just answer ->
-                            Bets.Bet.setQualifier bet answer (Debug.log "set" slot) (Just team)
+                            Bets.Bet.setQualifier bet answer slot (Just team)
 
                         Nothing ->
                             bet
@@ -137,7 +117,7 @@ view bet qQState =
             Element.paragraph [] [ UI.Text.simpleText introtext ]
     in
     case mAnswer of
-        Just (( answerId, AnswerBracket bracket _ ) as answer) ->
+        Just (( _, AnswerBracket bracket _ ) as answer) ->
             Element.column
                 []
                 [ header
@@ -149,6 +129,7 @@ view bet qQState =
             Element.none
 
 
+viewRings : Bet -> Answer -> Bracket -> QuestionType -> Element.Element Msg
 viewRings bet answer bracket questionType =
     let
         slotSelected =
@@ -286,9 +267,6 @@ viewMatchRings bet answer bracket =
         v mb =
             viewLeaf bet answer mb UI.Style.Potential
 
-        final =
-            B.get bracket "m51"
-
         m37 =
             v <| B.get bracket "m37"
 
@@ -338,14 +316,6 @@ viewMatchRings bet answer bracket =
         m51 =
             v <| B.get bracket "m51"
 
-        -- champion =
-        --     mkButtonChamp final
-        applyValue a fs =
-            List.concatMap (\f -> f a) fs
-
-        fn1 ( a, b ) ( c, d ) =
-            ( a + c, b )
-
         -- List.map (Tuple.pair segmentAngleSize) matches
         mkRingData : Float -> Float -> List (Float -> Float -> Float -> Svg Msg) -> Svg Msg
         mkRingData ring angle ms =
@@ -373,13 +343,14 @@ viewMatchRings bet answer bracket =
             , ring3
             , ring2
             , ring1
-            , viewChampion bet answer bracket
+            , viewChampion bracket
             ]
     in
     rings
 
 
-viewChampion bet answer bracket =
+viewChampion : Bracket -> Svg Msg
+viewChampion bracket =
     case
         B.qualifier bracket
     of
@@ -416,7 +387,7 @@ viewChampion bet answer bracket =
 
 
 viewCandidatesCircle : Bet -> Answer -> Bracket -> Slot -> Candidate -> Angle -> Angle -> List (Svg Msg)
-viewCandidatesCircle bet ( answerID, answer ) bracket slot candidates startAngle endAngle =
+viewCandidatesCircle _ _ bracket slot candidates startAngle endAngle =
     let
         x =
             config.x
@@ -435,9 +406,6 @@ viewCandidatesCircle bet ( answerID, answer ) bracket slot candidates startAngle
 
         connectCenterRadius =
             ringRadius 5 - (config.ringSpacing / 2)
-
-        connectAngle =
-            calculateAngle (config.borderRadius / 2) connectCenterRadius connectCenterRadius
 
         arcAngle =
             calculateAngle (3 * connectRadius) connectCenterRadius connectCenterRadius
@@ -481,7 +449,7 @@ viewCandidatesCircle bet ( answerID, answer ) bracket slot candidates startAngle
             B.candidatesForTeamNode bracket candidates slot
 
         button : Selection -> ( Int, Int ) -> Svg Msg
-        button { currentSlot, group, team } ( row, col ) =
+        button { currentSlot, team } ( row, col ) =
             let
                 msg =
                     SetSlot slot team
@@ -545,10 +513,6 @@ viewCandidatesCircle bet ( answerID, answer ) bracket slot candidates startAngle
     ]
 
 
-type alias Coord =
-    { x : Float, y : Float }
-
-
 mkQualifierButton : Msg -> String -> CurrentSlot -> Int -> Int -> Svg Msg
 mkQualifierButton msg teamID currentSlot row col =
     let
@@ -571,7 +535,7 @@ mkQualifierButton msg teamID currentSlot row col =
                 |> toFloat
 
         semantics =
-            case Debug.log "current slot" currentSlot of
+            case currentSlot of
                 ThisSlot ->
                     UI.Style.Selected
 
@@ -597,7 +561,7 @@ mkButton x y w h caption msg semantics =
             String.join "-" [ "p", String.fromInt (round x), String.fromInt (round y) ]
 
         ( stroke, fill, txt ) =
-            case Debug.log "current slot" semantics of
+            case semantics of
                 UI.Style.Selected ->
                     ( "white", config.colorSelected, "white" )
 
@@ -646,6 +610,7 @@ mkButton x y w h caption msg semantics =
         ]
 
 
+mkText : String -> String -> ( Float, Float ) -> ( Float, Float ) -> Svg Msg
 mkText str clr (( x1, y1 ) as start) (( x2, y2 ) as end) =
     let
         p f =
@@ -691,18 +656,15 @@ mkText str clr (( x1, y1 ) as start) (( x2, y2 ) as end) =
 
 
 viewLeaf : Bet -> Answer -> Maybe Bracket -> UI.Style.ButtonSemantics -> Float -> Float -> Float -> Svg Msg
-viewLeaf bet answer mBracket isSelected ring segmentAngleSize angle =
+viewLeaf _ answer mBracket isSelected ring segmentAngleSize angle =
     case mBracket of
-        Just (MatchNode slot winner home away rd _) ->
+        Just (MatchNode slot winner home away _ _) ->
             let
                 awayStartAngle =
                     angle + (segmentAngleSize / 2)
 
                 awayEndAngle =
                     angle + segmentAngleSize
-
-                centerMatchAngle =
-                    awayStartAngle
 
                 homeLeaf =
                     Leaf ring angle awayStartAngle "#ececec" HomeLeaf slot
@@ -723,13 +685,10 @@ viewLeaf bet answer mBracket isSelected ring segmentAngleSize angle =
                 , viewMatchLeaf answer AwayTeam slot (isWinner winner AwayTeam) away awayLeaf
                 ]
 
-        Just (TeamNode slot candidate qualifier hasQualified) ->
+        Just (TeamNode slot candidate qualifier _) ->
             let
                 endAngle =
                     angle + segmentAngleSize
-
-                centerAngle =
-                    angle + (segmentAngleSize / 2)
 
                 leaf =
                     Leaf ring angle endAngle "#ececec" QualifierLeaf slot
@@ -785,30 +744,6 @@ viewMatchLeaf answer wnnr slot isSelected bracket leaf =
     mkLeaf s mTeam leaf msg
 
 
-leafToString : Leaf -> String
-leafToString { ring, startAngle, endAngle, leafType } =
-    let
-        attrs =
-            [ String.fromInt <| round ring
-            , lt
-            , String.fromInt <| round startAngle
-            , String.fromInt <| round endAngle
-            ]
-
-        lt =
-            case leafType of
-                HomeLeaf ->
-                    "home"
-
-                AwayLeaf ->
-                    "away"
-
-                QualifierLeaf ->
-                    "qual"
-    in
-    String.join " " attrs
-
-
 mkLeaf : ButtonSemantics -> Maybe Team -> Leaf -> Msg -> Svg Msg
 mkLeaf s team leaf msg =
     Svg.g [ Events.onClick msg, Attributes.cursor "pointer" ]
@@ -843,7 +778,7 @@ config =
 
 
 describeLeaf : ButtonSemantics -> Leaf -> Svg.Svg Msg
-describeLeaf s ({ ring, startAngle, endAngle, clr, leafType } as leaf) =
+describeLeaf s { ring, startAngle, endAngle, leafType } =
     let
         x =
             config.x
@@ -1046,7 +981,7 @@ describeLeaf s ({ ring, startAngle, endAngle, clr, leafType } as leaf) =
 
 
 setText : ButtonSemantics -> Qualifier -> Leaf -> Svg.Svg Msg
-setText s qualifier { ring, startAngle, endAngle, team } =
+setText _ qualifier { ring, startAngle, endAngle } =
     let
         teamId =
             T.mdisplayID qualifier
@@ -1128,6 +1063,7 @@ setText s qualifier { ring, startAngle, endAngle, team } =
 -}
 
 
+calculateAngle : Float -> Float -> Float -> Float
 calculateAngle r1 r2 r3 =
     -- cosinerule:
     -- r1^2 = r2^2 + r3^2 - 2.r2.r3.cos alpha
@@ -1136,11 +1072,7 @@ calculateAngle r1 r2 r3 =
         |> inDegrees
 
 
-roundedBorderAngle borderRadius mainRadius =
-    --acos ((2 * (mainRadius ^ 2)) - (borderRadius ^ 2)) / (2 * (mainRadius ^ 2))
-    calculateAngle borderRadius mainRadius mainRadius
-
-
+polarToCartesian : Float -> Float -> Float -> Float -> ( Float, Float )
 polarToCartesian centerX centerY radius angleInDegrees =
     let
         angleInRadians =
@@ -1151,49 +1083,6 @@ polarToCartesian centerX centerY radius angleInDegrees =
     )
 
 
+ringRadius : Float -> Float
 ringRadius ring =
     ring * config.ringHeight + ((ring - 1) * config.ringSpacing)
-
-
-moveDiagonal : Float -> Float -> Svg.Attribute Msg
-moveDiagonal angle distance =
-    let
-        x =
-            cos angle * distance
-
-        y =
-            sin angle * distance
-    in
-    translate x y
-
-
-moveDiagonal2 : Float -> Float -> Float -> Svg.Attribute Msg
-moveDiagonal2 ring angle distance =
-    let
-        radius =
-            ringRadius ring
-
-        vectorStart =
-            polarToCartesian config.x config.y radius angle
-
-        vectorMove =
-            polarToCartesian config.x config.y (radius + distance) angle
-
-        delta ( x1, y1 ) ( x2, y2 ) =
-            ( x2 - x1, y2 - y1 )
-
-        ( x, y ) =
-            delta vectorStart vectorMove
-    in
-    translate x y
-
-
-translate x y =
-    String.join ""
-        [ "translate("
-        , String.fromFloat x
-        , ","
-        , String.fromFloat y
-        , ")"
-        ]
-        |> Attributes.transform

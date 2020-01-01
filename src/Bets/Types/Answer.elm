@@ -6,33 +6,28 @@ module Bets.Types.Answer exposing
     , summary
     )
 
-import Bets.Json.Encode exposing (mStrEnc)
 import Bets.Types exposing (Answer, AnswerID, AnswerT(..))
 import Bets.Types.Bracket
-import Bets.Types.Candidate
-import Bets.Types.Draw
 import Bets.Types.Group
 import Bets.Types.Match
 import Bets.Types.Participant
 import Bets.Types.Points
-import Bets.Types.Round
 import Bets.Types.Score
-import Bets.Types.Team
 import Bets.Types.Topscorer
 import Json.Decode exposing (Decoder, andThen, field, map2, map4, maybe)
 import Json.Encode
 
 
 isComplete : Answer -> Bool
-isComplete ( answerId, answer ) =
+isComplete ( _, answer ) =
     case answer of
-        AnswerGroupMatch group match mScore points ->
+        AnswerGroupMatch _ _ mScore _ ->
             Bets.Types.Score.isComplete mScore
 
-        AnswerBracket bracket points ->
+        AnswerBracket bracket _ ->
             Bets.Types.Bracket.isComplete bracket
 
-        AnswerTopscorer topscorer points ->
+        AnswerTopscorer topscorer _ ->
             Bets.Types.Topscorer.isComplete topscorer
 
         AnswerParticipant participant ->
@@ -40,19 +35,19 @@ isComplete ( answerId, answer ) =
 
 
 summary : Answer -> String
-summary ( answerId, answer ) =
+summary ( _, answer ) =
     case answer of
-        AnswerGroupMatch group match mScore points ->
+        AnswerGroupMatch group _ _ _ ->
             "Wedstrijden " ++ Bets.Types.Group.toString group
 
         -- should be ++ match id
-        AnswerBracket bracket points ->
+        AnswerBracket _ _ ->
             "Schema"
 
-        AnswerTopscorer topscorer points ->
+        AnswerTopscorer _ _ ->
             "Topscorer"
 
-        AnswerParticipant participant ->
+        AnswerParticipant _ ->
             "Over jou"
 
 

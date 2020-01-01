@@ -1,8 +1,8 @@
 module Form.Card exposing (findByCardId, findIDByAnswerId, update)
 
-import Bets.Types exposing (AnswerID, Bet)
+import Bets.Types exposing (AnswerID)
 import Form.QuestionSets.Types as QS
-import Form.Types exposing (..)
+import Form.Types exposing (Card(..), Model, Msg)
 import List.Extra exposing (find)
 
 
@@ -19,7 +19,7 @@ findIDByAnswerId model mAnswerId =
             QS.findAnswers qsModel model.bet
                 |> List.map Tuple.first
 
-        isAnswer answerId ( i, card ) =
+        isAnswer answerId ( _, card ) =
             case card of
                 IntroCard _ ->
                     False
@@ -33,16 +33,13 @@ findIDByAnswerId model mAnswerId =
                 SubmitCard ->
                     False
 
-        mIndexedCard =
-            case mAnswerId of
-                Nothing ->
-                    Nothing
-
-                Just answerId ->
-                    List.indexedMap (\a b -> ( a, b )) model.cards
-                        |> find (isAnswer answerId)
+        indexedCard answerId =
+            List.indexedMap (\a b -> ( a, b )) model.cards
+                |> find (isAnswer answerId)
     in
-    Maybe.map (\( i, _ ) -> i) mIndexedCard
+    mAnswerId
+        |> Maybe.andThen indexedCard
+        |> Maybe.map (\( i, _ ) -> i)
 
 
 update : List Card -> Int -> Card -> List Card
