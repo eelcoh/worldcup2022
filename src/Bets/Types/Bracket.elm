@@ -253,12 +253,13 @@ candidatesForTeamNode brkt position slot =
                 |> Dict.fromList
 
         justify ( a, m ) =
-            case m of
-                Just b ->
-                    Just ( b.teamID, a )
+            Maybe.map (\b -> (b.teamID, a)) m
+            -- case m of
+            --     Just b ->
+            --         Just ( b.teamID, a )
 
-                Nothing ->
-                    Nothing
+            --     Nothing ->
+            --         Nothing
 
         assess : ( Group, Team ) -> Selection
         assess ( g, t ) =
