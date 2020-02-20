@@ -54,7 +54,7 @@ view bet state =
             List.filter (isCurrentMatch state.cursor) groupMatches
                 |> List.head
     in
-    view_ state mCurrentMatch bet.answers.matches
+    view_ state mCurrentMatch groupMatches
 
 
 view_ : State -> Maybe ( MatchID, AnswerGroupMatch ) -> List ( MatchID, AnswerGroupMatch ) -> Element.Element Msg

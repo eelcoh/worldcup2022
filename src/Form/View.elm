@@ -1,6 +1,7 @@
 module Form.View exposing (view)
 
 import Bets.Bet
+import Bets.Types exposing (Group(..))
 import Bets.Types.Group as Group
 import Browser
 import Element exposing (padding, paddingXY, spacing)
@@ -124,9 +125,13 @@ viewPill model idx ( i, card ) =
                     "Start"
 
                 GroupMatchesCard state ->
-                    "Wedstrijden " ++ Group.toString state.group
+                    if state.group == A then
+                        "Wedstrijden " ++ Group.toString state.group
 
-                BracketCard state ->
+                    else
+                        Group.toString state.group
+
+                BracketCard _ ->
                     "Schema"
 
                 TopscorerCard ->

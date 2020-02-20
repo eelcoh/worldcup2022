@@ -789,11 +789,7 @@ describeLeaf s { ring, startAngle, endAngle, leafType } =
                             polarToCartesian lowerBorderX lowerBorderY borderRadius (startAngle + 180 + gamma)
 
                         sweepFlag =
-                            if startAngle - endAngle <= 180 then
-                                False
-
-                            else
-                                True
+                            not <| startAngle - endAngle <= 180
                     in
                     [ M endInner
                     , L startOuter
@@ -881,7 +877,7 @@ describeLeaf s { ring, startAngle, endAngle, leafType } =
                             polarToCartesian lowerBorderRightX lowerBorderRightY borderRadius (endAngle - gamma + alpha)
 
                         sweepFlag =
-                            startAngle - endAngle <= 180
+                            not <| startAngle - endAngle <= 180
 
                         borderArc coord =
                             A borderRadiusXY xAxisRotation False False coord
@@ -944,7 +940,7 @@ setText _ qualifier { ring, startAngle, endAngle } =
             polarToCartesian x y radius endAngle
 
         sweepFlag =
-            startAngle - endAngle <= 180
+            not <| startAngle - endAngle <= 180
 
         pathId =
             "tp-" ++ String.fromInt (Basics.round startAngle) ++ "-" ++ String.fromInt (Basics.round radius)
