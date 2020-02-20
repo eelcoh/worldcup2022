@@ -1,13 +1,15 @@
 module Form.View exposing (view)
 
+import Bets.Bet
+import Bets.Types.Group as Group
 import Browser
 import Element exposing (padding, paddingXY, spacing)
+import Form.Bracket
+import Form.GroupMatches
 import Form.Info
-import Form.Question
-import Form.QuestionSet
-import Form.QuestionSets.Types as QTS
-import Form.Questions.Types as QT
+import Form.Participant
 import Form.Submit
+import Form.Topscorer
 import Form.Types exposing (Card(..), Model, Msg(..))
 import UI.Button
 import UI.Style
@@ -52,30 +54,26 @@ viewCard model i card =
         IntroCard intro ->
             Element.map InfoMsg (Form.Info.view intro)
 
-        QuestionCard qModel ->
-            Element.map (Answered i) (Form.Question.view model.bet qModel)
+        -- QuestionCard qModel ->
+        --     Element.map (Answered i) (Form.Question.view model.bet qModel)
+        -- QuestionSetCard qsModel ->
+        --     Element.map (QuestionSetMsg i) (Form.QuestionSet.view qsModel model.bet)
+        GroupMatchesCard groupMatchesState ->
+            Element.map (GroupMatchMsg groupMatchesState.group) (Form.GroupMatches.view model.bet groupMatchesState)
 
-        QuestionSetCard qsModel ->
-            Element.map (QuestionSetMsg i) (Form.QuestionSet.view qsModel model.bet)
+        BracketCard bracketState ->
+            Element.map BracketMsg (Form.Bracket.view model.bet bracketState)
+
+        TopscorerCard ->
+            Element.map TopscorerMsg (Form.Topscorer.view model.bet)
+
+        ParticipantCard ->
+            Element.map ParticipantMsg (Form.Participant.view model.bet)
 
         SubmitCard ->
             let
-                isComplete card_ =
-                    case card_ of
-                        IntroCard _ ->
-                            True
-
-                        QuestionCard qModel ->
-                            QT.isComplete model.bet qModel
-
-                        QuestionSetCard qsModel ->
-                            QTS.isComplete model.bet qsModel
-
-                        SubmitCard ->
-                            True
-
                 submittable =
-                    List.all isComplete model.cards
+                    Bets.Bet.isComplete model.bet
             in
             Form.Submit.view model submittable
 
@@ -88,11 +86,17 @@ viewPill model idx ( i, card ) =
                 IntroCard _ ->
                     UI.Style.Perhaps
 
-                QuestionCard qModel ->
-                    mkpillModel (QT.isComplete model.bet qModel) (i == idx)
+                GroupMatchesCard state ->
+                    mkpillModel (Form.GroupMatches.isComplete state.group model.bet) (i == idx)
 
-                QuestionSetCard qsModel ->
-                    mkpillModel (QTS.isComplete model.bet qsModel) (i == idx)
+                BracketCard _ ->
+                    mkpillModel (Form.Bracket.isComplete model.bet) (i == idx)
+
+                TopscorerCard ->
+                    mkpillModel (Form.Topscorer.isComplete model.bet) (i == idx)
+
+                ParticipantCard ->
+                    mkpillModel (Form.Participant.isComplete model.bet) (i == idx)
 
                 SubmitCard ->
                     UI.Style.Perhaps
@@ -119,11 +123,17 @@ viewPill model idx ( i, card ) =
                 IntroCard _ ->
                     "Start"
 
-                QuestionCard qModel ->
-                    QT.display model.bet qModel
+                GroupMatchesCard state ->
+                    "Wedstrijden " ++ Group.toString state.group
 
-                QuestionSetCard model_ ->
-                    QTS.display model_
+                BracketCard state ->
+                    "Schema"
+
+                TopscorerCard ->
+                    "Topscorer"
+
+                ParticipantCard ->
+                    "Over jou"
 
                 SubmitCard ->
                     "Insturen"

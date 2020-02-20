@@ -1,7 +1,9 @@
 module Bets.Types exposing
-    ( Answer
-    , AnswerID
-    , AnswerT(..)
+    ( Answer(..)
+    , AnswerBracket
+    , AnswerGroupMatch
+    , AnswerGroupMatches
+    , AnswerTopscorer
     , Answers
     , Away
     , Bet
@@ -15,9 +17,11 @@ module Bets.Types exposing
     , Draw
     , DrawID
     , Group(..)
+    , GroupMatch(..)
     , HasQualified(..)
     , Home
     , Match(..)
+    , MatchID
     , NextID
     , Participant
     , Player
@@ -45,16 +49,11 @@ module Bets.Types exposing
 import Time
 
 
-type alias AnswerID =
-    String
-
-
-type alias Answer =
-    ( AnswerID, AnswerT )
-
-
 type alias Answers =
-    List Answer
+    { matches : AnswerGroupMatches
+    , bracket : AnswerBracket
+    , topscorer : AnswerTopscorer
+    }
 
 
 type alias Bet =
@@ -62,7 +61,52 @@ type alias Bet =
     , betId : Maybe Int
     , uuid : Maybe String
     , active : Bool
+    , participant : Participant
     }
+
+
+type alias AnswerGroupMatches =
+    List ( MatchID, AnswerGroupMatch )
+
+
+
+-- { m01 : AnswerGroupMatch
+-- , m02 : AnswerGroupMatch
+-- , m03 : AnswerGroupMatch
+-- , m04 : AnswerGroupMatch
+-- , m05 : AnswerGroupMatch
+-- , m06 : AnswerGroupMatch
+-- , m07 : AnswerGroupMatch
+-- , m08 : AnswerGroupMatch
+-- , m09 : AnswerGroupMatch
+-- , m10 : AnswerGroupMatch
+-- , m11 : AnswerGroupMatch
+-- , m12 : AnswerGroupMatch
+-- , m13 : AnswerGroupMatch
+-- , m14 : AnswerGroupMatch
+-- , m15 : AnswerGroupMatch
+-- , m16 : AnswerGroupMatch
+-- , m17 : AnswerGroupMatch
+-- , m18 : AnswerGroupMatch
+-- , m19 : AnswerGroupMatch
+-- , m20 : AnswerGroupMatch
+-- , m21 : AnswerGroupMatch
+-- , m22 : AnswerGroupMatch
+-- , m23 : AnswerGroupMatch
+-- , m24 : AnswerGroupMatch
+-- , m25 : AnswerGroupMatch
+-- , m26 : AnswerGroupMatch
+-- , m27 : AnswerGroupMatch
+-- , m28 : AnswerGroupMatch
+-- , m29 : AnswerGroupMatch
+-- , m30 : AnswerGroupMatch
+-- , m31 : AnswerGroupMatch
+-- , m32 : AnswerGroupMatch
+-- , m33 : AnswerGroupMatch
+-- , m34 : AnswerGroupMatch
+-- , m35 : AnswerGroupMatch
+-- , m36 : AnswerGroupMatch
+-- }
 
 
 type alias Points =
@@ -90,8 +134,6 @@ type Group
     | D
     | E
     | F
-    | G
-    | H
 
 
 type Round
@@ -105,6 +147,14 @@ type Round
 
 type alias Topscorer =
     ( Maybe String, Maybe Team )
+
+
+type alias MatchID =
+    String
+
+
+type GroupMatch
+    = GroupMatch Group Match (Maybe Score)
 
 
 type alias Player =
@@ -153,7 +203,7 @@ type alias Stadium =
 
 
 type Match
-    = Match Draw Draw Time.Posix Stadium
+    = Match MatchID Draw Draw Time.Posix Stadium
 
 
 
@@ -228,13 +278,27 @@ type Selected
 
 
 {- Types for Answers and Bet -}
+-- type AnswerT
+--     = AnswerGroupMatch Group Match (Maybe Score) Points
+--     | AnswerBracket Bracket Points
+--     | AnswerTopscorer Topscorer Points
+--     | AnswerParticipant Participant
 
 
-type AnswerT
-    = AnswerGroupMatch Group Match (Maybe Score) Points
-    | AnswerBracket Bracket Points
-    | AnswerTopscorer Topscorer Points
-    | AnswerParticipant Participant
+type Answer a
+    = Answer a Points
+
+
+type alias AnswerGroupMatch =
+    Answer GroupMatch
+
+
+type alias AnswerBracket =
+    Answer Bracket
+
+
+type alias AnswerTopscorer =
+    Answer Topscorer
 
 
 type Candidate

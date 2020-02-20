@@ -245,52 +245,53 @@ matches =
         t =
             tournament
     in
-    { m01 = match t.a1 t.a2 (date 2020 Jun 12) (time 17 0) rome
-    , m02 = match t.a3 t.a4 (date 2020 Jun 13) (time 15 0) baku
-    , m14 = match t.a1 t.a3 (date 2020 Jun 17) (time 20 0) rome
-    , m13 = match t.a4 t.a2 (date 2020 Jun 17) (time 17 0) baku
-    , m26 = match t.a4 t.a1 (date 2020 Jun 21) (time 16 0) rome
-    , m25 = match t.a2 t.a3 (date 2020 Jun 21) (time 16 0) baku
+    { -- Group A
+      m01 = match "m01" t.a1 t.a2 (date 2020 Jun 12) (time 17 0) rome
+    , m02 = match "m02" t.a3 t.a4 (date 2020 Jun 13) (time 15 0) baku
+    , m14 = match "m14" t.a1 t.a3 (date 2020 Jun 17) (time 20 0) rome
+    , m13 = match "m13" t.a4 t.a2 (date 2020 Jun 17) (time 17 0) baku
+    , m26 = match "m26" t.a4 t.a1 (date 2020 Jun 21) (time 16 0) rome
+    , m25 = match "m25" t.a2 t.a3 (date 2020 Jun 21) (time 16 0) baku
 
-    --grop b
-    , m03 = match t.b1 t.b2 (date 2020 Jun 13) (time 20 0) petersburg
-    , m04 = match t.b3 t.b4 (date 2020 Jun 13) (time 17 0) kopenhagen
-    , m15 = match t.b1 t.b3 (date 2020 Jun 17) (time 14 0) petersburg
-    , m16 = match t.b4 t.b2 (date 2020 Jun 18) (time 20 0) kopenhagen
-    , m28 = match t.b4 t.b1 (date 2020 Jun 22) (time 20 0) petersburg
-    , m27 = match t.b2 t.b3 (date 2020 Jun 22) (time 20 0) kopenhagen
+    -- Group B
+    , m03 = match "m03" t.b1 t.b2 (date 2020 Jun 13) (time 20 0) petersburg
+    , m04 = match "m04" t.b3 t.b4 (date 2020 Jun 13) (time 17 0) kopenhagen
+    , m15 = match "m15" t.b1 t.b3 (date 2020 Jun 17) (time 14 0) petersburg
+    , m16 = match "m16" t.b4 t.b2 (date 2020 Jun 18) (time 20 0) kopenhagen
+    , m28 = match "m28" t.b4 t.b1 (date 2020 Jun 22) (time 20 0) petersburg
+    , m27 = match "m27" t.b2 t.b3 (date 2020 Jun 22) (time 20 0) kopenhagen
 
-    --grop c
-    , m05 = match t.c1 t.c2 (date 2020 Jun 14) (time 12 0) amsterdam
-    , m06 = match t.c3 t.c4 (date 2020 Jun 14) (time 18 0) boekarest
-    , m17 = match t.c4 t.c2 (date 2020 Jun 18) (time 14 0) amsterdam
-    , m18 = match t.c1 t.c3 (date 2020 Jun 18) (time 17 0) boekarest
-    , m29 = match t.c4 t.c1 (date 2020 Jun 22) (time 16 0) amsterdam
-    , m30 = match t.c2 t.c3 (date 2020 Jun 22) (time 16 0) boekarest
+    -- Group C
+    , m05 = match "m05" t.c1 t.c2 (date 2020 Jun 14) (time 12 0) amsterdam
+    , m06 = match "m06" t.c3 t.c4 (date 2020 Jun 14) (time 18 0) boekarest
+    , m17 = match "m17" t.c4 t.c2 (date 2020 Jun 18) (time 14 0) amsterdam
+    , m18 = match "m18" t.c1 t.c3 (date 2020 Jun 18) (time 17 0) boekarest
+    , m29 = match "m29" t.c4 t.c1 (date 2020 Jun 22) (time 16 0) amsterdam
+    , m30 = match "m30" t.c2 t.c3 (date 2020 Jun 22) (time 16 0) boekarest
 
-    --grop d
-    , m07 = match t.d1 t.d2 (date 2020 Jun 14) (time 15 0) londen
-    , m08 = match t.d3 t.d4 (date 2020 Jun 15) (time 21 0) glasgow
-    , m20 = match t.d1 t.d3 (date 2020 Jun 19) (time 20 0) londen
-    , m19 = match t.d4 t.d2 (date 2020 Jun 19) (time 17 0) glasgow
-    , m32 = match t.d4 t.d1 (date 2020 Jun 23) (time 20 0) londen
-    , m31 = match t.d2 t.d3 (date 2020 Jun 23) (time 20 0) glasgow
+    -- Group D
+    , m07 = match "m07" t.d1 t.d2 (date 2020 Jun 14) (time 15 0) londen
+    , m08 = match "m08" t.d3 t.d4 (date 2020 Jun 15) (time 21 0) glasgow
+    , m20 = match "m20" t.d1 t.d3 (date 2020 Jun 19) (time 20 0) londen
+    , m19 = match "m19" t.d4 t.d2 (date 2020 Jun 19) (time 17 0) glasgow
+    , m32 = match "m32" t.d4 t.d1 (date 2020 Jun 23) (time 20 0) londen
+    , m31 = match "m31" t.d2 t.d3 (date 2020 Jun 23) (time 20 0) glasgow
 
-    --grop e
-    , m09 = match t.e3 t.e4 (date 2020 Jun 15) (time 14 0) bilbao
-    , m10 = match t.e1 t.e2 (date 2020 Jun 15) (time 20 0) dublin
-    , m22 = match t.e4 t.e2 (date 2020 Jun 20) (time 20 0) bilbao
-    , m21 = match t.e1 t.e3 (date 2020 Jun 19) (time 14 0) dublin
-    , m33 = match t.e4 t.e1 (date 2020 Jun 24) (time 20 0) bilbao
-    , m34 = match t.e2 t.e3 (date 2020 Jun 24) (time 20 0) dublin
+    -- Group E
+    , m09 = match "m09" t.e3 t.e4 (date 2020 Jun 15) (time 14 0) bilbao
+    , m10 = match "m10" t.e1 t.e2 (date 2020 Jun 15) (time 20 0) dublin
+    , m22 = match "m22" t.e4 t.e2 (date 2020 Jun 20) (time 20 0) bilbao
+    , m21 = match "m21" t.e1 t.e3 (date 2020 Jun 19) (time 14 0) dublin
+    , m33 = match "m33" t.e4 t.e1 (date 2020 Jun 24) (time 20 0) bilbao
+    , m34 = match "m34" t.e2 t.e3 (date 2020 Jun 24) (time 20 0) dublin
 
-    --grop f
-    , m12 = match t.f1 t.f2 (date 2020 Jun 16) (time 17 0) munchen
-    , m11 = match t.f3 t.f4 (date 2020 Jun 16) (time 14 0) boekarest
-    , m24 = match t.f4 t.f2 (date 2020 Jun 20) (time 17 0) munchen
-    , m23 = match t.f1 t.f3 (date 2020 Jun 20) (time 20 0) boekarest
-    , m36 = match t.f4 t.f1 (date 2020 Jun 24) (time 16 0) munchen
-    , m35 = match t.f2 t.f3 (date 2020 Jun 24) (time 16 0) boekarest
+    -- Group F
+    , m12 = match "m12" t.f1 t.f2 (date 2020 Jun 16) (time 17 0) munchen
+    , m11 = match "m11" t.f3 t.f4 (date 2020 Jun 16) (time 14 0) boekarest
+    , m24 = match "m24" t.f4 t.f2 (date 2020 Jun 20) (time 17 0) munchen
+    , m23 = match "m23" t.f1 t.f3 (date 2020 Jun 20) (time 20 0) boekarest
+    , m36 = match "m36" t.f4 t.f1 (date 2020 Jun 24) (time 16 0) munchen
+    , m35 = match "m35" t.f2 t.f3 (date 2020 Jun 24) (time 16 0) boekarest
     }
 
 

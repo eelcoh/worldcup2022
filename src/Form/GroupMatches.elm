@@ -1,62 +1,72 @@
-module Form.QuestionSets.MatchScoreQuestions exposing (Msg, update, view)
+module Form.GroupMatches exposing (isComplete, update, view)
 
 import Bets.Bet exposing (setMatchScore)
-import Bets.Types exposing (Answer, AnswerID, AnswerT(..), Bet, Group, Score, Team)
+import Bets.Types exposing (Answer(..), AnswerGroupMatch, AnswerGroupMatches, Bet, Group, GroupMatch(..), MatchID, Score, Team)
+import Bets.Types.Answer.GroupMatches as GroupMatches
 import Bets.Types.Group as G
 import Bets.Types.Match as M
 import Bets.Types.Score as S
 import Element exposing (centerX, centerY, height, padding, px, spaceEvenly, spacing, width)
 import Element.Events
 import Element.Input as Input
-import Form.QuestionSets.Types exposing (ChangeCursor(..), Model, updateCursor)
+import Form.GroupMatches.Types exposing (ChangeCursor(..), Msg(..), State, updateCursor)
 import UI.Button
 import UI.Style
 import UI.Team
 import UI.Text
 
 
-type Msg
-    = UpdateHome Answer Int
-    | UpdateAway Answer Int
-    | Update Answer Int Int
-    | SelectMatch AnswerID
-    | NoOp
+isComplete : Group -> Bet -> Bool
+isComplete grp bet =
+    GroupMatches.isCompleteGroup grp bet.answers.matches
 
 
-update : Msg -> Model -> Bet -> ( Bet, Model, Cmd Msg )
-update action model bet =
+update : Msg -> State -> Bet -> ( Bet, State, Cmd Msg )
+update action state bet =
     case action of
-        UpdateHome answer h ->
-            ( setMatchScore bet answer ( Just h, Nothing ), updateCursor model bet Dont, Cmd.none )
+        UpdateHome matchID h ->
+            ( setMatchScore bet matchID ( Just h, Nothing ), updateCursor state bet Dont, Cmd.none )
 
-        UpdateAway answer a ->
-            ( setMatchScore bet answer ( Nothing, Just a ), updateCursor model bet Implicit, Cmd.none )
+        UpdateAway matchID a ->
+            ( setMatchScore bet matchID ( Nothing, Just a ), updateCursor state bet Implicit, Cmd.none )
 
-        Update answer h a ->
-            ( setMatchScore bet answer ( Just h, Just a ), updateCursor model bet Implicit, Cmd.none )
+        Update matchID h a ->
+            ( setMatchScore bet matchID ( Just h, Just a ), updateCursor state bet Implicit, Cmd.none )
 
-        SelectMatch answerId ->
-            ( bet, updateCursor model bet (Explicit answerId), Cmd.none )
+        SelectMatch matchID ->
+            ( bet, updateCursor state bet (Explicit matchID), Cmd.none )
 
         NoOp ->
-            ( bet, model, Cmd.none )
+            ( bet, state, Cmd.none )
 
 
-view :
-    { a | cursor : AnswerID }
-    -> b
-    -> Maybe ( AnswerID, AnswerT )
-    -> List ( AnswerID, AnswerT )
-    -> Element.Element Msg
-view model _ mAnswer answers =
-    case mAnswer of
-        Just (( _, AnswerGroupMatch g match mScore _ ) as answer) ->
+view : Bet -> State -> Element.Element Msg
+view bet state =
+    let
+        groupMatches =
+            GroupMatches.findGroupMatchAnswers state.group bet.answers.matches
+
+        mCurrentMatch =
+            let
+                isCurrentMatch matchID ( mId, _ ) =
+                    matchID == mId
+            in
+            List.filter (isCurrentMatch state.cursor) groupMatches
+                |> List.head
+    in
+    view_ state mCurrentMatch bet.answers.matches
+
+
+view_ : State -> Maybe ( MatchID, AnswerGroupMatch ) -> List ( MatchID, AnswerGroupMatch ) -> Element.Element Msg
+view_ state mMatch matches =
+    case mMatch of
+        Just ( matchID, Answer (GroupMatch g match mScore) _ ) ->
             Element.column (UI.Style.page [ width (px 650), spacing 20 ])
                 [ displayHeader g
                 , introduction
-                , displayMatches model.cursor answers
-                , viewInput model answer (M.homeTeam match) (M.awayTeam match) mScore
-                , viewKeyboard model answer
+                , displayMatches state.cursor matches
+                , viewInput state matchID (M.homeTeam match) (M.awayTeam match) mScore
+                , viewKeyboard state matchID
                 ]
 
         _ ->
@@ -161,12 +171,12 @@ indexedScores scoreList =
 
 viewInput :
     a
-    -> Answer
+    -> MatchID
     -> Maybe Team
     -> Maybe Team
     -> Maybe Score
     -> Element.Element Msg
-viewInput _ answer homeTeam awayTeam mScore =
+viewInput _ matchID homeTeam awayTeam mScore =
     let
         makeAction act val =
             case String.toInt val of
@@ -197,11 +207,11 @@ viewInput _ answer homeTeam awayTeam mScore =
                 |> Maybe.withDefault ""
 
         homeInput =
-            inputField (extractScore S.homeScore) (UpdateHome answer)
+            inputField (extractScore S.homeScore) (UpdateHome matchID)
                 |> wrap
 
         awayInput =
-            inputField (extractScore S.awayScore) (UpdateAway answer)
+            inputField (extractScore S.awayScore) (UpdateAway matchID)
                 |> wrap
 
         homeBadge =
@@ -218,11 +228,11 @@ viewInput _ answer homeTeam awayTeam mScore =
         ]
 
 
-viewKeyboard : a -> Answer -> Element.Element Msg
-viewKeyboard _ answer =
+viewKeyboard : a -> MatchID -> Element.Element Msg
+viewKeyboard _ matchID =
     let
         toButton ( _, ( h, a, t ) ) =
-            scoreButton UI.Style.Potential answer h a t
+            scoreButton UI.Style.Potential matchID h a t
 
         toRow scoreList =
             Element.row (UI.Style.scoreRow [ centerX, spacing 2, centerY ])
@@ -232,16 +242,16 @@ viewKeyboard _ answer =
         (List.map toRow scores)
 
 
-scoreButton : UI.Style.ButtonSemantics -> Answer -> Int -> Int -> String -> Element.Element Msg
-scoreButton c answer home away t =
+scoreButton : UI.Style.ButtonSemantics -> MatchID -> Int -> Int -> String -> Element.Element Msg
+scoreButton c matchID home away t =
     let
         msg =
-            Update answer home away
+            Update matchID home away
     in
     UI.Button.scoreButton c msg t
 
 
-displayMatches : AnswerID -> List ( AnswerID, AnswerT ) -> Element.Element Msg
+displayMatches : MatchID -> List ( MatchID, AnswerGroupMatch ) -> Element.Element Msg
 displayMatches cursor answers =
     let
         display =
@@ -252,8 +262,8 @@ displayMatches cursor answers =
         (List.filterMap display answers)
 
 
-displayMatch : AnswerID -> ( AnswerID, AnswerT ) -> Maybe (Element.Element Msg)
-displayMatch cursor ( answerId, answer ) =
+displayMatch : MatchID -> ( MatchID, AnswerGroupMatch ) -> Maybe (Element.Element Msg)
+displayMatch cursor ( answerId, Answer (GroupMatch g match mScore) _ ) =
     let
         semantics =
             if cursor == answerId then
@@ -262,29 +272,24 @@ displayMatch cursor ( answerId, answer ) =
             else
                 UI.Style.Potential
 
-        disp match mScore =
+        disp match_ mScore_ =
             let
                 handler =
                     Element.Events.onClick (SelectMatch answerId)
 
                 home =
-                    UI.Team.viewTeam (M.homeTeam match)
+                    UI.Team.viewTeam (M.homeTeam match_)
 
                 away =
-                    UI.Team.viewTeam (M.awayTeam match)
+                    UI.Team.viewTeam (M.awayTeam match_)
 
                 sc =
-                    displayScore mScore
+                    displayScore mScore_
             in
             Element.row (UI.Style.matchRow semantics [ handler, spaceEvenly, centerY, padding 10, spacing 7, width (px 150), height (px 70) ])
                 [ home, sc, away ]
     in
-    case answer of
-        AnswerGroupMatch _ match mScore _ ->
-            Just <| disp match mScore
-
-        _ ->
-            Nothing
+    Just <| disp match mScore
 
 
 scoreString : Int -> Int -> String

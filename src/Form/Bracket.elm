@@ -1,13 +1,14 @@
-module Form.Questions.Bracket exposing (Msg, update, view)
+module Form.Bracket exposing (isComplete, update, view)
 
 import Basics.Extra exposing (inDegrees)
 import Bets.Bet
-import Bets.Types exposing (Answer, AnswerID, AnswerT(..), Bet, Bracket(..), Candidate(..), CurrentSlot(..), HasQualified(..), Qualifier, Selection, Slot, Team, Winner(..))
+import Bets.Types exposing (Answer(..), Bet, Bracket(..), Candidate(..), CurrentSlot(..), HasQualified(..), Qualifier, Selection, Slot, Team, Winner(..))
+import Bets.Types.Answer.Bracket
 import Bets.Types.Bracket as B
 import Bets.Types.Group as G
 import Bets.Types.Team as T
 import Element exposing (height, px, width)
-import Form.Questions.Types exposing (Angle, BracketState(..), QState, QuestionType(..))
+import Form.Bracket.Types exposing (..)
 import List.Extra as Extra
 import Svg exposing (Svg)
 import Svg.Attributes as Attributes
@@ -17,17 +18,9 @@ import UI.Style exposing (ButtonSemantics(..))
 import UI.Text
 
 
-type Msg
-    = SetWinner AnswerID Slot Winner
-    | SetQualifier AnswerID Slot Candidate Angle Angle
-    | SetSlot Slot Team
-    | CloseQualifierView
-
-
-type IsWinner
-    = Yes
-    | No
-    | Undecided
+isComplete : Bet -> Bool
+isComplete bet =
+    Bets.Types.Answer.Bracket.isComplete bet.answers.bracket
 
 
 isWinner : Winner -> Winner -> IsWinner
@@ -44,65 +37,39 @@ isWinner bracketWinner homeOrAway =
                 No
 
 
-update : Msg -> Bet -> QState -> ( Bet, QState, Cmd Msg )
-update msg bet qState =
+update : Msg -> Bet -> State -> ( Bet, State, Cmd Msg )
+update msg bet state =
     case msg of
-        SetWinner answerId slot homeOrAway ->
+        SetWinner slot homeOrAway ->
             let
-                mAnswer =
-                    Bets.Bet.getAnswer bet answerId
-
                 newBet =
-                    case mAnswer of
-                        Just answer ->
-                            Bets.Bet.setWinner bet answer slot homeOrAway
-
-                        Nothing ->
-                            bet
+                    Bets.Bet.setWinner bet slot homeOrAway
             in
-            ( newBet, { qState | next = Nothing }, Cmd.none )
+            ( newBet, state, Cmd.none )
 
-        SetQualifier _ slot candidates startAngle endAngle ->
+        SetQualifier slot candidates startAngle endAngle ->
             let
                 bracketState =
                     ShowSecondRoundSelection slot candidates startAngle endAngle
-
-                newQState =
-                    { qState | questionType = QBracket bracketState }
             in
-            ( bet, newQState, Cmd.none )
+            ( bet, bracketState, Cmd.none )
 
         SetSlot slot team ->
             let
-                mAnswer =
-                    Bets.Bet.getAnswer bet "br"
-
                 newBet =
-                    case mAnswer of
-                        Just answer ->
-                            Bets.Bet.setQualifier bet answer slot (Just team)
-
-                        Nothing ->
-                            bet
+                    Bets.Bet.setQualifier bet slot (Just team)
             in
-            ( newBet, { qState | next = Nothing }, Cmd.none )
+            ( newBet, state, Cmd.none )
 
         CloseQualifierView ->
-            let
-                bracketState =
-                    ShowMatches
-
-                newQState =
-                    { qState | questionType = QBracket bracketState }
-            in
-            ( bet, newQState, Cmd.none )
+            ( bet, ShowMatches, Cmd.none )
 
 
-view : Bet -> QState -> Element.Element Msg
-view bet qQState =
+view : Bet -> State -> Element.Element Msg
+view bet state =
     let
-        mAnswer =
-            Bets.Bet.getAnswer bet qQState.answerId
+        bracket =
+            Bets.Bet.getBracket bet
 
         header =
             UI.Text.displayHeader "Klik je een weg door het schema"
@@ -116,43 +83,35 @@ view bet qQState =
         introduction =
             Element.paragraph [] [ UI.Text.simpleText introtext ]
     in
-    case mAnswer of
-        Just (( _, AnswerBracket bracket _ ) as answer) ->
-            Element.column
-                []
-                [ header
-                , introduction
-                , viewRings bet answer bracket qQState.questionType
-                ]
-
-        _ ->
-            Element.none
+    Element.column
+        []
+        [ header
+        , introduction
+        , viewRings bet bracket state
+        ]
 
 
-viewRings : Bet -> Answer -> Bracket -> QuestionType -> Element.Element Msg
-viewRings bet answer bracket questionType =
+viewRings : Bet -> Bracket -> State -> Element.Element Msg
+viewRings bet bracket state =
     let
         slotSelected =
-            case questionType of
-                QBracket (ShowSecondRoundSelection slot _ _ _) ->
+            case state of
+                ShowSecondRoundSelection slot _ _ _ ->
                     Just slot
 
                 _ ->
                     Nothing
 
         positions =
-            viewPositionRing bet answer bracket slotSelected
+            viewPositionRing bet bracket slotSelected
 
         center =
-            case questionType of
-                QBracket ShowMatches ->
-                    viewMatchRings bet answer bracket
+            case state of
+                ShowMatches ->
+                    viewMatchRings bet bracket
 
-                QBracket (ShowSecondRoundSelection slot secondRoundCandidate startAngle endAngle) ->
-                    viewCandidatesCircle bet answer bracket slot secondRoundCandidate startAngle endAngle
-
-                _ ->
-                    []
+                ShowSecondRoundSelection slot secondRoundCandidate startAngle endAngle ->
+                    viewCandidatesCircle bet bracket slot secondRoundCandidate startAngle endAngle
 
         rings =
             List.concat
@@ -171,11 +130,11 @@ viewRings bet answer bracket questionType =
         )
 
 
-viewPositionRing : Bet -> Answer -> Bracket -> Maybe Slot -> List (Svg Msg)
-viewPositionRing bet answer bracket mSlot =
+viewPositionRing : Bet -> Bracket -> Maybe Slot -> List (Svg Msg)
+viewPositionRing bet bracket mSlot =
     let
         v slot =
-            viewLeaf bet answer (B.get bracket slot) (isSelected slot)
+            viewLeaf bet (B.get bracket slot) (isSelected slot)
 
         isSelected slot =
             case mSlot of
@@ -261,11 +220,11 @@ viewPositionRing bet answer bracket mSlot =
     [ ring5 ]
 
 
-viewMatchRings : Bet -> Answer -> Bracket -> List (Svg Msg)
-viewMatchRings bet answer bracket =
+viewMatchRings : Bet -> Bracket -> List (Svg Msg)
+viewMatchRings bet bracket =
     let
         v mb =
-            viewLeaf bet answer mb UI.Style.Potential
+            viewLeaf bet mb UI.Style.Potential
 
         m37 =
             v <| B.get bracket "m37"
@@ -386,8 +345,8 @@ viewChampion bracket =
             Svg.g [] []
 
 
-viewCandidatesCircle : Bet -> Answer -> Bracket -> Slot -> Candidate -> Angle -> Angle -> List (Svg Msg)
-viewCandidatesCircle _ _ bracket slot candidates startAngle endAngle =
+viewCandidatesCircle : Bet -> Bracket -> Slot -> Candidate -> Angle -> Angle -> List (Svg Msg)
+viewCandidatesCircle _ bracket slot candidates startAngle endAngle =
     let
         x =
             config.x
@@ -655,8 +614,8 @@ mkText str clr (( x1, y1 ) as start) (( x2, y2 ) as end) =
 --         List.concatMap (uncurry (viewRingMatch bet answer ring segmentAngleSize)) matchesAndAngles
 
 
-viewLeaf : Bet -> Answer -> Maybe Bracket -> UI.Style.ButtonSemantics -> Float -> Float -> Float -> Svg Msg
-viewLeaf _ answer mBracket isSelected ring segmentAngleSize angle =
+viewLeaf : Bet -> Maybe Bracket -> UI.Style.ButtonSemantics -> Float -> Float -> Float -> Svg Msg
+viewLeaf _ mBracket isSelected ring segmentAngleSize angle =
     case mBracket of
         Just (MatchNode slot winner home away _ _) ->
             let
@@ -681,8 +640,8 @@ viewLeaf _ answer mBracket isSelected ring segmentAngleSize angle =
                 --         moveDiagonal2 ring (Debug.log "center angle" centerMatchAngle) 2
             in
             Svg.g []
-                [ viewMatchLeaf answer HomeTeam slot (isWinner winner HomeTeam) home homeLeaf
-                , viewMatchLeaf answer AwayTeam slot (isWinner winner AwayTeam) away awayLeaf
+                [ viewMatchLeaf HomeTeam slot (isWinner winner HomeTeam) home homeLeaf
+                , viewMatchLeaf AwayTeam slot (isWinner winner AwayTeam) away awayLeaf
                 ]
 
         Just (TeamNode slot candidate qualifier _) ->
@@ -694,7 +653,7 @@ viewLeaf _ answer mBracket isSelected ring segmentAngleSize angle =
                     Leaf ring angle endAngle "#ececec" QualifierLeaf slot
 
                 msg =
-                    SetQualifier (Tuple.first answer) slot candidate angle endAngle
+                    SetQualifier slot candidate angle endAngle
             in
             mkLeaf isSelected qualifier leaf msg
 
@@ -706,20 +665,8 @@ viewLeaf _ answer mBracket isSelected ring segmentAngleSize angle =
             Svg.g [] []
 
 
-
--- viewCandidateLeaf : ( AnswerID, a2 ) -> Slot -> UI.Style.ButtonSemantics -> Candidate -> Maybe Team -> HasQualified -> Leaf -> List (Svg Msg)
--- viewCandidateLeaf answer slot isSelected candidate qualifier hasQualified leaf =
---     let
---         answerId =
---             Tuple.first answer
---         msg =
---             SetQualifier answerId slot candidate
---     in
---     mkLeaf isSelected qualifier leaf
-
-
-viewMatchLeaf : ( AnswerID, a2 ) -> Winner -> Slot -> IsWinner -> Bracket -> Leaf -> Svg Msg
-viewMatchLeaf answer wnnr slot isSelected bracket leaf =
+viewMatchLeaf : Winner -> Slot -> IsWinner -> Bracket -> Leaf -> Svg Msg
+viewMatchLeaf wnnr slot isSelected bracket leaf =
     let
         s =
             case isSelected of
@@ -732,11 +679,8 @@ viewMatchLeaf answer wnnr slot isSelected bracket leaf =
                 Undecided ->
                     UI.Style.Potential
 
-        answerId =
-            Tuple.first answer
-
         msg =
-            SetWinner answerId slot wnnr
+            SetWinner slot wnnr
 
         mTeam =
             B.qualifier bracket
@@ -887,11 +831,7 @@ describeLeaf s { ring, startAngle, endAngle, leafType } =
                             polarToCartesian lowerBorderX lowerBorderY borderRadius (endAngle + 180 - gamma)
 
                         sweepFlag =
-                            if startAngle - endAngle <= 180 then
-                                True
-
-                            else
-                                False
+                            startAngle - endAngle <= 180
                     in
                     [ M endInner
                     , L startOuter
@@ -941,11 +881,7 @@ describeLeaf s { ring, startAngle, endAngle, leafType } =
                             polarToCartesian lowerBorderRightX lowerBorderRightY borderRadius (endAngle - gamma + alpha)
 
                         sweepFlag =
-                            if startAngle - endAngle <= 180 then
-                                False
-
-                            else
-                                True
+                            startAngle - endAngle <= 180
 
                         borderArc coord =
                             A borderRadiusXY xAxisRotation False False coord
@@ -1008,11 +944,7 @@ setText _ qualifier { ring, startAngle, endAngle } =
             polarToCartesian x y radius endAngle
 
         sweepFlag =
-            if startAngle - endAngle <= 180 then
-                False
-
-            else
-                True
+            startAngle - endAngle <= 180
 
         pathId =
             "tp-" ++ String.fromInt (Basics.round startAngle) ++ "-" ++ String.fromInt (Basics.round radius)
