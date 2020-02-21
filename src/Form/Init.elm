@@ -1,22 +1,22 @@
 module Form.Init exposing (cards)
 
 import Bets.Types exposing (Group(..), Round(..))
-import Form.QuestionSets.Types as QSet
-import Form.Questions.Types as Q
+import Form.Bracket.Types as Bracket
+import Form.GroupMatches.Types as GroupMatches
 import Form.Types exposing (Card(..), Info(..))
 
 
 cards : List Card
 cards =
     [ IntroCard Intro
-    , QuestionSetCard <| QSet.matchScoreQuestions A "m01"
-    , QuestionSetCard <| QSet.matchScoreQuestions B "m03"
-    , QuestionSetCard <| QSet.matchScoreQuestions C "m05"
-    , QuestionSetCard <| QSet.matchScoreQuestions D "m07"
-    , QuestionSetCard <| QSet.matchScoreQuestions E "m10"
-    , QuestionSetCard <| QSet.matchScoreQuestions F "m11"
-    , QuestionCard <| Q.qBracket "br"
-    , QuestionCard <| Q.qTopscorer "ts"
-    , QuestionCard <| Q.qParticipant "me"
+    , GroupMatchesCard <| GroupMatches.init A "m01"
+    , GroupMatchesCard <| GroupMatches.init B "m03"
+    , GroupMatchesCard <| GroupMatches.init C "m05"
+    , GroupMatchesCard <| GroupMatches.init D "m07"
+    , GroupMatchesCard <| GroupMatches.init E "m10"
+    , GroupMatchesCard <| GroupMatches.init F "m11"
+    , BracketCard Bracket.init
+    , TopscorerCard
+    , ParticipantCard
     , SubmitCard
     ]

@@ -12,10 +12,10 @@ module Form.Types exposing
 import Bets.Types exposing (Bet, Group, Round)
 import Browser
 import Browser.Navigation as Navigation
-import Form.Question
-import Form.QuestionSet
-import Form.QuestionSets.Types as QuestionSets
-import Form.Questions.Types as Questions
+import Form.Bracket.Types as Bracket
+import Form.GroupMatches.Types as GroupMatches
+import Form.Participant.Types as Participant
+import Form.Topscorer.Types as Topscorer
 import Html exposing (Html)
 import RemoteData exposing (WebData)
 import Url
@@ -28,8 +28,11 @@ type alias Flags =
 
 type Card
     = IntroCard Info
-    | QuestionCard Questions.Model
-    | QuestionSetCard QuestionSets.Model
+      -- | QuestionCard Questions.Model
+    | GroupMatchesCard GroupMatches.State
+    | BracketCard Bracket.State
+    | TopscorerCard
+    | ParticipantCard
     | SubmitCard
 
 
@@ -74,9 +77,13 @@ type FormInfoMsg
 
 type Msg
     = NavigateTo Page
-    | Answered Page Form.Question.Msg
+      -- | Answered Page Form.Question.Msg
     | InfoMsg FormInfoMsg
-    | QuestionSetMsg Page Form.QuestionSet.Msg
+      -- | QuestionSetMsg Page Form.QuestionSet.Msg
+    | GroupMatchMsg Group GroupMatches.Msg
+    | BracketMsg Bracket.Msg
+    | TopscorerMsg Topscorer.Msg
+    | ParticipantMsg Participant.Msg
     | SubmitMsg
     | SubmittedBet (WebData Bet)
     | NoOp

@@ -1,9 +1,14 @@
 module Bets.Bet exposing
     ( decode
-    , encode
-    , findAllGroupMatchAnswers
-    , findGroupMatchAnswers
-    , getAnswer
+    ,  encode
+       -- , findAllGroupMatchAnswers
+
+    ,  findGroupMatchAnswers
+       -- , getAnswer
+
+    , getBracket
+    , getTopscorer
+    , isComplete
     , setMatchScore
     , setParticipant
     , setQualifier
@@ -12,31 +17,39 @@ module Bets.Bet exposing
     )
 
 import Bets.Json.Encode exposing (mIntEnc, mStrEnc)
-import Bets.Types exposing (Answer, AnswerID, Answers, Bet, Group, Participant, Qualifier, Score, Slot, Topscorer, Winner)
-import Bets.Types.Answers
+import Bets.Types exposing (Answer(..), AnswerGroupMatches, Answers, Bet, Bracket, Group, MatchID, Participant, Qualifier, Score, Slot, Topscorer, Winner)
+import Bets.Types.Answer.Bracket as Bracket
+import Bets.Types.Answer.GroupMatches as GroupMatches
+import Bets.Types.Answer.Topscorer as Topscorer
+import Bets.Types.Answers as A
+import Bets.Types.Participant as Participant
+import Bool.Extra as Bool
 import Json.Decode exposing (Decoder, field, maybe)
 import Json.Encode
 
 
-getAnswer : Bet -> AnswerID -> Maybe Answer
-getAnswer bet answerId =
-    Bets.Types.Answers.getAnswer bet.answers answerId
 
-
-
+-- getAnswer : Bet -> AnswerID -> Maybe Answer
+-- getAnswer bet answerId =
+--     Bets.Types.Answers.getAnswer bet.answers answerId
 -- candidates : Bet -> Answer -> Candidates
--- candidates bet answer =
---     Bets.Types.Candidates.candidates bet.answers answer
+-- findAllGroupMatchAnswers bet =
+--     Bets.Types.Answers.findAllGroupMatchAnswers bet.answers
 
 
-findAllGroupMatchAnswers : Bet -> Answers
-findAllGroupMatchAnswers bet =
-    Bets.Types.Answers.findAllGroupMatchAnswers bet.answers
-
-
-findGroupMatchAnswers : Group -> Bet -> Answers
+findGroupMatchAnswers : Group -> Bet -> AnswerGroupMatches
 findGroupMatchAnswers group bet =
-    Bets.Types.Answers.findGroupMatchAnswers group bet.answers
+    GroupMatches.findGroupMatchAnswers group bet.answers.matches
+
+
+isComplete : Bet -> Bool
+isComplete bet =
+    Bool.all
+        [ GroupMatches.isComplete bet.answers.matches
+        , Topscorer.isComplete bet.answers.topscorer
+        , Bracket.isComplete bet.answers.bracket
+        , Participant.isComplete bet.participant
+        ]
 
 
 newBet : Bet -> Answers -> Bet
@@ -44,41 +57,47 @@ newBet bet newAnswers =
     { bet | answers = newAnswers }
 
 
-setWinner : Bet -> Answer -> Slot -> Winner -> Bet
-setWinner bet answer slot winner =
-    Bets.Types.Answers.setWinner bet.answers answer slot winner
-        |> newBet bet
+setWinner : Bet -> Slot -> Winner -> Bet
+setWinner bet slot winner =
+    { bet | answers = A.setWinner bet.answers slot winner }
 
 
-setQualifier : Bet -> Answer -> Slot -> Qualifier -> Bet
-setQualifier bet answer slot qualifier =
-    Bets.Types.Answers.setQualifier bet.answers answer slot qualifier
-        |> newBet bet
+setQualifier : Bet -> Slot -> Qualifier -> Bet
+setQualifier bet slot qualifier =
+    { bet | answers = A.setQualifier bet.answers slot qualifier }
 
 
-
--- setTeam : Bet -> Answer -> Group -> Team -> Bet
--- setTeam bet answer group team =
---     Bets.Types.Answers.setTeam bet.answers answer group team
---         |> newBet bet
+setMatchScore : Bet -> MatchID -> Score -> Bet
+setMatchScore bet matchID score =
+    { bet | answers = A.setScore bet.answers matchID score }
 
 
-setMatchScore : Bet -> Answer -> Score -> Bet
-setMatchScore bet answer score =
-    Bets.Types.Answers.setMatchScore bet.answers answer score
-        |> newBet bet
+setParticipant : Bet -> Participant -> Bet
+setParticipant bet participant =
+    { bet | participant = participant }
 
 
-setParticipant : Bet -> Answer -> Participant -> Bet
-setParticipant bet answer participant =
-    Bets.Types.Answers.setParticipant bet.answers answer participant
-        |> newBet bet
+setTopscorer : Bet -> Topscorer -> Bet
+setTopscorer bet ts =
+    { bet | answers = A.setTopscorer bet.answers ts }
 
 
-setTopscorer : Bet -> Answer -> Topscorer -> Bet
-setTopscorer bet answer topscorer =
-    Bets.Types.Answers.setTopscorer bet.answers answer topscorer
-        |> newBet bet
+getTopscorer : Bet -> Topscorer
+getTopscorer bet =
+    let
+        extract (Answer topscorer _) =
+            topscorer
+    in
+    extract bet.answers.topscorer
+
+
+getBracket : Bet -> Bracket
+getBracket bet =
+    let
+        extract (Answer bracket _) =
+            bracket
+    in
+    extract bet.answers.bracket
 
 
 encode : Bet -> Json.Encode.Value
@@ -86,10 +105,11 @@ encode bet =
     let
         betObject =
             Json.Encode.object
-                [ ( "answers", Bets.Types.Answers.encode bet.answers )
+                [ ( "answers", A.encode bet.answers )
                 , ( "betId", mIntEnc bet.betId )
                 , ( "uuid", mStrEnc bet.uuid )
                 , ( "active", Json.Encode.bool bet.active )
+                , ( "participant", Participant.encode bet.participant )
                 ]
     in
     Json.Encode.object
@@ -116,8 +136,9 @@ decodeIncoming =
 
 decodeBet : Decoder Bet
 decodeBet =
-    Json.Decode.map4 Bet
-        (field "answers" Bets.Types.Answers.decode)
+    Json.Decode.map5 Bet
+        (field "answers" A.decode)
         (field "betId" (maybe Json.Decode.int))
         (field "uuid" (maybe Json.Decode.string))
         (field "active" Json.Decode.bool)
+        (field "participant" Participant.decode)
