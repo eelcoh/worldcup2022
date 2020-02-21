@@ -54,7 +54,7 @@ update msg model =
                                 ( { model
                                     | bet = newBet
                                     , betState = Dirty
-                                    , cards = Cards.updateGroupMatchesCard model.cards groupMatchesState
+                                    , cards = Cards.updateGroupMatchesCard model.cards newState
                                   }
                                 , Cmd.map (GroupMatchMsg groupMatchesState.group) fx
                                 )

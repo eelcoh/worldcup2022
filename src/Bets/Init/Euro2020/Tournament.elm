@@ -188,7 +188,7 @@ baku =
 
 petersburg : Stadium
 petersburg =
-    { town = "Sint-Petersburg", stadium = "Sint-Petersburg Dtadion" }
+    { town = "Sint-Petersburg", stadium = "Sint-Petersburg Stadion" }
 
 
 kopenhagen : Stadium
