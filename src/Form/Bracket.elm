@@ -84,7 +84,7 @@ view bet state =
             Element.paragraph [] [ UI.Text.simpleText introtext ]
     in
     Element.column
-        []
+        [ Element.spacingXY 0 10 ]
         [ header
         , introduction
         , viewRings bet bracket state
@@ -716,8 +716,8 @@ config =
     , borderRadius = 10
     , ringHeight = 25
     , ringSpacing = 5
-    , colorPotential = "blue"
-    , colorSelected = "red"
+    , colorPotential = "#5d5d5d"
+    , colorSelected = "#3A3837"
     }
 
 

@@ -85,7 +85,7 @@ viewPill model idx ( i, card ) =
         semantics =
             case card of
                 IntroCard _ ->
-                    UI.Style.Perhaps
+                    UI.Style.Potential
 
                 GroupMatchesCard state ->
                     mkpillModel (Form.GroupMatches.isComplete state.group model.bet) (i == idx)
@@ -100,7 +100,7 @@ viewPill model idx ( i, card ) =
                     mkpillModel (Form.Participant.isComplete model.bet) (i == idx)
 
                 SubmitCard ->
-                    UI.Style.Perhaps
+                    UI.Style.Potential
 
         mkpillModel complete current =
             case ( complete, current ) of
@@ -108,13 +108,13 @@ viewPill model idx ( i, card ) =
                     UI.Style.Selected
 
                 ( True, False ) ->
-                    UI.Style.Active
-
-                ( False, True ) ->
                     UI.Style.Right
 
+                ( False, True ) ->
+                    UI.Style.Selected
+
                 ( False, False ) ->
-                    UI.Style.Wrong
+                    UI.Style.Potential
 
         msg =
             NavigateTo i
@@ -170,8 +170,21 @@ viewCardChrome model card i =
             prevPill
                 :: List.append pills [ nextPill ]
                 |> Element.wrappedRow (UI.Style.none [ spacing 7, padding 0 ])
+
+        maxWidth =
+            (80 * model.screenSize.width) // 100
     in
-    Element.column (UI.Style.none [ spacing 20, paddingXY 70 20 ])
-        [ pillsPlus
-        , card
+    Element.column
+        (UI.Style.none
+            [ paddingXY 0 20
+            , spacing 30
+            , Element.centerX
+            , Element.width
+                (Element.fill
+                    |> Element.maximum maxWidth
+                )
+            ]
+        )
+        [ card
+        , pillsPlus
         ]

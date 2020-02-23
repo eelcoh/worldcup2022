@@ -11,7 +11,7 @@ displayHeader txt =
 
 simpleText : String -> Element.Element msg
 simpleText txt =
-    Element.el (Style.text []) (Element.text txt)
+    Element.paragraph (Style.text [ Element.spacing 10 ]) [ Element.text txt ]
 
 
 bulletText : String -> Element.Element msg
@@ -30,4 +30,4 @@ bulletText txt =
 
 boldText : String -> Element.Element msg
 boldText txt =
-    Element.el (Style.emphasis []) (Element.text txt)
+    Element.paragraph (Style.emphasis [ Element.spacing 10 ]) [ Element.text txt ]

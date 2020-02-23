@@ -83,11 +83,91 @@ flag mteam =
             img [ src (uri t) ] []
 
 
+flagUrlRound teamID =
+    case teamID of
+        "SUI" ->
+            Just "assets/svg/switzerland.svg"
+
+        "TUR" ->
+            Just "assets/svg/turkey.svg"
+
+        "ITA" ->
+            Just "assets/svg/italy.svg"
+
+        "WAL" ->
+            Just "assets/svg/wales.svg"
+
+        "DEN" ->
+            Just "assets/svg/denmark.svg"
+
+        "FIN" ->
+            Just "assets/svg/finland.svg"
+
+        "BEL" ->
+            Just "assets/svg/belgium.svg"
+
+        "RUS" ->
+            Just "assets/svg/russia.svg"
+
+        "NED" ->
+            Just "assets/svg/netherlands.svg"
+
+        "UKR" ->
+            Just "assets/svg/ukraine.svg"
+
+        "AUT" ->
+            Just "assets/svg/austria.svg"
+
+        "PLA" ->
+            Just "assets/svg/playoff.svg"
+
+        "ENG" ->
+            Just "assets/svg/england.svg"
+
+        "CRO" ->
+            Just "assets/svg/croatia.svg"
+
+        "PAD" ->
+            Just "assets/svg/playoff.svg"
+
+        "CZE" ->
+            Just "assets/svg/czech-republic.svg"
+
+        "ESP" ->
+            Just "assets/svg/spain.svg"
+
+        "SWE" ->
+            Just "assets/svg/sweden.svg"
+
+        "POL" ->
+            Just "assets/svg/republic-of-poland.svg"
+
+        "PAC" ->
+            Just "assets/svg/playoff.svg"
+
+        "PAF" ->
+            Just "assets/svg/playoff.svg"
+
+        "POR" ->
+            Just "assets/svg/portugal.svg"
+
+        "FRA" ->
+            Just "assets/svg/france.svg"
+
+        "GER" ->
+            Just "assets/svg/germany.svg"
+
+        _ ->
+            Nothing
+
+
 flagUrl : Maybe Team -> String
 flagUrl mteam =
     let
         uri t =
-            flagUri 2 ++ t.teamID ++ ".png"
+            Maybe.withDefault
+                (flagUri 2 ++ t.teamID ++ ".png")
+                (flagUrlRound t.teamID)
 
         default =
             team "xyz" ""

@@ -10,7 +10,7 @@ import Form.GroupMatches as GroupMatches
 import Form.Info
 import Form.Participant as Participant
 import Form.Topscorer as Topscorer
-import Form.Types exposing (Card(..), InputState(..), Model, Msg(..))
+import Form.Types exposing (Card(..), InputState(..), Model, Msg(..), ScreenSize)
 import RemoteData exposing (RemoteData(..))
 import Url
 
@@ -145,5 +145,5 @@ update msg model =
         UrlChange _ ->
             ( model, Cmd.none )
 
-        ScreenResize _ _ ->
-            ( model, Cmd.none )
+        ScreenResize w h ->
+            ( { model | screenSize = ScreenSize w h }, Cmd.none )

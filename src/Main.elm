@@ -7,7 +7,7 @@ import Browser
 import Browser.Events as Events
 import Browser.Navigation as Navigation
 import Form.Init exposing (cards)
-import Form.Types exposing (Flags, InputState(..), Model, Msg(..))
+import Form.Types exposing (Flags, InputState(..), Model, Msg(..), ScreenSize)
 import Form.Update exposing (update)
 import Form.View exposing (view)
 import Html exposing (div)
@@ -29,6 +29,7 @@ init flags _ navKey =
       , formId = flags.formId
       , betState = Clean
       , navKey = navKey
+      , screenSize = ScreenSize flags.width flags.height
       }
     , Cmd.none
     )

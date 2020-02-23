@@ -80,14 +80,15 @@ viewTopscorer topscorer =
                         ( t, NotSelected )
 
         forGroup teams =
-            Element.row (UI.Style.none [ spacing 7, padding 10, width (px 600) ]) (List.map (mkTeamButton SelectTeam) teams)
+            Element.row (UI.Style.none [ spacing 20, padding 10, Element.centerX ]) (List.map (mkTeamButton SelectTeam) teams)
 
         headertext =
             UI.Text.displayHeader "Wie wordt de topscorer?"
     in
-    Element.column (UI.Style.none [])
+    Element.column (UI.Style.none [ Element.spacing 16 ])
         ([ headertext
          , introduction
+         , warning
          , viewPlayers topscorer
          ]
             ++ List.map forGroup groups
@@ -96,12 +97,17 @@ viewTopscorer topscorer =
 
 introduction : Element.Element Msg
 introduction =
-    Element.paragraph (UI.Style.introduction [ width (px 600) ])
+    Element.paragraph (UI.Style.introduction [])
         [ UI.Text.simpleText """
     Voorspel de topscorer. Kies eerst het land, dan de speler. 9 punten als je het goed hebt.
     Let op: dit zijn de voorlopige selecties.
-  """
-        , UI.Text.boldText "Spelers kunnen nog afvallen, of al afgevallen zijn!"
+  """ ]
+
+
+warning : Element.Element Msg
+warning =
+    Element.paragraph (UI.Style.introduction [])
+        [ UI.Text.boldText "Spelers kunnen nog afvallen, of al afgevallen zijn!"
         ]
 
 
@@ -141,7 +147,7 @@ viewPlayers topscorer =
             Element.none
 
         Just teamWP ->
-            Element.wrappedRow (UI.Style.none [ width (px 600), padding 10, spacing 7 ])
+            Element.wrappedRow (UI.Style.none [ Element.alignLeft, padding 10, spacing 16 ])
                 (List.map (mkPlayerButton SelectPlayer) (players teamWP))
 
 

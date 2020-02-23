@@ -7,7 +7,7 @@ module Form.Info exposing
 import Bets.Types exposing (Bet)
 import Bets.Types.Group as Group
 import Bets.Types.Round as Round
-import Element exposing ( px, spacing, width)
+import Element exposing (px, spacing, width)
 import Form.Types exposing (FormInfoMsg(..), Info(..))
 import UI.Style
 import UI.Text
@@ -30,7 +30,7 @@ view info =
         cardContents =
             case info of
                 Intro ->
-                    Element.column (UI.Style.none []) introduction
+                    Element.textColumn (UI.Style.none []) introduction
 
                 FirstRoundIntro ->
                     UI.Text.simpleText "Hello FirstRoundIntro"
@@ -77,9 +77,25 @@ introduction =
         , UI.Text.bulletText "Selecteer je topscorer."
         , UI.Text.bulletText "En vertel ons wie je bent"
         ]
-    , Element.paragraph (UI.Style.introduction [ width (px 600), spacing 7 ])
+    , Element.paragraph (UI.Style.introduction [ spacing 7 ])
         [ UI.Text.simpleText "Als voorgaande jaren is de inleg "
         , UI.Text.boldText "vijf euro"
         , UI.Text.simpleText ", en de verdeling 50%, 30% en 20% voor de winnaar, nummer 2 en nummer 3. Bij gelijke stand wordt de opbrengst gedeeld."
         ]
+    , attribution
     ]
+
+
+attribution =
+    Element.paragraph (UI.Style.introduction [ spacing 7 ])
+        [ UI.Text.simpleText "Icons made by "
+        , Element.link []
+            { url = "https://www.flaticon.com/authors/freepik"
+            , label = Element.text "Freepik"
+            }
+        , UI.Text.simpleText " from "
+        , Element.link []
+            { url = "https://www.flaticon.com/"
+            , label = Element.text "www.flaticon.com."
+            }
+        ]

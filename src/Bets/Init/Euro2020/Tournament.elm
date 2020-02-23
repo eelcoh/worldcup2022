@@ -434,7 +434,7 @@ finland =
     { team = { teamID = "FIN", teamName = "Finland" }
     , players =
         []
-    , group = A
+    , group = B
     }
 
 
