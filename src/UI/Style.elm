@@ -35,6 +35,7 @@ module UI.Style exposing
     , scoreColumn
     , scoreInput
     , scoreRow
+    , teamBadge
     , teamButton
     , teamButtonTBPotential
     , teamButtonTBSelected
@@ -126,6 +127,7 @@ header1 attrs =
            , Font.color Color.primaryText
            , UI.Font.asap
            , Font.italic
+           , Element.paddingXY 0 16
            ]
 
 
@@ -133,15 +135,15 @@ header2 : List (Element.Attribute msg) -> List (Element.Attribute msg)
 header2 attrs =
     attrs
         ++ [ UI.Font.asap
-           , Font.italic
-           , Font.size (scaled 2)
+           , Font.size (scaled 3)
            , Font.color Color.secondaryText
+           , Element.paddingXY 0 10
            ]
 
 
 body : List (Element.Attribute msg) -> List (Element.Attribute msg)
-body _ =
-    []
+body attrs =
+    Background.color Color.background :: attrs
 
 
 menu : List (Element.Attribute msg) -> List (Element.Attribute msg)
@@ -157,21 +159,41 @@ menu attrs =
 text : List (Element.Attribute msg) -> List (Element.Attribute msg)
 text attrs =
     attrs
-        ++ [ UI.Font.lora
-           , Font.italic
-           , Font.size (scaled 1)
-           , Element.spacing 2
+        ++ textBase
+            [ Font.hairline
+            , Font.color Color.primaryText
+            , Element.spacing 16
+            ]
+
+
+textBase : List (Element.Attribute msg) -> List (Element.Attribute msg)
+textBase attrs =
+    attrs
+        ++ [ UI.Font.slab
+           , Font.letterSpacing 1.4
+           , Font.size (scaled 2)
            ]
 
 
 introduction : List (Element.Attribute msg) -> List (Element.Attribute msg)
 introduction attrs =
     attrs
-        ++ [ UI.Font.lora
-           , Font.italic
-           , Font.size (scaled 1)
-           , Element.spacing 2
-           ]
+        ++ textBase
+            [ Font.hairline
+            , Font.color Color.primaryText
+            , Element.spacing 16
+            , Element.paddingXY 0 8
+            ]
+
+
+
+-- [ UI.Font.slab
+--    , Font.hairline
+--    , Font.letterSpacing 1.4
+--    , Font.size (scaled 2)
+--    , Element.spacing 2
+--    , Font.color Color.primaryText
+--    ]
 
 
 error : List (Element.Attribute msg) -> List (Element.Attribute msg)
@@ -195,8 +217,8 @@ page attrs =
 
 buttonActive : List (Element.Attribute msg)
 buttonActive =
-    [ Background.color Color.secondary
-    , Font.color Color.secondaryText
+    [ Background.color Color.orange
+    , Font.color Color.panel
     , Border.width 1
     , Element.pointer
     , Element.mouseOver
@@ -204,6 +226,8 @@ buttonActive =
         , Font.color Color.secondaryText
         ]
     , UI.Font.button
+    , Element.centerY
+    , Border.rounded 5
     ]
 
 
@@ -215,132 +239,178 @@ buttonInactive =
     , Element.spacing 10
     , Element.htmlAttribute <| Html.Attributes.style "cursor" "not-allowed"
     , UI.Font.button
+    , Element.centerY
+    , Border.rounded 5
     ]
 
 
 buttonWrong : List (Element.Attribute msg)
 buttonWrong =
-    [ Font.color Color.wrong
+    [ Background.color Color.wrong
+    , Font.color Color.panel
     , Border.width 1
     , Element.pointer
     , UI.Font.button
+    , Element.centerY
+    , Border.rounded 5
     ]
 
 
 buttonRight : List (Element.Attribute msg)
 buttonRight =
-    [ Font.color Color.secondaryText
+    [ Background.color Color.right
+    , Font.color Color.panel
     , Border.width 1
     , Element.pointer
     , UI.Font.button
+    , Element.centerY
+    , Border.rounded 5
     ]
 
 
 buttonPerhaps : List (Element.Attribute msg)
 buttonPerhaps =
-    [ Background.color Color.secondary
+    [ Background.color Color.panel
     , Font.color Color.secondaryText
     , Border.width 1
     , Element.pointer
     , UI.Font.button
+    , Element.centerY
+    , Border.rounded 5
     ]
 
 
 buttonIrrelevant : List (Element.Attribute msg)
 buttonIrrelevant =
-    [ Border.color Color.secondaryLight
+    [ Border.color Color.panel
     , Border.width 1
     , Font.color Color.secondaryText
     , Element.pointer
     , UI.Font.button
+    , Element.centerY
+    , Border.rounded 5
     ]
 
 
 buttonPotential : List (Element.Attribute msg)
 buttonPotential =
-    [ Background.color Color.secondary
-    , Font.color Color.secondaryText
-    , Border.color Color.secondary
+    [ Background.color Color.panel
+    , Font.color Color.primaryText
+    , Border.color Color.panel
     , Border.width 1
     , Element.pointer
     , Element.mouseOver
-        [ Border.color Color.secondaryLight
+        [ Border.color Color.right
         , Background.color Color.primaryDark
         , Font.color Color.primaryText
         ]
     , UI.Font.button
+    , Element.centerY
+    , Border.rounded 5
     ]
 
 
 buttonSelected : List (Element.Attribute msg)
 buttonSelected =
-    [ Background.color Color.secondaryLight
-    , Font.color Color.secondaryText
+    [ Background.color Color.panel
+    , Font.color Color.primaryText
     , Border.width 1
-    , Border.color Color.primary
+    , Border.color Color.right
     , Element.pointer
-    , Element.mouseOver
-        [ Background.color Color.primaryDark
-        , Font.color Color.primaryText
-        , Border.color Color.orange
-        ]
     , UI.Font.button
+    , Element.centerY
+    , Border.rounded 5
     ]
 
 
 scoreButtonSBPotential : List (Element.Attribute msg)
 scoreButtonSBPotential =
-    [ Background.color Color.secondary
-    , Font.color Color.secondaryText
+    [ Background.color Color.panel
+    , Font.color Color.primaryText
     , Border.width 1
-    , Border.color Color.secondary
+    , Border.color Color.background
     , Element.spacing 10
     , Font.center
     , Font.size (scaled 1)
     , Element.pointer
     , UI.Font.button
+    , Border.rounded 5
     ]
 
 
 scoreButtonSBSelected : List (Element.Attribute msg)
 scoreButtonSBSelected =
-    [ Background.color Color.secondaryLight
-    , Font.color Color.secondaryText
+    [ Background.color Color.orange
+    , Font.color Color.panel
     , Border.width 1
-    , Border.color Color.secondary
+    , Border.color Color.background
     , Element.spacing 10
     , Font.center
     , Font.size (scaled 1)
     , Element.pointer
     , UI.Font.button
+    , Border.rounded 5
     ]
+
+
+teamBadge : ButtonSemantics -> List (Element.Attribute msg) -> List (Element.Attribute msg)
+teamBadge semantics attrs =
+    let
+        borderColor =
+            case semantics of
+                Selected ->
+                    Color.right
+
+                _ ->
+                    Color.panel
+    in
+    [ Background.color Color.panel
+    , Font.color Color.primaryText
+    , Border.color borderColor
+    , Border.width 1
+    , Element.spacing 20
+    , Element.padding 10
+    , Border.rounded 5
+    , Font.center
+    , Font.size (scaled 1)
+    , Element.pointer
+    , UI.Font.button
+    , Element.centerY
+    ]
+        ++ attrs
 
 
 teamButtonTBPotential : List (Element.Attribute msg)
 teamButtonTBPotential =
-    [ Background.color Color.secondaryLight
-    , Font.color Color.secondaryText
+    [ Background.color Color.panel
+    , Font.color Color.primaryText
     , Border.width 1
-    , Border.color Color.secondaryLight
-    , Element.spacing 10
+    , Border.color Color.panel
+    , Element.spacing 20
+    , Element.padding 10
+    , Border.rounded 5
     , Font.center
     , Font.size (scaled 1)
     , Element.pointer
     , UI.Font.button
+    , Element.centerY
     ]
 
 
 teamButtonTBSelected : List (Element.Attribute msg)
 teamButtonTBSelected =
-    [ Background.color Color.secondaryLight
-    , Font.color Color.secondaryText
+    [ Background.color Color.panel
+    , Font.color Color.primaryText
     , Border.width 1
-    , Border.color Color.primary
-    , Element.spacing 10
+    , Border.color Color.right
+    , Element.spacing 20
+    , Element.padding 10
+    , Border.rounded 5
     , Font.center
     , Font.size (scaled 1)
     , Element.pointer
     , UI.Font.button
+    , Element.centerY
     ]
 
 
@@ -407,62 +477,37 @@ activeMatch attrs =
 matchRow : ButtonSemantics -> List (Element.Attribute msg) -> List (Element.Attribute msg)
 matchRow semantics attrs =
     let
-        base =
+        styles =
+            [ Background.color Color.panel
+            , Font.color Color.primaryText
+            , Font.size (scaled 1)
+            , Font.center
+            , Element.pointer
+            , UI.Font.match
+            , Border.color border
+            , Border.width 1
+            , Border.rounded 10
+            ]
+
+        border =
             case semantics of
                 Active ->
-                    matchRowActive
-
-                Selected ->
-                    matchRowSelected
-
-                Potential ->
-                    matchRowPotential
+                    Color.white
 
                 _ ->
-                    matchRowPotential
+                    Color.panel
     in
-    attrs ++ base
-
-
-matchRowActive : List (Element.Attribute msg)
-matchRowActive =
-    [ Background.color Color.secondaryLight
-    , Font.color Color.secondaryText
-    , Font.size (scaled 1)
-    , Font.center
-    , Element.pointer
-    , UI.Font.match
-    ]
-
-
-matchRowSelected : List (Element.Attribute msg)
-matchRowSelected =
-    [ Background.color Color.secondaryLight
-    , Font.color Color.secondaryText
-    , Font.size (scaled 1)
-    , Font.center
-    , Element.pointer
-    , UI.Font.match
-    ]
-
-
-matchRowPotential : List (Element.Attribute msg)
-matchRowPotential =
-    [ Background.color Color.secondary
-    , Font.color Color.secondaryText
-    , Font.size (scaled 1)
-    , Font.center
-    , Element.pointer
-    , UI.Font.match
-    ]
+    attrs ++ styles
 
 
 emphasis : List (Element.Attribute msg) -> List (Element.Attribute msg)
 emphasis attrs =
     attrs
-        ++ [ Font.color Color.orange
-           , Font.extraBold
-           ]
+        ++ textBase
+            [ Font.color Color.orange
+            , Font.extraBold
+            , Element.spacing 16
+            ]
 
 
 wrapper : List (Element.Attribute msg) -> List (Element.Attribute msg)
@@ -492,7 +537,7 @@ none attrs =
 
 bullet : List (Element.Attribute msg) -> List (Element.Attribute msg)
 bullet attrs =
-    Background.color Color.orange :: attrs
+    attrs
 
 
 textInput : List (Element.Attribute msg) -> List (Element.Attribute msg)

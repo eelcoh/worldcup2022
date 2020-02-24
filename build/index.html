@@ -9,8 +9,8 @@
 
   <script type="text/javascript" src="main.js"></script>
 
-  <link href="https://fonts.googleapis.com/css?family=Lora|Asap|Special+Elite|Roboto+Mono" rel="stylesheet">
-
+  <link href="https://fonts.googleapis.com/css?family=Lora|Asap|Special+Elite|Roboto+Slab:200|Roboto+Mono"
+    rel="stylesheet">
 
 </head>
 
@@ -19,7 +19,12 @@
 
 <script type="text/javascript">
   var app = Elm.Main.init({
-    flags: {formId: null}
+    flags:
+    {
+      formId: null
+      , width: window.innerWidth
+      , height: window.innerHeight
+    }
   });
 </script>
 

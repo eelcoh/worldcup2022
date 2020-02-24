@@ -1,4 +1,4 @@
-module UI.Color exposing (black, grey, orange, potential, primary, primaryDark, primaryLight, primaryText, red, right, secondary, secondaryDark, secondaryLight, secondaryText, selected, white, wrong)
+module UI.Color exposing (background, black, grey, orange, panel, potential, primary, primaryDark, primaryLight, primaryText, red, right, secondary, secondaryDark, secondaryLight, secondaryText, selected, white, wrong)
 
 import Element exposing (Color, rgb255)
 
@@ -10,7 +10,7 @@ red =
 
 black : Color
 black =
-    rgb255 0 0 0
+    rgb255 0x24 0x24 0x24
 
 
 grey : Color
@@ -31,17 +31,22 @@ potential =
 
 white : Color
 white =
-    rgb255 255 255 255
+    rgb255 0xE7 0xE7 0xE7
 
 
 orange : Color
 orange =
-    rgb255 230 74 25
+    rgb255 0xF7 0x7F 0x21
+
+
+green : Color
+green =
+    rgb255 0x42 0x9F 0x59
 
 
 right : Color
 right =
-    rgb255 0x00 0x60 0x64
+    green
 
 
 wrong : Color
@@ -61,7 +66,7 @@ primary =
 
 primaryDark : Color
 primaryDark =
-    rgb255 0 0 0
+    black
 
 
 primaryLight : Color
@@ -81,19 +86,29 @@ secondaryDark =
 
 secondaryLight : Color
 secondaryLight =
-    rgb255 0xE2 0xF1 0xF8
+    rgb255 0xF7 0x7F 0x21
 
 
 primaryText : Color
 primaryText =
-    rgb255 0xF5 0xF5 0xF5
+    white
 
 
 secondaryText : Color
 secondaryText =
-    rgb255 0 0 0
+    orange
 
 
 
 -- rgb255 0x4E 0x34 0x2E
 -- rgb255 0 150 136
+
+
+background : Color
+background =
+    rgb255 0x32 0x32 0x32
+
+
+panel : Color
+panel =
+    black

@@ -41,7 +41,10 @@ view model =
 
         body =
             viewCardChrome model card model.idx
-                |> Element.layout (UI.Style.body [])
+                |> Element.layout
+                    (UI.Style.body
+                        []
+                    )
 
         title =
             "Euro 2020"
@@ -82,39 +85,42 @@ viewCard model i card =
 viewPill : Model Msg -> Int -> ( Int, Card ) -> Element.Element Msg
 viewPill model idx ( i, card ) =
     let
+        current =
+            i == idx
+
         semantics =
             case card of
                 IntroCard _ ->
-                    UI.Style.Perhaps
+                    mkpillModel False
 
                 GroupMatchesCard state ->
-                    mkpillModel (Form.GroupMatches.isComplete state.group model.bet) (i == idx)
+                    mkpillModel (Form.GroupMatches.isComplete state.group model.bet)
 
                 BracketCard _ ->
-                    mkpillModel (Form.Bracket.isComplete model.bet) (i == idx)
+                    mkpillModel (Form.Bracket.isComplete model.bet)
 
                 TopscorerCard ->
-                    mkpillModel (Form.Topscorer.isComplete model.bet) (i == idx)
+                    mkpillModel (Form.Topscorer.isComplete model.bet)
 
                 ParticipantCard ->
-                    mkpillModel (Form.Participant.isComplete model.bet) (i == idx)
+                    mkpillModel (Form.Participant.isComplete model.bet)
 
                 SubmitCard ->
-                    UI.Style.Perhaps
+                    mkpillModel False
 
-        mkpillModel complete current =
+        mkpillModel complete =
             case ( complete, current ) of
                 ( True, True ) ->
                     UI.Style.Selected
 
                 ( True, False ) ->
-                    UI.Style.Active
-
-                ( False, True ) ->
                     UI.Style.Right
 
+                ( False, True ) ->
+                    UI.Style.Selected
+
                 ( False, False ) ->
-                    UI.Style.Wrong
+                    UI.Style.Potential
 
         msg =
             NavigateTo i
@@ -169,9 +175,22 @@ viewCardChrome model card i =
         pillsPlus =
             prevPill
                 :: List.append pills [ nextPill ]
-                |> Element.wrappedRow (UI.Style.none [ spacing 7, padding 0 ])
+                |> Element.wrappedRow (UI.Style.none [ spacing 8, padding 0 ])
+
+        maxWidth =
+            (80 * model.screenSize.width) // 100
     in
-    Element.column (UI.Style.none [ spacing 20, paddingXY 70 20 ])
-        [ pillsPlus
-        , card
+    Element.column
+        (UI.Style.none
+            [ paddingXY 0 20
+            , spacing 30
+            , Element.centerX
+            , Element.width
+                (Element.fill
+                    |> Element.maximum maxWidth
+                )
+            ]
+        )
+        [ card
+        , pillsPlus
         ]

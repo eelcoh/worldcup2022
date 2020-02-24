@@ -7,6 +7,7 @@ module Form.Types exposing
     , Model
     , Msg(..)
     , Page
+    , ScreenSize
     )
 
 import Bets.Types exposing (Bet, Group, Round)
@@ -23,6 +24,8 @@ import Url
 
 type alias Flags =
     { formId : Maybe String
+    , width : Int
+    , height : Int
     }
 
 
@@ -68,6 +71,13 @@ type alias Model msg =
     , formId : Maybe String
     , betState : InputState
     , navKey : Navigation.Key
+    , screenSize : ScreenSize
+    }
+
+
+type alias ScreenSize =
+    { width : Int
+    , height : Int
     }
 
 

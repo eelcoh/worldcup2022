@@ -1,4 +1,4 @@
-module UI.Button exposing (Size(..), button, maybeTeamBadge, maybeTeamButton, pill, scoreButton, submit, teamButton)
+module UI.Button exposing (ScoreButton(..), ScoreButtonX(..), Size(..), button, maybeTeamBadge, maybeTeamButton, pill, scoreButton, submit, teamButton)
 
 import Bets.Types
 import Element exposing (Element, centerX, centerY, fill, height, padding, px, text, width)
@@ -18,13 +18,23 @@ type Size
     | XXXS
 
 
+type ScoreButton
+    = SR ( Int, Int )
+    | ZR
+
+
+type ScoreButtonX
+    = SB Int ( Int, Int ) String
+    | ZB Int
+
+
 pill : ButtonSemantics -> msg -> String -> Element msg
 pill semantics msg buttonText =
     let
         buttonLayout =
-            Style.button semantics [ padding 10, height (px 36), onClick msg, centerX, centerY ]
+            Style.button semantics [ padding 3, height (px 30), onClick msg, centerX, centerY ]
     in
-    Element.column buttonLayout [ text buttonText ]
+    Element.column buttonLayout [ Element.el [] (text buttonText) ]
 
 
 submit : ButtonSemantics -> msg -> String -> Element msg
@@ -33,7 +43,7 @@ submit semantics msg buttonText =
         buttonLayout =
             Style.button semantics [ padding 10, height (px 76), width (px 150), onClick msg, centerX, centerY ]
     in
-    Element.column buttonLayout [ text buttonText ]
+    Element.column buttonLayout [ Element.el [] (text buttonText) ]
 
 
 button : Size -> ButtonSemantics -> msg -> String -> Element msg
@@ -83,27 +93,25 @@ scoreButton semantics msg buttonText =
                 |> height
 
         buttonLayout =
-            Style.scoreButton semantics [ w, h, onClick msg, centerX, centerY ]
+            Style.scoreButton semantics [ w, h, onClick msg, centerX, centerY, height (px 26) ]
     in
-    Element.column buttonLayout [ text buttonText ]
+    Element.row buttonLayout [ text buttonText ]
 
 
 teamButton : ButtonSemantics -> msg -> Bets.Types.Team -> Element msg
 teamButton semantics msg team =
-    maybeTeamButton semantics msg (Just team)
+    Element.el
+        [ centerX
+        , Element.spaceEvenly
+        ]
+        (maybeTeamButton semantics msg (Just team))
 
 
 maybeTeamButton : ButtonSemantics -> msg -> Maybe Bets.Types.Team -> Element msg
 maybeTeamButton semantics msg team =
     let
-        w =
-            width (px 64)
-
-        h =
-            height (px 76)
-
         buttonLayout =
-            Style.teamButton semantics [ w, h, onClick msg, centerX, centerY ]
+            Style.teamBadge semantics [ onClick msg, centerX, centerY, padding 10 ]
     in
     Element.column buttonLayout [ UI.Team.viewTeam team ]
 
