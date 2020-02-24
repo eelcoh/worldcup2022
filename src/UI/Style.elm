@@ -142,8 +142,8 @@ header2 attrs =
 
 
 body : List (Element.Attribute msg) -> List (Element.Attribute msg)
-body _ =
-    [ Background.color Color.background ]
+body attrs =
+    Background.color Color.background :: attrs
 
 
 menu : List (Element.Attribute msg) -> List (Element.Attribute msg)
@@ -162,6 +162,7 @@ text attrs =
         ++ textBase
             [ Font.hairline
             , Font.color Color.primaryText
+            , Element.spacing 16
             ]
 
 
@@ -171,20 +172,28 @@ textBase attrs =
         ++ [ UI.Font.slab
            , Font.letterSpacing 1.4
            , Font.size (scaled 2)
-           , Element.spacing 16
            ]
 
 
 introduction : List (Element.Attribute msg) -> List (Element.Attribute msg)
 introduction attrs =
     attrs
-        ++ [ UI.Font.slab
-           , Font.hairline
-           , Font.letterSpacing 1.4
-           , Font.size (scaled 2)
-           , Element.spacing 2
-           , Font.color Color.primaryText
-           ]
+        ++ textBase
+            [ Font.hairline
+            , Font.color Color.primaryText
+            , Element.spacing 16
+            , Element.paddingXY 0 8
+            ]
+
+
+
+-- [ UI.Font.slab
+--    , Font.hairline
+--    , Font.letterSpacing 1.4
+--    , Font.size (scaled 2)
+--    , Element.spacing 2
+--    , Font.color Color.primaryText
+--    ]
 
 
 error : List (Element.Attribute msg) -> List (Element.Attribute msg)
@@ -497,6 +506,7 @@ emphasis attrs =
         ++ textBase
             [ Font.color Color.orange
             , Font.extraBold
+            , Element.spacing 16
             ]
 
 
@@ -527,7 +537,7 @@ none attrs =
 
 bullet : List (Element.Attribute msg) -> List (Element.Attribute msg)
 bullet attrs =
-    Background.color Color.orange :: attrs
+    attrs
 
 
 textInput : List (Element.Attribute msg) -> List (Element.Attribute msg)

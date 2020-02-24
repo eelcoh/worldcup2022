@@ -34,7 +34,7 @@ view model submittable =
                 ( _, _, Clean ) ->
                     ( introNotReady, ( UI.Style.Inactive, NoOp, "inzenden" ) )
     in
-    Element.column (UI.Style.none [])
+    Element.column (UI.Style.none [ Element.spacing 16 ])
         [ introText
         , UI.Button.submit semantics msg buttonText
         ]

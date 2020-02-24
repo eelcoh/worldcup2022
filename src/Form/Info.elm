@@ -30,7 +30,7 @@ view info =
         cardContents =
             case info of
                 Intro ->
-                    Element.textColumn (UI.Style.none []) introduction
+                    Element.paragraph (UI.Style.none [ spacing 16 ]) introduction
 
                 FirstRoundIntro ->
                     UI.Text.simpleText "Hello FirstRoundIntro"
@@ -68,16 +68,16 @@ view info =
 introduction : List (Element.Element Msg)
 introduction =
     [ UI.Text.displayHeader "Hier is de voetbalpool weer!"
-    , Element.paragraph (UI.Style.introduction [ width (px 600), spacing 7 ])
+    , Element.paragraph (UI.Style.introduction [ spacing 16 ])
         [ Element.text "Welkom op het formulier voor de voetbalpool. Vul achtereenvolgens de volgende vragen in:" ]
-    , Element.column (UI.Style.none [ width (px 600), spacing 7, Element.paddingXY 0 10 ])
+    , Element.paragraph (UI.Style.introduction [ spacing 16 ])
         [ UI.Text.bulletText "Uitslagen van de wedstrijden voor iedere poule."
         , UI.Text.bulletText "De landen die de volgende ronde halen. Het is wat ingewikkeld. Eerst moet je de nummers 1 2 en 3 in de eindstand van een poule voorspellen. De nummers 1 en 2 gaan door. Van de zes nummers 3 gaan er maar vier door. Die moet je ook nog even voorspellen."
         , UI.Text.bulletText "Klik vervolgens het schema volledig bij elkaar."
         , UI.Text.bulletText "Selecteer je topscorer."
         , UI.Text.bulletText "En vertel ons wie je bent"
         ]
-    , Element.paragraph (UI.Style.introduction [ spacing 7 ])
+    , Element.paragraph (UI.Style.introduction [])
         [ UI.Text.simpleText "Als voorgaande jaren is de inleg "
         , UI.Text.boldText "vijf euro"
         , UI.Text.simpleText ", en de verdeling 50%, 30% en 20% voor de winnaar, nummer 2 en nummer 3. Bij gelijke stand wordt de opbrengst gedeeld."
