@@ -1,4 +1,4 @@
-module Bets.Types.Candidate exposing (decode, encode, get)
+module Bets.Types.Candidate exposing (decode, encode, get, sort, toSortable)
 
 import Bets.Init.Euro2020.Tournament as Tournament
 import Bets.Types exposing (Bracket(..), Candidate(..), Group, Team)
@@ -25,6 +25,26 @@ get position =
 
         BestThirdFrom grps ->
             List.concatMap teams grps
+
+
+sort : List Candidate -> List Candidate
+sort candidates =
+    List.sortBy toSortable candidates
+
+
+toSortable : Candidate -> String
+toSortable c =
+    case c of
+        FirstPlace g ->
+            Group.toString g ++ "1"
+
+        SecondPlace g ->
+            Group.toString g ++ "2"
+
+        BestThirdFrom thirds ->
+            List.map Group.toString thirds
+                |> String.concat
+                |> (++) "z3"
 
 
 encode : Candidate -> Json.Encode.Value

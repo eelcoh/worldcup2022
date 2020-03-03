@@ -5,9 +5,10 @@ import Bets.Types exposing (Bracket(..), Candidate(..), CurrentSlot(..), HasQual
 
 type Msg
     = SetWinner Slot Winner
-    | SetQualifier Slot Candidate Angle Angle
+    | SetQualifier Slot Candidate
     | SetSlot Slot Team
     | CloseQualifierView
+    | OpenQualifierView
 
 
 type alias Angle =
@@ -27,4 +28,4 @@ init =
 
 type State
     = ShowMatches
-    | ShowSecondRoundSelection Slot Candidate Angle Angle
+    | ShowSecondRoundSelection Slot Candidate

@@ -361,6 +361,9 @@ teamBadge semantics attrs =
                 Selected ->
                     Color.right
 
+                Perhaps ->
+                    Color.orange
+
                 _ ->
                     Color.panel
     in
