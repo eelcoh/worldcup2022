@@ -57,27 +57,10 @@ viewRings bet bracket state =
                 ShowMatches ->
                     viewMatchRings bet bracket
 
-                ShowSecondRoundSelection slot candidate ->
-                    let
-                        positions =
-                            viewPositionRing bet bracket slotSelected
-
-                        mAngles =
-                            List.map (\( ( sl, _ ), angles ) -> ( sl, angles )) (teamNodeSlots bet)
-                                |> Dict.fromList
-                                |> Dict.get slot
-
-                        center =
-                            case mAngles of
-                                Just ( startAngle, segmentAngle ) ->
-                                    viewCandidatesCircle bet bracket slot candidate startAngle (startAngle + segmentAngle)
-
-                                _ ->
-                                    []
-                    in
+                ShowSecondRoundSelection _ candidate ->
                     List.concat
-                        [ positions
-                        , center
+                        [ viewPositionRing bet bracket slotSelected
+                        , viewCandidatesCircle candidate
                         ]
     in
     Element.el [ width (px 365), height (px 365) ]
@@ -104,7 +87,7 @@ viewPositionRing bet bracket mSlot =
 
                 Just s ->
                     if slot == s then
-                        UI.Style.Selected
+                        UI.Style.Focus
 
                     else
                         UI.Style.Potential
@@ -116,7 +99,7 @@ viewPositionRing bet bracket mSlot =
                     viewLeaf bet (B.get bracket slot) (isSelected slot) ring s a
 
                 ring =
-                    5
+                    4
             in
             List.map f slotdata
                 |> Svg.g []
@@ -124,8 +107,13 @@ viewPositionRing bet bracket mSlot =
         ring5 =
             teamNodeSlots bet
                 |> mkRingData
+
+        crossHairs =
+            List.repeat 8 45.0
+                |> Extra.scanl (+) 0
+                |> List.map (mkCrossHair 4)
     in
-    [ ring5 ]
+    ring5 :: crossHairs
 
 
 teamNodeSlots : Bet -> List ( ( Slot, Qualifier ), ( Angle, Angle ) )
@@ -321,8 +309,8 @@ mkTeamButton msg team currentSlot =
     UI.Button.teamButton semantics msg team
 
 
-viewCandidatesCircle : Bet -> Bracket -> Slot -> Candidate -> Angle -> Angle -> List (Svg Msg)
-viewCandidatesCircle _ bracket slot candidates startAngle endAngle =
+viewCandidatesCircle : Candidate -> List (Svg Msg)
+viewCandidatesCircle candidates =
     let
         x =
             config.x
@@ -330,82 +318,44 @@ viewCandidatesCircle _ bracket slot candidates startAngle endAngle =
         y =
             config.y
 
-        connectRadius =
-            config.ringSpacing / 2
+        radius =
+            ringRadius 4 - config.ringSpacing
 
-        connectOuterRadius =
-            1 + ringRadius 5
+        c1 =
+            ( x - radius, y - 16 )
 
-        connectInnerRadius =
-            ringRadius 5 - config.ringSpacing
+        c2 =
+            ( x + radius, y - 16 )
 
-        connectCenterRadius =
-            ringRadius 5 - (config.ringSpacing / 2)
+        g1 =
+            ( x - radius, y + 16 )
 
-        arcAngle =
-            calculateAngle (0 * connectRadius) connectCenterRadius connectCenterRadius
-
-        left =
-            startAngle + arcAngle
-
-        right =
-            endAngle - arcAngle
-
-        leftXY =
-            polarToCartesian x y connectCenterRadius left
-
-        rightXY =
-            polarToCartesian x y connectCenterRadius right
-
-        leftInnerXY =
-            polarToCartesian x y connectInnerRadius (startAngle + arcAngle)
-
-        leftOuterXY =
-            polarToCartesian x y connectOuterRadius (startAngle + arcAngle)
-
-        rightInnerXY =
-            polarToCartesian x y connectInnerRadius (endAngle - arcAngle)
-
-        rightOuterXY =
-            polarToCartesian x y connectOuterRadius (endAngle - arcAngle)
-
-        connectPath =
-            [ M rightOuterXY
-            , A ( x, y ) 0 False False leftOuterXY
-            , A leftXY 0 False True leftInnerXY
-            , A ( x, y ) 0 False True rightInnerXY
-            , A rightXY 0 False True rightOuterXY
-            ]
+        g2 =
+            ( x + radius, y + 16 )
 
         fillColor =
             config.colorSelected
 
-        cds =
-            B.candidatesForTeamNode bracket candidates slot
-
-        button : Selection -> ( Int, Int ) -> Svg Msg
-        button { currentSlot, team } ( row, col ) =
-            let
-                msg =
-                    SetSlot slot team
-            in
-            mkQualifierButton msg team.teamID currentSlot row col
-
-        rows =
-            [ 0, 1, 2, 3 ]
-
-        cols =
-            [ 0, 1, 2, 3 ]
-
-        coords : Int -> List ( Int, Int )
-        coords r =
-            List.map (Tuple.pair r) cols
-
-        buttons =
-            List.concatMap coords rows
-                |> Extra.zip cds
-                |> List.map (uncurry button)
-
+        -- cds =
+        --     B.candidatesForTeamNode bracket candidates slot
+        -- button : Selection -> ( Int, Int ) -> Svg Msg
+        -- button { currentSlot, team } ( row, col ) =
+        --     let
+        --         msg =
+        --             SetSlot slot team
+        --     in
+        --     mkQualifierButton msg team.teamID currentSlot row col
+        -- rows =
+        --     [ 0, 1, 2, 3 ]
+        -- cols =
+        --     [ 0, 1, 2, 3 ]
+        -- coords : Int -> List ( Int, Int )
+        -- coords r =
+        --     List.map (Tuple.pair r) cols
+        -- buttons =
+        --     List.concatMap coords rows
+        --         |> Extra.zip cds
+        --         |> List.map (uncurry button)
         closeView =
             mkButton 200 300 40 25 "sluit" CloseQualifierView UI.Style.Active
 
@@ -425,23 +375,18 @@ viewCandidatesCircle _ bracket slot candidates startAngle endAngle =
     [ Svg.circle
         [ Attributes.cx (String.fromFloat config.x)
         , Attributes.cy (String.fromFloat config.y)
-        , Attributes.r (String.fromFloat (ringRadius 5 - config.ringSpacing))
+        , Attributes.r (String.fromFloat (ringRadius 4 - config.ringSpacing))
         , Attributes.fill fillColor
         ]
         []
     , Svg.g
         []
-        [ mkText positionString RGB.white ( 75, 80 ) ( 265, 80 )
-        , mkText groupString RGB.white ( 75, 100 ) ( 265, 100 )
+        [ mkText positionString RGB.white c1 c2
+        , mkText groupString RGB.white g1 g2
+
+        -- , mkText groupString RGB.white ( 75, 100 ) ( 265, 100 )
         ]
-    , Svg.path
-        [ Attributes.d <|
-            pathD connectPath
-        , Attributes.fill fillColor
-        , Attributes.stroke fillColor
-        ]
-        []
-    , Svg.g [] (closeView :: buttons)
+    , Svg.g [] [ closeView ]
     ]
 
 
@@ -692,7 +637,8 @@ config =
     , ringHeight = 33
     , ringSpacing = 2
     , colorPotential = RGB.panel
-    , colorSelected = RGB.black
+    , colorSelected = RGB.panel
+    , colorFocus = RGB.green
     }
 
 
@@ -749,6 +695,9 @@ describeLeaf s { ring, startAngle, endAngle } =
                 UI.Style.Selected ->
                     config.colorSelected
 
+                UI.Style.Focus ->
+                    config.colorFocus
+
                 _ ->
                     config.colorPotential
     in
@@ -778,7 +727,7 @@ mkCrossHair ring angle =
     Svg.line
         [ Attributes.strokeWidth "2"
         , Attributes.fill "none"
-        , Attributes.stroke RGB.green
+        , Attributes.stroke RGB.white
         , Attributes.x1 <| String.fromFloat x1
         , Attributes.y1 <| String.fromFloat y1
         , Attributes.x2 <| String.fromFloat x2
