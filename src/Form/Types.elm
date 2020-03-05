@@ -7,7 +7,6 @@ module Form.Types exposing
     , Model
     , Msg(..)
     , Page
-    , ScreenSize
     )
 
 import Bets.Types exposing (Bet, Group, Round)
@@ -16,6 +15,7 @@ import Browser.Navigation as Navigation
 import Form.Bracket.Types as Bracket
 import Form.GroupMatches.Types as GroupMatches
 import Form.Participant.Types as Participant
+import Form.Screen as Screen
 import Form.Topscorer.Types as Topscorer
 import Html exposing (Html)
 import RemoteData exposing (WebData)
@@ -71,13 +71,7 @@ type alias Model msg =
     , formId : Maybe String
     , betState : InputState
     , navKey : Navigation.Key
-    , screenSize : ScreenSize
-    }
-
-
-type alias ScreenSize =
-    { width : Int
-    , height : Int
+    , screen : Screen.Size
     }
 
 

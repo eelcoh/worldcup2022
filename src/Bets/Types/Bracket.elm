@@ -1,10 +1,12 @@
 module Bets.Types.Bracket exposing
-    ( candidatesForTeamNode
+    ( candidatesForSlot
+    , candidatesForTeamNode
     , decode
     , decodeWinner
     , display
     , encode
     , get
+    , getFreeSlots
     , getQualifiers
     , isComplete
     , proceed
@@ -213,7 +215,7 @@ getQualifiers : Bracket -> List ( Slot, Qualifier )
 getQualifiers brkt =
     case brkt of
         MatchNode _ _ home away _ _ ->
-            List.concat [ getQualifiers away, getQualifiers home ]
+            List.concat [ getQualifiers home, getQualifiers away ]
 
         TeamNode s _ q _ ->
             [ ( s, q ) ]
@@ -253,14 +255,13 @@ candidatesForTeamNode brkt position slot =
                 |> Dict.fromList
 
         justify ( a, m ) =
-            Maybe.map (\b -> (b.teamID, a)) m
-            -- case m of
-            --     Just b ->
-            --         Just ( b.teamID, a )
+            Maybe.map (\b -> ( b.teamID, a )) m
 
-            --     Nothing ->
-            --         Nothing
-
+        -- case m of
+        --     Just b ->
+        --         Just ( b.teamID, a )
+        --     Nothing ->
+        --         Nothing
         assess : ( Group, Team ) -> Selection
         assess ( g, t ) =
             case Dict.get t.teamID qualifiers of
@@ -275,6 +276,47 @@ candidatesForTeamNode brkt position slot =
                     Selection NoSlot g t
     in
     List.map assess candidates
+
+
+candidatesForSlot : Bracket -> Slot -> Maybe Candidate
+candidatesForSlot brkt slot =
+    let
+        fn : Bracket -> List (Maybe Candidate)
+        fn b =
+            case b of
+                MatchNode _ _ h a _ _ ->
+                    List.append (fn h) (fn a)
+
+                TeamNode s q _ _ ->
+                    if s == slot then
+                        List.singleton <| Just q
+
+                    else
+                        List.singleton Nothing
+    in
+    fn brkt
+        |> M.values
+        |> List.head
+
+
+getFreeSlots : Bracket -> List ( Slot, Candidate )
+getFreeSlots bracket =
+    M.values <| getFreeSlots_ bracket
+
+
+getFreeSlots_ : Bracket -> List (Maybe ( Slot, Candidate ))
+getFreeSlots_ bracket =
+    case bracket of
+        TeamNode s c q _ ->
+            case q of
+                Nothing ->
+                    [ Just ( s, c ) ]
+
+                Just _ ->
+                    [ Nothing ]
+
+        MatchNode _ w home away _ _ ->
+            getFreeSlots_ home ++ getFreeSlots_ away
 
 
 

@@ -9,6 +9,7 @@ import Form.Bracket
 import Form.GroupMatches
 import Form.Info
 import Form.Participant
+import Form.Screen as Screen
 import Form.Submit
 import Form.Topscorer
 import Form.Types exposing (Card(..), Model, Msg(..))
@@ -176,9 +177,6 @@ viewCardChrome model card i =
             prevPill
                 :: List.append pills [ nextPill ]
                 |> Element.wrappedRow (UI.Style.none [ spacing 8, padding 0 ])
-
-        maxWidth =
-            (80 * model.screenSize.width) // 100
     in
     Element.column
         (UI.Style.none
@@ -187,7 +185,7 @@ viewCardChrome model card i =
             , Element.centerX
             , Element.width
                 (Element.fill
-                    |> Element.maximum maxWidth
+                    |> Element.maximum (Screen.maxWidth model.screen)
                 )
             ]
         )

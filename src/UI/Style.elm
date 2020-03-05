@@ -63,6 +63,7 @@ type ButtonSemantics
     | Irrelevant
     | Potential
     | Selected
+    | Focus
 
 
 scoreButton : ButtonSemantics -> List (Element.Attribute msg) -> List (Element.Attribute msg)
@@ -117,6 +118,9 @@ button semantics attrs =
 
         Selected ->
             buttonSelected ++ attrs
+
+        Focus ->
+            buttonFocus ++ attrs
 
 
 header1 : List (Element.Attribute msg) -> List (Element.Attribute msg)
@@ -323,6 +327,19 @@ buttonSelected =
     ]
 
 
+buttonFocus : List (Element.Attribute msg)
+buttonFocus =
+    [ Background.color Color.green
+    , Font.color Color.primaryText
+    , Border.width 1
+    , Border.color Color.right
+    , Element.pointer
+    , UI.Font.button
+    , Element.centerY
+    , Border.rounded 5
+    ]
+
+
 scoreButtonSBPotential : List (Element.Attribute msg)
 scoreButtonSBPotential =
     [ Background.color Color.panel
@@ -360,6 +377,9 @@ teamBadge semantics attrs =
             case semantics of
                 Selected ->
                     Color.right
+
+                Perhaps ->
+                    Color.orange
 
                 _ ->
                     Color.panel

@@ -9,8 +9,9 @@ import Form.Card as Cards
 import Form.GroupMatches as GroupMatches
 import Form.Info
 import Form.Participant as Participant
+import Form.Screen as Screen
 import Form.Topscorer as Topscorer
-import Form.Types exposing (Card(..), InputState(..), Model, Msg(..), ScreenSize)
+import Form.Types exposing (Card(..), InputState(..), Model, Msg(..))
 import RemoteData exposing (RemoteData(..))
 import Url
 
@@ -146,4 +147,11 @@ update msg model =
             ( model, Cmd.none )
 
         ScreenResize w h ->
-            ( { model | screenSize = ScreenSize w h }, Cmd.none )
+            let
+                sz =
+                    Screen.size w h
+
+                newCards =
+                    Cards.updateScreenCards sz model.cards
+            in
+            ( { model | screen = sz, cards = newCards }, Cmd.none )

@@ -6,8 +6,9 @@ import Bets.Init
 import Browser
 import Browser.Events as Events
 import Browser.Navigation as Navigation
-import Form.Init exposing (cards)
-import Form.Types exposing (Flags, InputState(..), Model, Msg(..), ScreenSize)
+import Form.Card as Cards
+import Form.Screen as Screen
+import Form.Types exposing (Flags, InputState(..), Model, Msg(..))
 import Form.Update exposing (update)
 import Form.View exposing (view)
 import Html exposing (div)
@@ -21,7 +22,7 @@ import Url
 
 init : Flags -> Url.Url -> Navigation.Key -> ( Model Msg, Cmd Msg )
 init flags _ navKey =
-    ( { cards = cards
+    ( { cards = Cards.init <| Screen.size flags.width flags.height
       , bet = Bets.Init.bet
       , savedBet = NotAsked
       , idx = 0
@@ -29,7 +30,7 @@ init flags _ navKey =
       , formId = flags.formId
       , betState = Clean
       , navKey = navKey
-      , screenSize = ScreenSize flags.width flags.height
+      , screen = Screen.size flags.width flags.height
       }
     , Cmd.none
     )
