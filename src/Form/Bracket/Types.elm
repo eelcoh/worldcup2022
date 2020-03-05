@@ -1,6 +1,7 @@
-module Form.Bracket.Types exposing (Angle, IsWinner(..), Msg(..), State(..), init)
+module Form.Bracket.Types exposing (Angle, BracketState(..), IsWinner(..), Msg(..), State, createState, init, initialQualifierView)
 
-import Bets.Types exposing (Bracket(..), Candidate(..), CurrentSlot(..), HasQualified(..), Slot, Team, Winner(..))
+import Bets.Types exposing (Bracket(..), Candidate(..), CurrentSlot(..), Group(..), HasQualified(..), Slot, Team, Winner(..))
+import Form.Screen as Screen
 
 
 type Msg
@@ -21,11 +22,27 @@ type IsWinner
     | Undecided
 
 
-init : State
-init =
-    ShowMatches
+init : Screen.Size -> State
+init sz =
+    State sz <| ShowSecondRoundSelection "WA" (FirstPlace A)
 
 
-type State
+initialQualifierView : State -> State
+initialQualifierView { screen } =
+    init screen
+
+
+createState : Screen.Size -> BracketState -> State
+createState sz bs =
+    State sz bs
+
+
+type BracketState
     = ShowMatches
     | ShowSecondRoundSelection Slot Candidate
+
+
+type alias State =
+    { screen : Screen.Size
+    , bracketState : BracketState
+    }

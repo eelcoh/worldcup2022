@@ -33,7 +33,7 @@ update msg bet state =
                 bracketState =
                     ShowSecondRoundSelection slot candidates
             in
-            ( bet, bracketState, Cmd.none )
+            ( bet, { state | bracketState = bracketState }, Cmd.none )
 
         SetSlot slot team ->
             let
@@ -52,7 +52,7 @@ update msg bet state =
                 newState =
                     case nextSlot of
                         Just ( s, c ) ->
-                            ShowSecondRoundSelection s c
+                            { state | bracketState = ShowSecondRoundSelection s c }
 
                         Nothing ->
                             state
@@ -60,13 +60,19 @@ update msg bet state =
             ( newBet, newState, Cmd.none )
 
         CloseQualifierView ->
-            ( bet, ShowMatches, Cmd.none )
+            ( bet, { state | bracketState = ShowMatches }, Cmd.none )
 
         OpenQualifierView ->
-            ( bet, Maybe.withDefault initialQualifierView (createQualifierView bet), Cmd.none )
+            let
+                newState =
+                    createQualifierView bet
+                        |> Maybe.map (createState state.screen)
+                        |> Maybe.withDefault (initialQualifierView state)
+            in
+            ( bet, newState, Cmd.none )
 
 
-createQualifierView : Bet -> Maybe State
+createQualifierView : Bet -> Maybe BracketState
 createQualifierView bet =
     let
         toSortable ( _, c ) =
@@ -77,11 +83,6 @@ createQualifierView bet =
         |> List.sortBy toSortable
         |> List.head
         |> Maybe.map (\( s, c ) -> ShowSecondRoundSelection s c)
-
-
-initialQualifierView : State
-initialQualifierView =
-    ShowSecondRoundSelection "WA" (FirstPlace A)
 
 
 view : Bet -> State -> Element.Element Msg
@@ -103,7 +104,7 @@ view bet state =
             Element.paragraph [] [ UI.Text.simpleText introtext ]
 
         candidatePanel =
-            case state of
+            case state.bracketState of
                 ShowSecondRoundSelection slot candidate ->
                     viewCandidatesPanel bet bracket slot candidate
 
@@ -111,15 +112,15 @@ view bet state =
                     Element.none
 
         viewToggle =
-            case state of
+            case state.bracketState of
                 ShowSecondRoundSelection _ _ ->
-                    pill Active CloseQualifierView "sluit"
+                    pill Active CloseQualifierView "naar het schema"
 
                 ShowMatches ->
-                    pill Active OpenQualifierView "open"
+                    pill Active OpenQualifierView "terug naar de tweede ronde"
     in
     Element.column
-        [ Element.spacingXY 0 10 ]
+        [ Element.spacingXY 0 20, Element.centerX ]
         [ header
         , introduction
         , viewRings bet bracket state

@@ -1,9 +1,10 @@
-module Form.Card exposing (findByCardId, getBracketCard, getGroupMatchesCard, update, updateBracketCard, updateGroupMatchesCard)
+module Form.Card exposing (findByCardId, getBracketCard, getGroupMatchesCard, init, update, updateBracketCard, updateGroupMatchesCard, updateScreenCard, updateScreenCards)
 
-import Bets.Types exposing (Group)
+import Bets.Types exposing (Group(..), Round(..))
 import Form.Bracket.Types as Bracket
 import Form.GroupMatches.Types as GroupMatches
-import Form.Types exposing (Card(..))
+import Form.Screen as Screen
+import Form.Types exposing (Card(..), Info(..))
 
 
 findByCardId : List Card -> Int -> Maybe Card
@@ -120,3 +121,34 @@ update cards idx newCard =
             List.drop (idx + 1) cards
     in
     firstSet ++ (newCard :: tail)
+
+
+updateScreenCards : Screen.Size -> List Card -> List Card
+updateScreenCards sz crds =
+    List.map (updateScreenCard sz) crds
+
+
+updateScreenCard : Screen.Size -> Card -> Card
+updateScreenCard sz card =
+    case card of
+        BracketCard { bracketState } ->
+            BracketCard <| Bracket.State sz bracketState
+
+        _ ->
+            card
+
+
+init : Screen.Size -> List Card
+init sz =
+    [ IntroCard Intro
+    , GroupMatchesCard <| GroupMatches.init A "m01"
+    , GroupMatchesCard <| GroupMatches.init B "m03"
+    , GroupMatchesCard <| GroupMatches.init C "m05"
+    , GroupMatchesCard <| GroupMatches.init D "m07"
+    , GroupMatchesCard <| GroupMatches.init E "m10"
+    , GroupMatchesCard <| GroupMatches.init F "m11"
+    , BracketCard <| Bracket.init sz
+    , TopscorerCard
+    , ParticipantCard
+    , SubmitCard
+    ]

@@ -8,7 +8,6 @@ import Bets.Types.Bracket as B
 import Bets.Types.Candidate as Candidate
 import Bets.Types.Group as G
 import Bets.Types.Team as T
-import Dict
 import Element exposing (height, px, width)
 import Form.Bracket.Types exposing (..)
 import List.Extra as Extra
@@ -45,40 +44,49 @@ viewRings : Bet -> Bracket -> State -> Element.Element Msg
 viewRings bet bracket state =
     let
         slotSelected =
-            case state of
+            case state.bracketState of
                 ShowSecondRoundSelection slot _ ->
                     Just slot
 
                 _ ->
                     Nothing
 
+        dims =
+            maxWidth state
+
+        sz =
+            String.fromInt (Debug.log "dims" dims)
+
+        dimsPx =
+            px dims
+
         rings =
-            case state of
+            case state.bracketState of
                 ShowMatches ->
-                    viewMatchRings bet bracket
+                    viewMatchRings bet bracket state
 
                 ShowSecondRoundSelection _ candidate ->
                     List.concat
-                        [ viewPositionRing bet bracket slotSelected
-                        , viewCandidatesCircle candidate
+                        [ viewPositionRing bet bracket state slotSelected
+                        , viewCandidatesCircle state candidate
                         ]
     in
-    Element.el [ width (px 365), height (px 365) ]
+    Element.el [ width dimsPx, height dimsPx, Element.centerX ]
         (Element.html <|
             Svg.svg
-                [ Attributes.width "365"
-                , Attributes.height "365"
-                , Attributes.viewBox "0 0 365 365"
+                [ Attributes.width sz
+                , Attributes.height sz
+                , Attributes.viewBox (String.join " " [ "0", "0", sz, sz ])
                 ]
                 rings
         )
 
 
-viewPositionRing : Bet -> Bracket -> Maybe Slot -> List (Svg Msg)
-viewPositionRing bet bracket mSlot =
+viewPositionRing : Bet -> Bracket -> State -> Maybe Slot -> List (Svg Msg)
+viewPositionRing bet bracket state mSlot =
     let
         v slot =
-            viewLeaf bet (B.get bracket slot) (isSelected slot)
+            viewLeaf bet state (B.get bracket slot) (isSelected slot)
 
         isSelected slot =
             case mSlot of
@@ -96,7 +104,7 @@ viewPositionRing bet bracket mSlot =
         mkRingData slotdata =
             let
                 f ( ( slot, q ), ( a, s ) ) =
-                    viewLeaf bet (B.get bracket slot) (isSelected slot) ring s a
+                    viewLeaf bet state (B.get bracket slot) (isSelected slot) ring s a
 
                 ring =
                     4
@@ -111,7 +119,7 @@ viewPositionRing bet bracket mSlot =
         crossHairs =
             List.repeat 8 45.0
                 |> Extra.scanl (+) 0
-                |> List.map (mkCrossHair 4)
+                |> List.map (mkCrossHair state 4)
     in
     ring5 :: crossHairs
 
@@ -133,11 +141,11 @@ teamNodeSlots bet =
         |> Extra.zip slots
 
 
-viewMatchRings : Bet -> Bracket -> List (Svg Msg)
-viewMatchRings bet bracket =
+viewMatchRings : Bet -> Bracket -> State -> List (Svg Msg)
+viewMatchRings bet bracket state =
     let
         v mb =
-            viewLeaf bet mb UI.Style.Potential
+            viewLeaf bet state mb UI.Style.Potential
 
         m37 =
             v <| B.get bracket "m37"
@@ -213,12 +221,12 @@ viewMatchRings bet bracket =
             uncurry f d
 
         rings =
-            List.append (List.map ringViews ringData) [ viewChampion bracket ]
+            List.append (List.map ringViews ringData) [ viewChampion bracket state ]
 
         mkCrossHairData angle ring segments =
             List.map (\_ -> angle) segments
                 |> Extra.scanl (+) 90
-                |> List.map (\a -> mkCrossHair ring a)
+                |> List.map (\a -> mkCrossHair state ring a)
 
         crossHairViews d =
             let
@@ -233,15 +241,18 @@ viewMatchRings bet bracket =
     rings ++ crossHairs
 
 
-viewChampion : Bracket -> Svg Msg
-viewChampion bracket =
+viewChampion : Bracket -> State -> Svg Msg
+viewChampion bracket state =
     case
         B.qualifier bracket
     of
         Just team ->
             let
+                config =
+                    sizing state
+
                 radius =
-                    ringRadius 1 - config.ringSpacing
+                    ringRadius state 1 - config.ringSpacing
 
                 x =
                     Attributes.cx <| String.fromFloat config.x
@@ -259,7 +270,7 @@ viewChampion bracket =
                     ( config.x + radius, config.y + 6 )
 
                 clr =
-                    Attributes.fill config.colorSelected
+                    Attributes.fill colors.focus
             in
             Svg.g []
                 [ Svg.circle [ x, y, r, clr ] []
@@ -289,7 +300,7 @@ viewCandidatesPanel _ bracket slot candidates =
             in
             ( group, mkTeamButton msg team currentSlot )
     in
-    Element.column [ Element.spacing 16 ] cds
+    Element.column [ Element.spacing 16, Element.centerX ] cds
 
 
 mkTeamButton : Msg -> Team -> CurrentSlot -> Element.Element Msg
@@ -309,9 +320,12 @@ mkTeamButton msg team currentSlot =
     UI.Button.teamButton semantics msg team
 
 
-viewCandidatesCircle : Candidate -> List (Svg Msg)
-viewCandidatesCircle candidates =
+viewCandidatesCircle : State -> Candidate -> List (Svg Msg)
+viewCandidatesCircle state candidates =
     let
+        config =
+            sizing state
+
         x =
             config.x
 
@@ -319,7 +333,7 @@ viewCandidatesCircle candidates =
             config.y
 
         radius =
-            ringRadius 4 - config.ringSpacing
+            ringRadius state 4 - config.ringSpacing
 
         c1 =
             ( x - radius, y - 16 )
@@ -334,7 +348,7 @@ viewCandidatesCircle candidates =
             ( x + radius, y + 16 )
 
         fillColor =
-            config.colorSelected
+            colors.selected
 
         -- cds =
         --     B.candidatesForTeamNode bracket candidates slot
@@ -355,10 +369,9 @@ viewCandidatesCircle candidates =
         -- buttons =
         --     List.concatMap coords rows
         --         |> Extra.zip cds
-        --         |> List.map (uncurry button)
-        closeView =
-            mkButton 200 300 40 25 "sluit" CloseQualifierView UI.Style.Active
-
+        -- --         |> List.map (uncurry button)
+        -- closeView =
+        --     mkButton 200 300 40 25 "sluit" CloseQualifierView UI.Style.Active
         ( positionString, groupString ) =
             case candidates of
                 FirstPlace grp ->
@@ -375,7 +388,7 @@ viewCandidatesCircle candidates =
     [ Svg.circle
         [ Attributes.cx (String.fromFloat config.x)
         , Attributes.cy (String.fromFloat config.y)
-        , Attributes.r (String.fromFloat (ringRadius 4 - config.ringSpacing))
+        , Attributes.r (String.fromFloat (ringRadius state 4 - config.ringSpacing))
         , Attributes.fill fillColor
         ]
         []
@@ -383,110 +396,8 @@ viewCandidatesCircle candidates =
         []
         [ mkText positionString RGB.white c1 c2
         , mkText groupString RGB.white g1 g2
-
-        -- , mkText groupString RGB.white ( 75, 100 ) ( 265, 100 )
         ]
-    , Svg.g [] [ closeView ]
     ]
-
-
-mkQualifierButton : Msg -> String -> CurrentSlot -> Int -> Int -> Svg Msg
-mkQualifierButton msg teamID currentSlot row col =
-    let
-        w =
-            40
-
-        h =
-            25
-
-        x =
-            75
-                + col
-                * (w + 10)
-                |> toFloat
-
-        y =
-            130
-                + row
-                * (h + 10)
-                |> toFloat
-
-        semantics =
-            case currentSlot of
-                ThisSlot ->
-                    UI.Style.Selected
-
-                OtherSlot _ ->
-                    UI.Style.Perhaps
-
-                NoSlot ->
-                    UI.Style.Potential
-    in
-    mkButton x y w h teamID msg semantics
-
-
-mkButton : Float -> Float -> Float -> Float -> String -> Msg -> UI.Style.ButtonSemantics -> Svg Msg
-mkButton x y w h caption msg semantics =
-    let
-        textPathStart =
-            ( x + 2, y + 19 )
-
-        textPathEnd =
-            ( x + w - 2, y + 19 )
-
-        pathId =
-            String.join "-" [ "p", String.fromInt (round x), String.fromInt (round y) ]
-
-        ( stroke, fill, txt ) =
-            case semantics of
-                UI.Style.Selected ->
-                    ( RGB.background, config.colorSelected, RGB.background )
-
-                UI.Style.Potential ->
-                    ( RGB.white, RGB.green, RGB.white )
-
-                _ ->
-                    ( RGB.background, RGB.black, RGB.secondaryText )
-
-        textPath =
-            Svg.path
-                [ Attributes.d <|
-                    pathD
-                        [ M textPathStart
-                        , L textPathEnd
-                        ]
-                , Attributes.stroke "transparent"
-                , Attributes.fill RGB.white
-                , Attributes.id pathId
-                ]
-                []
-    in
-    Svg.g [ Events.onClick msg, Attributes.cursor "pointer" ]
-        [ Svg.rect
-            [ Attributes.x <| String.fromFloat x
-            , Attributes.y <| String.fromFloat y
-            , Attributes.rx <| String.fromFloat 5
-            , Attributes.ry <| String.fromFloat 5
-            , Attributes.width <| String.fromFloat w
-            , Attributes.height <| String.fromFloat h
-            , Attributes.stroke stroke
-            , Attributes.fill fill
-            ]
-            []
-        , textPath
-        , Svg.text_
-            [ Attributes.fill txt
-            , Attributes.fontFamily "Roboto Mono"
-            , Attributes.fontSize "18"
-            , Attributes.textAnchor "middle"
-            ]
-            [ Svg.textPath
-                [ Attributes.xlinkHref ("#" ++ pathId)
-                , Attributes.startOffset "50%"
-                ]
-                [ Svg.text caption ]
-            ]
-        ]
 
 
 mkText : String -> String -> ( Float, Float ) -> ( Float, Float ) -> Svg Msg
@@ -534,8 +445,8 @@ mkText str clr (( x1, y1 ) as start) (( x2, y2 ) as end) =
 --         List.concatMap (uncurry (viewRingMatch bet answer ring segmentAngleSize)) matchesAndAngles
 
 
-viewLeaf : Bet -> Maybe Bracket -> UI.Style.ButtonSemantics -> Float -> Float -> Float -> Svg Msg
-viewLeaf _ mBracket isSelected ring segmentAngleSize angle =
+viewLeaf : Bet -> State -> Maybe Bracket -> UI.Style.ButtonSemantics -> Float -> Float -> Float -> Svg Msg
+viewLeaf _ state mBracket isSelected ring segmentAngleSize angle =
     case mBracket of
         Just (MatchNode slot winner home away _ _) ->
             let
@@ -560,8 +471,8 @@ viewLeaf _ mBracket isSelected ring segmentAngleSize angle =
                 --         moveDiagonal2 ring (Debug.log "center angle" centerMatchAngle) 2
             in
             Svg.g []
-                [ viewMatchLeaf HomeTeam slot (isWinner winner HomeTeam) home homeLeaf
-                , viewMatchLeaf AwayTeam slot (isWinner winner AwayTeam) away awayLeaf
+                [ viewMatchLeaf state HomeTeam slot (isWinner winner HomeTeam) home homeLeaf
+                , viewMatchLeaf state AwayTeam slot (isWinner winner AwayTeam) away awayLeaf
                 ]
 
         Just (TeamNode slot candidate qualifier _) ->
@@ -575,7 +486,7 @@ viewLeaf _ mBracket isSelected ring segmentAngleSize angle =
                 msg =
                     SetQualifier slot candidate
             in
-            mkLeaf isSelected qualifier leaf msg
+            mkLeaf state isSelected qualifier leaf msg
 
         -- List.concat
         --     [ viewCandidateLeaf answer slot isSelected candidate qualifier hasQualified leaf msg
@@ -585,8 +496,8 @@ viewLeaf _ mBracket isSelected ring segmentAngleSize angle =
             Svg.g [] []
 
 
-viewMatchLeaf : Winner -> Slot -> IsWinner -> Bracket -> Leaf -> Svg Msg
-viewMatchLeaf wnnr slot isSelected bracket leaf =
+viewMatchLeaf : State -> Winner -> Slot -> IsWinner -> Bracket -> Leaf -> Svg Msg
+viewMatchLeaf state wnnr slot isSelected bracket leaf =
     let
         s =
             case isSelected of
@@ -605,13 +516,13 @@ viewMatchLeaf wnnr slot isSelected bracket leaf =
         mTeam =
             B.qualifier bracket
     in
-    mkLeaf s mTeam leaf msg
+    mkLeaf state s mTeam leaf msg
 
 
-mkLeaf : ButtonSemantics -> Maybe Team -> Leaf -> Msg -> Svg Msg
-mkLeaf s team leaf msg =
+mkLeaf : State -> ButtonSemantics -> Maybe Team -> Leaf -> Msg -> Svg Msg
+mkLeaf state s team leaf msg =
     Svg.g [ Events.onClick msg, Attributes.cursor "pointer" ]
-        [ describeLeaf s leaf, setText s team leaf ]
+        [ describeLeaf state s leaf, setText state s team leaf ]
 
 
 type alias Leaf =
@@ -630,21 +541,92 @@ type LeafType
     | QualifierLeaf
 
 
-config =
+baseConfig : Sizing
+baseConfig =
     { x = 170
     , y = 170
     , borderRadius = 10
     , ringHeight = 33
     , ringSpacing = 2
-    , colorPotential = RGB.panel
-    , colorSelected = RGB.panel
-    , colorFocus = RGB.green
     }
 
 
-describeLeaf : ButtonSemantics -> Leaf -> Svg.Svg Msg
-describeLeaf s { ring, startAngle, endAngle } =
+colors =
+    { potential = RGB.panel
+    , selected = RGB.panel
+    , focus = RGB.green
+    }
+
+
+baseSize =
+    342
+
+
+type alias Sizing =
+    { x : Float
+    , y : Float
+    , borderRadius : Float
+    , ringHeight : Float
+    , ringSpacing : Float
+    }
+
+
+sizing : State -> Sizing
+sizing { screen } =
     let
+        w =
+            min 400 screen.width
+                |> max 342
+
+        factor =
+            w / 342
+
+        x =
+            Debug.log "w" w / 2
+
+        y =
+            w / 2
+
+        borderRadius =
+            factor * baseConfig.borderRadius
+
+        ringHeight =
+            factor * baseConfig.ringHeight
+
+        ringSpacing =
+            factor * baseConfig.ringSpacing
+    in
+    Sizing (Debug.log "x" x) y borderRadius (Debug.log "ring height" ringHeight) ringSpacing
+
+
+maxWidth : State -> Int
+maxWidth state =
+    let
+        config =
+            sizing state
+
+        -- r =
+        --     ringRadius state 4 + config.ringHeight
+        maxW =
+            config.x * 2
+    in
+    round maxW
+        |> Debug.log "r"
+
+
+origin : State -> ( Float, Float )
+origin state =
+    toFloat (maxWidth state)
+        |> (\d -> d / 2)
+        |> (\r -> ( r, r ))
+
+
+describeLeaf : State -> ButtonSemantics -> Leaf -> Svg.Svg Msg
+describeLeaf state s { ring, startAngle, endAngle } =
+    let
+        config =
+            sizing state
+
         x =
             config.x
 
@@ -652,7 +634,7 @@ describeLeaf s { ring, startAngle, endAngle } =
             config.y
 
         innerRadius =
-            ringRadius ring
+            ringRadius state ring
 
         outerRadius =
             innerRadius + config.ringHeight
@@ -693,13 +675,13 @@ describeLeaf s { ring, startAngle, endAngle } =
         fillColour =
             case s of
                 UI.Style.Selected ->
-                    config.colorSelected
+                    colors.selected
 
                 UI.Style.Focus ->
-                    config.colorFocus
+                    colors.focus
 
                 _ ->
-                    config.colorPotential
+                    colors.potential
     in
     Svg.path
         [ Attributes.d <|
@@ -709,14 +691,17 @@ describeLeaf s { ring, startAngle, endAngle } =
         []
 
 
-mkCrossHair : Float -> Float -> Svg Msg
-mkCrossHair ring angle =
+mkCrossHair : State -> Float -> Float -> Svg Msg
+mkCrossHair state ring angle =
     let
+        config =
+            sizing state
+
         innerRadius =
-            ringRadius (max ring 2)
+            ringRadius state (max ring 2)
 
         outerRadius =
-            ringRadius 4 + config.ringHeight
+            ringRadius state 4 + config.ringHeight
 
         ( x1, y1 ) =
             polarToCartesian config.x config.y innerRadius angle
@@ -741,11 +726,14 @@ type Half
     | Bottom
 
 
-setText : ButtonSemantics -> Qualifier -> Leaf -> Svg.Svg Msg
-setText _ qualifier { ring, startAngle, endAngle } =
+setText : State -> ButtonSemantics -> Qualifier -> Leaf -> Svg.Svg Msg
+setText state _ qualifier { ring, startAngle, endAngle } =
     let
         teamId =
             T.mdisplayID qualifier
+
+        config =
+            sizing state
 
         x =
             config.x
@@ -865,8 +853,12 @@ polarToCartesian centerX centerY radius angleInDegrees =
     )
 
 
-ringRadius : Float -> Float
-ringRadius ring =
+ringRadius : State -> Float -> Float
+ringRadius state ring =
+    let
+        config =
+            sizing state
+    in
     ring * config.ringHeight + ((ring - 1) * config.ringSpacing)
 
 
