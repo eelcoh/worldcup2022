@@ -5,7 +5,6 @@ module Bets.Types.Team exposing
     , encode
     , encodeMaybe
     , equal
-    , flag
     , flagUrl
     , isComplete
     , log
@@ -16,8 +15,6 @@ module Bets.Types.Team exposing
     )
 
 import Bets.Types exposing (Group(..), Team, TeamID)
-import Html exposing (..)
-import Html.Attributes exposing (src)
 import Json.Decode exposing (Decoder)
 import Json.Encode
 import Maybe.Extra as M
@@ -66,108 +63,109 @@ log t =
     t.teamName
 
 
-flag : Maybe Team -> Html msg
-flag mteam =
-    let
-        uri t =
-            flagUri 2 ++ t.teamID ++ ".png"
 
-        default =
-            team "xyz" ""
-    in
-    case mteam of
-        Nothing ->
-            img [ src (uri default) ] []
+-- flag : Maybe Team -> Html msg
+-- flag mteam =
+--     let
+-- --         uri t =
+--             flagUri 2 ++ t.teamID ++ ".png"
+--         default =
+--             team "xyz" ""
+--     in
+--     case mteam of
+--         Nothing ->
+--             img [ src (uri default) ] []
+--         Just t ->
+--             img [ src (uri t) ] []
 
-        Just t ->
-            img [ src (uri t) ] []
 
-
+flagUrlRound : String -> String
 flagUrlRound teamID =
     case teamID of
         "SUI" ->
-            Just "assets/svg/switzerland.svg"
+            "assets/svg/switzerland.svg"
 
         "TUR" ->
-            Just "assets/svg/turkey.svg"
+            "assets/svg/turkey.svg"
 
         "ITA" ->
-            Just "assets/svg/italy.svg"
+            "assets/svg/italy.svg"
 
         "WAL" ->
-            Just "assets/svg/wales.svg"
+            "assets/svg/wales.svg"
 
         "DEN" ->
-            Just "assets/svg/denmark.svg"
+            "assets/svg/denmark.svg"
 
         "FIN" ->
-            Just "assets/svg/finland.svg"
+            "assets/svg/finland.svg"
 
         "BEL" ->
-            Just "assets/svg/belgium.svg"
+            "assets/svg/belgium.svg"
 
         "RUS" ->
-            Just "assets/svg/russia.svg"
+            "assets/svg/russia.svg"
 
         "NED" ->
-            Just "assets/svg/netherlands.svg"
+            "assets/svg/netherlands.svg"
 
         "UKR" ->
-            Just "assets/svg/ukraine.svg"
+            "assets/svg/ukraine.svg"
 
         "AUT" ->
-            Just "assets/svg/austria.svg"
+            "assets/svg/austria.svg"
 
         "PLA" ->
-            Just "assets/svg/playoff.svg"
+            "assets/svg/playoff.svg"
 
         "ENG" ->
-            Just "assets/svg/england.svg"
+            "assets/svg/england.svg"
 
         "CRO" ->
-            Just "assets/svg/croatia.svg"
-
-        "PAD" ->
-            Just "assets/svg/playoff.svg"
+            "assets/svg/croatia.svg"
 
         "CZE" ->
-            Just "assets/svg/czech-republic.svg"
+            "assets/svg/czech-republic.svg"
 
         "ESP" ->
-            Just "assets/svg/spain.svg"
+            "assets/svg/spain.svg"
 
         "SWE" ->
-            Just "assets/svg/sweden.svg"
+            "assets/svg/sweden.svg"
 
         "POL" ->
-            Just "assets/svg/republic-of-poland.svg"
-
-        "PAC" ->
-            Just "assets/svg/playoff.svg"
-
-        "PAF" ->
-            Just "assets/svg/playoff.svg"
+            "assets/svg/republic-of-poland.svg"
 
         "POR" ->
-            Just "assets/svg/portugal.svg"
+            "assets/svg/portugal.svg"
 
         "FRA" ->
-            Just "assets/svg/france.svg"
+            "assets/svg/france.svg"
 
         "GER" ->
-            Just "assets/svg/germany.svg"
+            "assets/svg/germany.svg"
+
+        "SCO" ->
+            "assets/svg/scotland.svg"
+
+        "SVK" ->
+            "assets/svg/slovakia.svg"
+
+        "MAC" ->
+            "assets/svg/republic-of-macedonia.svg"
+
+        "HUN" ->
+            "assets/svg/hungary.svg"
 
         _ ->
-            Nothing
+            "assets/svg/404.svg"
 
 
 flagUrl : Maybe Team -> String
 flagUrl mteam =
     let
         uri t =
-            Maybe.withDefault
-                (flagUri 2 ++ t.teamID ++ ".png")
-                (flagUrlRound t.teamID)
+            flagUrlRound t.teamID
 
         default =
             team "xyz" ""
@@ -180,13 +178,13 @@ flagUrl mteam =
             uri t
 
 
-flagUri : Int -> String
-flagUri size =
-    if (size > 5) || (size < 0) then
-        "http://img.fifa.com/images/flags/3/"
 
-    else
-        "http://img.fifa.com/images/flags/" ++ String.fromInt size ++ "/"
+-- flagUri : Int -> String
+-- flagUri size =
+--     if (size > 5) || (size < 0) then
+--         "http://img.fifa.com/images/flags/3/"
+--     else
+--         "http://img.fifa.com/images/flags/" ++ String.fromInt size ++ "/"
 
 
 isComplete : Maybe Team -> Bool

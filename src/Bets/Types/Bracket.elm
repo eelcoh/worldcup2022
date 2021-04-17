@@ -315,7 +315,7 @@ getFreeSlots_ bracket =
                 Just _ ->
                     [ Nothing ]
 
-        MatchNode _ w home away _ _ ->
+        MatchNode _ _ home away _ _ ->
             getFreeSlots_ home ++ getFreeSlots_ away
 
 

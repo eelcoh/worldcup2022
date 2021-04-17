@@ -6,7 +6,7 @@ import Bets.Types.Answer.Bracket
 import Bets.Types.Bracket as B
 import Bets.Types.Candidate as Candidate
 import Element
-import Form.Bracket.Types exposing (..)
+import Form.Bracket.Types exposing (BracketState(..), Msg(..), State, createState, initialQualifierView)
 import Form.Bracket.View exposing (viewCandidatesPanel, viewRings)
 import UI.Button exposing (pill)
 import UI.Style exposing (ButtonSemantics(..))
@@ -95,10 +95,7 @@ view bet state =
             UI.Text.displayHeader "Klik je een weg door het schema"
 
         introtext =
-            """Dit is het schema voor de tweede ronde en verder. In het midden staat de finale,
-         daarboven en onder de ronden die daaraan voorafgaan. Voor de juiste kwartfinalisten
-         krijg je 4 punten. Halve finalisten leveren 7 punten op, finalisten 10 punten en de
-         kampioen 13 punten."""
+            """Dit is het schema voor de tweede ronde en verder. Eerst moet je invullen welke landen de tweede ronde uberhaupt halen, en daarna gaat het om het knockout schema. In het midden staat de finale, daarboven en onder de ronden die daaraan voorafgaan. Voor de juiste kwartfinalisten krijg je 4 punten. Halve finalisten leveren 7 punten op, finalisten 10 punten en de kampioen 13 punten."""
 
         introduction =
             Element.paragraph [] [ UI.Text.simpleText introtext ]

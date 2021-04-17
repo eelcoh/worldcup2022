@@ -1,4 +1,4 @@
-module Form.Topscorer.Types exposing (..)
+module Form.Topscorer.Types exposing (IsSelected(..), Msg(..))
 
 import Bets.Types exposing (Team)
 

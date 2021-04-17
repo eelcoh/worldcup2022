@@ -1,10 +1,25 @@
-module Bets.Init.Lib exposing (answerGroupMatch)
+module Bets.Init.Lib exposing (answerBracket, answerGroupMatch, answerTopscorer)
 
-import Bets.Types exposing (Answer, AnswerT(..), DrawID, Group, Match)
+import Bets.Types exposing (Answer(..), Bracket, DrawID, Group, GroupMatch(..), Match, Points, Topscorer)
 import Tuple exposing (pair)
 
 
-answerGroupMatch : DrawID -> Group -> Match -> Answer
+answer : a -> Points -> Answer a
+answer val points =
+    Answer val points
+
+
+answerBracket : Bracket -> Answer Bracket
+answerBracket bracket =
+    answer bracket Nothing
+
+
+answerTopscorer : Answer Topscorer
+answerTopscorer =
+    answer ( Nothing, Nothing ) Nothing
+
+
+answerGroupMatch : DrawID -> Group -> Match -> ( DrawID, Answer GroupMatch )
 answerGroupMatch drawID group match =
     let
         points =
@@ -13,7 +28,10 @@ answerGroupMatch drawID group match =
         score =
             Nothing
 
+        m =
+            GroupMatch group match score
+
         question =
-            AnswerGroupMatch group match score points
+            answer m points
     in
     pair drawID question

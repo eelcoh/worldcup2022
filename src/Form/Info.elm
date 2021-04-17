@@ -7,7 +7,7 @@ module Form.Info exposing
 import Bets.Types exposing (Bet)
 import Bets.Types.Group as Group
 import Bets.Types.Round as Round
-import Element exposing (px, spacing, width)
+import Element exposing (spacing)
 import Form.Types exposing (FormInfoMsg(..), Info(..))
 import UI.Style
 import UI.Text
@@ -86,6 +86,7 @@ introduction =
     ]
 
 
+attribution : Element.Element msg
 attribution =
     Element.paragraph (UI.Style.introduction [ spacing 7 ])
         [ UI.Text.simpleText "Icons made by "

@@ -9,7 +9,7 @@ module Bets.Types.Answer.GroupMatches exposing
     )
 
 import Bets.Types exposing (Answer(..), AnswerGroupMatch, AnswerGroupMatches, Group(..), MatchID, Score)
-import Bets.Types.Answer.GroupMatch as GroupMatch exposing (isMatchForGroup, setScore)
+import Bets.Types.Answer.GroupMatch as GroupMatch exposing (isMatchForGroup)
 import Json.Decode as Decode exposing (Decoder)
 import Json.Encode
 

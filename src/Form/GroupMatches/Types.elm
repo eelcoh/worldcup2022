@@ -11,7 +11,7 @@ module Form.GroupMatches.Types exposing
     )
 
 import Bets.Bet exposing (findGroupMatchAnswers)
-import Bets.Types exposing (AnswerGroupMatches, Answers, Bet, Group(..), MatchID)
+import Bets.Types exposing (AnswerGroupMatches, Bet, Group(..), MatchID)
 import Bets.Types.Answer.GroupMatches as GroupMatches
 import Bets.Types.Group as Group
 import List.Extra exposing (dropWhile)

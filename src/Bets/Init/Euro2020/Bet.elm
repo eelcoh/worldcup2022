@@ -1,60 +1,55 @@
 module Bets.Init.Euro2020.Bet exposing (answers)
 
 import Bets.Init.Euro2020.Tournament exposing (bracket, matches)
-import Bets.Types exposing (Answer(..), AnswerGroupMatch, AnswerGroupMatches, Answers, Group(..), GroupMatch(..), Match)
+import Bets.Init.Lib as Init
+import Bets.Types exposing (Answer(..), AnswerGroupMatches, Answers, Group(..), GroupMatch(..))
 import Time exposing (Month(..))
-import Tuple exposing (pair)
 
 
 answers : Answers
 answers =
     { matches = initMatches
-    , bracket = Answer bracket Nothing
-    , topscorer = Answer ( Nothing, Nothing ) Nothing
+    , bracket = Init.answerBracket bracket
+    , topscorer = Init.answerTopscorer
     }
-
-
-initAnswerGroupMatch : Group -> Match -> AnswerGroupMatch
-initAnswerGroupMatch groupId match =
-    Answer (GroupMatch groupId match Nothing) Nothing
 
 
 initMatches : AnswerGroupMatches
 initMatches =
-    [ pair "m01" (initAnswerGroupMatch A matches.m01)
-    , pair "m02" (initAnswerGroupMatch A matches.m02)
-    , pair "m14" (initAnswerGroupMatch A matches.m14)
-    , pair "m13" (initAnswerGroupMatch A matches.m13)
-    , pair "m26" (initAnswerGroupMatch A matches.m26)
-    , pair "m25" (initAnswerGroupMatch A matches.m25)
-    , pair "m03" (initAnswerGroupMatch B matches.m03)
-    , pair "m04" (initAnswerGroupMatch B matches.m04)
-    , pair "m15" (initAnswerGroupMatch B matches.m15)
-    , pair "m16" (initAnswerGroupMatch B matches.m16)
-    , pair "m28" (initAnswerGroupMatch B matches.m28)
-    , pair "m27" (initAnswerGroupMatch B matches.m27)
-    , pair "m05" (initAnswerGroupMatch C matches.m05)
-    , pair "m06" (initAnswerGroupMatch C matches.m06)
-    , pair "m17" (initAnswerGroupMatch C matches.m17)
-    , pair "m18" (initAnswerGroupMatch C matches.m18)
-    , pair "m29" (initAnswerGroupMatch C matches.m29)
-    , pair "m30" (initAnswerGroupMatch C matches.m30)
-    , pair "m07" (initAnswerGroupMatch D matches.m07)
-    , pair "m08" (initAnswerGroupMatch D matches.m08)
-    , pair "m20" (initAnswerGroupMatch D matches.m20)
-    , pair "m19" (initAnswerGroupMatch D matches.m19)
-    , pair "m32" (initAnswerGroupMatch D matches.m32)
-    , pair "m31" (initAnswerGroupMatch D matches.m31)
-    , pair "m09" (initAnswerGroupMatch E matches.m09)
-    , pair "m10" (initAnswerGroupMatch E matches.m10)
-    , pair "m22" (initAnswerGroupMatch E matches.m22)
-    , pair "m21" (initAnswerGroupMatch E matches.m21)
-    , pair "m33" (initAnswerGroupMatch E matches.m33)
-    , pair "m34" (initAnswerGroupMatch E matches.m34)
-    , pair "m12" (initAnswerGroupMatch F matches.m12)
-    , pair "m11" (initAnswerGroupMatch F matches.m11)
-    , pair "m24" (initAnswerGroupMatch F matches.m24)
-    , pair "m23" (initAnswerGroupMatch F matches.m23)
-    , pair "m36" (initAnswerGroupMatch F matches.m36)
-    , pair "m35" (initAnswerGroupMatch F matches.m35)
+    [ Init.answerGroupMatch "m01" A matches.m01
+    , Init.answerGroupMatch "m02" A matches.m02
+    , Init.answerGroupMatch "m14" A matches.m14
+    , Init.answerGroupMatch "m13" A matches.m13
+    , Init.answerGroupMatch "m26" A matches.m26
+    , Init.answerGroupMatch "m25" A matches.m25
+    , Init.answerGroupMatch "m03" B matches.m03
+    , Init.answerGroupMatch "m04" B matches.m04
+    , Init.answerGroupMatch "m15" B matches.m15
+    , Init.answerGroupMatch "m16" B matches.m16
+    , Init.answerGroupMatch "m28" B matches.m28
+    , Init.answerGroupMatch "m27" B matches.m27
+    , Init.answerGroupMatch "m05" C matches.m05
+    , Init.answerGroupMatch "m06" C matches.m06
+    , Init.answerGroupMatch "m17" C matches.m17
+    , Init.answerGroupMatch "m18" C matches.m18
+    , Init.answerGroupMatch "m29" C matches.m29
+    , Init.answerGroupMatch "m30" C matches.m30
+    , Init.answerGroupMatch "m07" D matches.m07
+    , Init.answerGroupMatch "m08" D matches.m08
+    , Init.answerGroupMatch "m20" D matches.m20
+    , Init.answerGroupMatch "m19" D matches.m19
+    , Init.answerGroupMatch "m32" D matches.m32
+    , Init.answerGroupMatch "m31" D matches.m31
+    , Init.answerGroupMatch "m09" E matches.m09
+    , Init.answerGroupMatch "m10" E matches.m10
+    , Init.answerGroupMatch "m22" E matches.m22
+    , Init.answerGroupMatch "m21" E matches.m21
+    , Init.answerGroupMatch "m33" E matches.m33
+    , Init.answerGroupMatch "m34" E matches.m34
+    , Init.answerGroupMatch "m12" F matches.m12
+    , Init.answerGroupMatch "m11" F matches.m11
+    , Init.answerGroupMatch "m24" F matches.m24
+    , Init.answerGroupMatch "m23" F matches.m23
+    , Init.answerGroupMatch "m36" F matches.m36
+    , Init.answerGroupMatch "m35" F matches.m35
     ]

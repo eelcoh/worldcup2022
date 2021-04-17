@@ -5,8 +5,8 @@ import Bets.Init.Euro2020.Tournament exposing (initTeamData)
 import Bets.Types exposing (Answer(..), Bet, Team, TeamDatum, Topscorer)
 import Bets.Types.Answer.Topscorer
 import Bets.Types.Topscorer as TS
-import Element exposing (padding, px, spacing, width)
-import Form.Topscorer.Types exposing (..)
+import Element exposing (padding, spacing)
+import Form.Topscorer.Types exposing (IsSelected(..), Msg(..))
 import List.Extra
 import UI.Button
 import UI.Style

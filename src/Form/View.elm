@@ -54,7 +54,7 @@ view model =
 
 
 viewCard : Model Msg -> Int -> Card -> Element.Element Msg
-viewCard model i card =
+viewCard model _ card =
     case card of
         IntroCard intro ->
             Element.map InfoMsg (Form.Info.view intro)

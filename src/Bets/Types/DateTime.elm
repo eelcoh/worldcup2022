@@ -5,7 +5,7 @@ import Json.Decode exposing (Decoder)
 import Json.Encode
 import Time
 import Time.Extra as TimeX
-import TimeZone exposing (europe__amsterdam)
+import TimeZone
 
 
 encode : Time.Posix -> Json.Encode.Value

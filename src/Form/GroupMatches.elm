@@ -1,12 +1,12 @@
 module Form.GroupMatches exposing (isComplete, update, view)
 
 import Bets.Bet exposing (setMatchScore)
-import Bets.Types exposing (Answer(..), AnswerGroupMatch, AnswerGroupMatches, Bet, Group, GroupMatch(..), MatchID, Score, Team)
+import Bets.Types exposing (Answer(..), AnswerGroupMatch, Bet, Group, GroupMatch(..), MatchID, Score, Team)
 import Bets.Types.Answer.GroupMatches as GroupMatches
 import Bets.Types.Group as G
 import Bets.Types.Match as M
 import Bets.Types.Score as S
-import Element exposing (centerX, centerY, height, padding, paddingXY, px, spaceEvenly, spacing, width)
+import Element exposing (centerX, centerY, height, padding, px, spacing, width)
 import Element.Events
 import Element.Input as Input
 import Form.GroupMatches.Types exposing (ChangeCursor(..), Msg(..), State, updateCursor)
@@ -304,7 +304,7 @@ displayMatches cursor matches =
 
 
 displayMatch : MatchID -> ( MatchID, AnswerGroupMatch ) -> Maybe (Element.Element Msg)
-displayMatch cursor ( answerId, Answer (GroupMatch g match mScore) _ ) =
+displayMatch cursor ( answerId, Answer (GroupMatch _ match mScore) _ ) =
     let
         semantics =
             if cursor == answerId then

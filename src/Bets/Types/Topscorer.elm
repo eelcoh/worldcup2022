@@ -11,7 +11,7 @@ module Bets.Types.Topscorer exposing
 import Bets.Json.Encode exposing (mStrEnc)
 import Bets.Types exposing (Player, Team, Topscorer)
 import Bets.Types.Team
-import Json.Decode exposing (Decoder, field, map2, maybe)
+import Json.Decode exposing (Decoder, field, maybe)
 import Json.Encode
 import Maybe.Extra as M
 import Tuple exposing (first, second)
@@ -53,7 +53,7 @@ setPlayer ( mPlayer, mTeam ) player =
         Nothing ->
             ( Just player, mTeam )
 
-        -- we should actually check whether that is possible. Todo.
+        -- we should actually check whether that is possible. Someday.
         Just p ->
             if p == player then
                 ( Nothing, mTeam )

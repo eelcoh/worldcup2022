@@ -1,15 +1,12 @@
 module Form.Bracket.View exposing (viewCandidatesPanel, viewRings)
 
-import Basics.Extra exposing (inDegrees)
 import Bets.Bet
-import Bets.Types exposing (Answer(..), Bet, Bracket(..), Candidate(..), CurrentSlot(..), Group, HasQualified(..), Qualifier, Selection, Slot, Team, TeamID, Winner(..))
-import Bets.Types.Answer.Bracket
+import Bets.Types exposing (Answer(..), Bet, Bracket(..), Candidate(..), CurrentSlot(..), Group, HasQualified(..), Qualifier, Selection, Slot, Team, Winner(..))
 import Bets.Types.Bracket as B
-import Bets.Types.Candidate as Candidate
 import Bets.Types.Group as G
 import Bets.Types.Team as T
 import Element exposing (height, px, width)
-import Form.Bracket.Types exposing (..)
+import Form.Bracket.Types exposing (Angle, BracketState(..), IsWinner(..), Msg(..), State)
 import List.Extra as Extra
 import Svg exposing (Svg)
 import Svg.Attributes as Attributes
@@ -18,12 +15,12 @@ import Svg.PathD exposing (Segment(..), pathD)
 import UI.Button
 import UI.Color.RGB as RGB
 import UI.Style exposing (ButtonSemantics(..))
-import UI.Text
 
 
-isComplete : Bet -> Bool
-isComplete bet =
-    Bets.Types.Answer.Bracket.isComplete bet.answers.bracket
+
+-- isComplete : Bet -> Bool
+-- isComplete bet =
+--     Bets.Types.Answer.Bracket.isComplete bet.answers.bracket
 
 
 isWinner : Winner -> Winner -> IsWinner
@@ -55,7 +52,7 @@ viewRings bet bracket state =
             maxWidth state
 
         sz =
-            String.fromInt (Debug.log "dims" dims)
+            String.fromInt dims
 
         dimsPx =
             px dims
@@ -85,9 +82,8 @@ viewRings bet bracket state =
 viewPositionRing : Bet -> Bracket -> State -> Maybe Slot -> List (Svg Msg)
 viewPositionRing bet bracket state mSlot =
     let
-        v slot =
-            viewLeaf bet state (B.get bracket slot) (isSelected slot)
-
+        -- v slot =
+        --     viewLeaf bet state (B.get bracket slot) (isSelected slot)
         isSelected slot =
             case mSlot of
                 Nothing ->
@@ -103,7 +99,7 @@ viewPositionRing bet bracket state mSlot =
         mkRingData : List ( ( Slot, Qualifier ), ( Angle, Angle ) ) -> Svg Msg
         mkRingData slotdata =
             let
-                f ( ( slot, q ), ( a, s ) ) =
+                f ( ( slot, _ ), ( a, s ) ) =
                     viewLeaf bet state (B.get bracket slot) (isSelected slot) ring s a
 
                 ring =
@@ -348,7 +344,8 @@ viewCandidatesCircle state candidates =
             ( x + radius, y + 16 )
 
         fillColor =
-            colors.selected
+            -- colors.potential
+            RGB.green
 
         -- cds =
         --     B.candidatesForTeamNode bracket candidates slot
@@ -551,15 +548,12 @@ baseConfig =
     }
 
 
+colors : { potential : String, selected : String, focus : String }
 colors =
     { potential = RGB.panel
     , selected = RGB.panel
     , focus = RGB.green
     }
-
-
-baseSize =
-    342
 
 
 type alias Sizing =
@@ -582,7 +576,7 @@ sizing { screen } =
             w / 342
 
         x =
-            Debug.log "w" w / 2
+            w / 2
 
         y =
             w / 2
@@ -596,7 +590,7 @@ sizing { screen } =
         ringSpacing =
             factor * baseConfig.ringSpacing
     in
-    Sizing (Debug.log "x" x) y borderRadius (Debug.log "ring height" ringHeight) ringSpacing
+    Sizing x y borderRadius ringHeight ringSpacing
 
 
 maxWidth : State -> Int
@@ -611,14 +605,6 @@ maxWidth state =
             config.x * 2
     in
     round maxW
-        |> Debug.log "r"
-
-
-origin : State -> ( Float, Float )
-origin state =
-    toFloat (maxWidth state)
-        |> (\d -> d / 2)
-        |> (\r -> ( r, r ))
 
 
 describeLeaf : State -> ButtonSemantics -> Leaf -> Svg.Svg Msg
@@ -811,7 +797,7 @@ setText state _ qualifier { ring, startAngle, endAngle } =
                     [ Attributes.xlinkHref ("#" ++ pathId)
                     , Attributes.startOffset "50%"
                     ]
-                    [ Svg.text <| Debug.log "team " (String.right 3 teamId) ]
+                    [ Svg.text (String.right 3 teamId) ]
                 ]
     in
     Svg.g []
@@ -831,15 +817,6 @@ setText state _ qualifier { ring, startAngle, endAngle } =
 
    radians = acos (2 . R^2 - r^2) / (2 . R^2)
 -}
-
-
-calculateAngle : Float -> Float -> Float -> Float
-calculateAngle r1 r2 r3 =
-    -- cosinerule:
-    -- r1^2 = r2^2 + r3^2 - 2.r2.r3.cos alpha
-    -- alpha = acos (r2^2 + r3^2 - r1^2) / (2 . r2 . r3)
-    acos ((r2 ^ 2 + r3 ^ 2 - r1 ^ 2) / (2 * r2 * r3))
-        |> inDegrees
 
 
 polarToCartesian : Float -> Float -> Float -> Float -> ( Float, Float )

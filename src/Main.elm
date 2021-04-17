@@ -45,6 +45,7 @@ subscriptions _ =
 -- main : Program Flags Model Msg
 
 
+main : Program Flags (Model Msg) Msg
 main =
     Browser.application
         { init = init

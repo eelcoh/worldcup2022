@@ -17,7 +17,7 @@ module Bets.Bet exposing
     )
 
 import Bets.Json.Encode exposing (mIntEnc, mStrEnc)
-import Bets.Types exposing (Answer(..), AnswerGroupMatches, Answers, Bet, Bracket, Group, MatchID, Participant, Qualifier, Score, Slot, Topscorer, Winner)
+import Bets.Types exposing (Answer(..), AnswerGroupMatches, Bet, Bracket, Group, MatchID, Participant, Qualifier, Score, Slot, Topscorer, Winner)
 import Bets.Types.Answer.Bracket as Bracket
 import Bets.Types.Answer.GroupMatches as GroupMatches
 import Bets.Types.Answer.Topscorer as Topscorer
@@ -52,9 +52,10 @@ isComplete bet =
         ]
 
 
-newBet : Bet -> Answers -> Bet
-newBet bet newAnswers =
-    { bet | answers = newAnswers }
+
+-- newBet : Bet -> Answers -> Bet
+-- newBet bet newAnswers =
+--     { bet | answers = newAnswers }
 
 
 setWinner : Bet -> Slot -> Winner -> Bet

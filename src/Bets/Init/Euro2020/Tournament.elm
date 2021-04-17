@@ -42,22 +42,22 @@ tournament =
     , c1 = slot "C1" netherlands
     , c2 = slot "C2" ukraine
     , c3 = slot "C3" austria
-    , c4 = slot "C4" playoffDA
+    , c4 = slot "C4" north_macedonia
 
     --     -- Group D (London/Glasgow): England (hosts), Croatia, Play-off winner C, Czech Republic
     , d1 = slot "D1" england
     , d2 = slot "D2" croatia
-    , d3 = slot "D3" playoffC
+    , d3 = slot "D3" scotland
     , d4 = slot "D4" czechia
 
     --     -- Group E (Bilbao/Dublin): Spain (hosts), Sweden, Poland, Play-off winner B
     , e1 = slot "E1" spain
     , e2 = slot "E2" sweden
     , e3 = slot "E3" poland
-    , e4 = slot "E4" playoffB
+    , e4 = slot "E4" slovakia
 
     --     --- Group F (Munich/Budapest): Play-off winner A or D, Portugal (holders), France, Germany (hosts)
-    , f1 = slot "F1" playoffAD
+    , f1 = slot "F1" hungary
     , f2 = slot "F2" portugal
     , f3 = slot "F3" france
     , f4 = slot "F4" germany
@@ -295,6 +295,15 @@ matches =
     }
 
 
+
+-- Group A: Turkey, Italy, Wales, Switzerland.
+-- Group B: Denmark, Finland, Belgium, Russia.
+-- Group C: Netherlands, Ukraine, Austria, North Macedonia.
+-- Group D: England, Croatia, Scotland, Czech Republic.
+-- Group E: Spain, Sweden, Poland, Slovakia.
+-- Group F: Hungary, Portugal, France, Germany.
+
+
 initTeamData : TeamData
 initTeamData =
     [ -- Group A (Rome/Baku): Turkey, Italy (hosts), Wales, Switzerland
@@ -313,22 +322,22 @@ initTeamData =
     , netherlands
     , ukraine
     , austria
-    , playoffDA
+    , north_macedonia
 
     -- Group D (London/Glasgow): England (hosts), Croatia, Play-off winner C, Czech Republic
     , england
     , croatia
-    , playoffC
+    , scotland
     , czechia
 
     -- Group E (Bilbao/Dublin): Spain (hosts), Sweden, Poland, Play-off winner B
     , spain
     , sweden
     , poland
-    , playoffB
+    , slovakia
 
     --- Group F (Munich/Budapest): Play-off winner A or D, Portugal (holders), France, Germany (hosts)
-    , playoffAD
+    , hungary
     , portugal
     , france
     , germany
@@ -543,9 +552,9 @@ austria =
     }
 
 
-playoffDA : TeamDatum
-playoffDA =
-    { team = { teamID = "PDA", teamName = "Playoff DA" }
+north_macedonia : TeamDatum
+north_macedonia =
+    { team = { teamID = "MAC", teamName = "Macedonië" }
     , players =
         []
     , group = C
@@ -621,9 +630,9 @@ croatia =
     }
 
 
-playoffC : TeamDatum
-playoffC =
-    { team = { teamID = "PfC", teamName = "Playoff C" }
+scotland : TeamDatum
+scotland =
+    { team = { teamID = "SCO", teamName = "Schotland" }
     , players =
         []
     , group = D
@@ -751,9 +760,9 @@ poland =
     }
 
 
-playoffB : TeamDatum
-playoffB =
-    { team = { teamID = "PlB", teamName = "Playoff B" }
+slovakia : TeamDatum
+slovakia =
+    { team = { teamID = "SVK", teamName = "Slowakije" }
     , players =
         []
     , group = E
@@ -764,9 +773,9 @@ playoffB =
 -- Group F (Munich/Budapest): Play-off winner A or D, Portugal (holders), France, Germany (hosts)
 
 
-playoffAD : TeamDatum
-playoffAD =
-    { team = { teamID = "PAD", teamName = "Playoff AD" }
+hungary : TeamDatum
+hungary =
+    { team = { teamID = "HUN", teamName = "Hongarije" }
     , players =
         []
     , group = F
