@@ -12,7 +12,7 @@ import Form.Participant
 import Form.Screen as Screen
 import Form.Submit
 import Form.Topscorer
-import Form.Types exposing (Card(..), Model, Msg(..))
+import Types exposing (Card(..), Model, Msg(..))
 import UI.Button
 import UI.Style
 
