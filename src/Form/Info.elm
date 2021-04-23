@@ -8,7 +8,7 @@ import Bets.Types exposing (Bet)
 import Bets.Types.Group as Group
 import Bets.Types.Round as Round
 import Element exposing (spacing)
-import Form.Types exposing (FormInfoMsg(..), Info(..))
+import Types exposing (FormInfoMsg(..), Info(..))
 import UI.Style
 import UI.Text
 

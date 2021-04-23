@@ -1,10 +1,10 @@
-module Form.Card exposing (findByCardId, getBracketCard, getGroupMatchesCard, init, update, updateBracketCard, updateGroupMatchesCard, updateScreenCard, updateScreenCards)
+module Form.Card exposing (findByCardId, getBracketCard, getGroupMatchesCard, update, updateBracketCard, updateGroupMatchesCard, updateScreenCard, updateScreenCards)
 
 import Bets.Types exposing (Group(..), Round(..))
 import Form.Bracket.Types as Bracket
 import Form.GroupMatches.Types as GroupMatches
 import Form.Screen as Screen
-import Form.Types exposing (Card(..), Info(..))
+import Types exposing (Card(..), Info(..))
 
 
 findByCardId : List Card -> Int -> Maybe Card
@@ -136,19 +136,3 @@ updateScreenCard sz card =
 
         _ ->
             card
-
-
-init : Screen.Size -> List Card
-init sz =
-    [ IntroCard Intro
-    , GroupMatchesCard <| GroupMatches.init A "m01"
-    , GroupMatchesCard <| GroupMatches.init B "m03"
-    , GroupMatchesCard <| GroupMatches.init C "m05"
-    , GroupMatchesCard <| GroupMatches.init D "m07"
-    , GroupMatchesCard <| GroupMatches.init E "m10"
-    , GroupMatchesCard <| GroupMatches.init F "m11"
-    , BracketCard <| Bracket.init sz
-    , TopscorerCard
-    , ParticipantCard
-    , SubmitCard
-    ]

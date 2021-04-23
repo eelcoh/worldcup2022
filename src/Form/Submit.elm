@@ -1,8 +1,8 @@
 module Form.Submit exposing (view)
 
 import Element
-import Form.Types exposing (Card(..), Info(..), InputState(..), Model, Msg(..))
 import RemoteData exposing (RemoteData(..))
+import Types exposing (Card(..), Info(..), InputState(..), Model, Msg(..))
 import UI.Button
 import UI.Style
 import UI.Text

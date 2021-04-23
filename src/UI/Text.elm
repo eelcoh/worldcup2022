@@ -1,6 +1,9 @@
-module UI.Text exposing (boldText, bulletText, displayHeader, simpleText)
+module UI.Text exposing (boldText, bulletText, dateText, displayHeader, error, simpleText)
 
 import Element exposing (alignLeft, spacing, width)
+import Element.Font as Font
+import Time exposing (Month(..), Weekday(..))
+import UI.Color
 import UI.Style as Style
 
 
@@ -12,6 +15,11 @@ displayHeader txt =
 simpleText : String -> Element.Element msg
 simpleText txt =
     Element.paragraph (Style.text []) [ Element.text txt ]
+
+
+error : String -> Element.Element msg
+error txt =
+    Element.paragraph [ Font.color UI.Color.red ] [ Element.text txt ]
 
 
 bulletText : String -> Element.Element msg
@@ -31,3 +39,97 @@ bulletText txt =
 boldText : String -> Element.Element msg
 boldText txt =
     Element.paragraph (Style.emphasis [ Element.spacing 10 ]) [ Element.text txt ]
+
+
+dateText : Time.Zone -> Time.Posix -> String
+dateText tz dt =
+    let
+        m =
+            Time.toMonth tz dt
+                |> toMonth
+
+        d =
+            Time.toDay tz dt
+
+        dd =
+            Time.toWeekday tz dt
+                |> toDay
+
+        h =
+            Time.toHour tz dt
+
+        mn =
+            Time.toMinute tz dt
+
+        toMonth mon =
+            case mon of
+                Jan ->
+                    "januari"
+
+                Feb ->
+                    "februari"
+
+                Mar ->
+                    "maart"
+
+                Apr ->
+                    "april"
+
+                May ->
+                    "mei"
+
+                Jun ->
+                    "juni"
+
+                Jul ->
+                    "juli"
+
+                Aug ->
+                    "augustus"
+
+                Sep ->
+                    "september"
+
+                Oct ->
+                    "oktober"
+
+                Nov ->
+                    "november"
+
+                Dec ->
+                    "december"
+
+        toDay day =
+            case day of
+                Mon ->
+                    "maandag"
+
+                Tue ->
+                    "dinsdag"
+
+                Wed ->
+                    "woensdag"
+
+                Thu ->
+                    "donderdag"
+
+                Fri ->
+                    "vrijdag"
+
+                Sat ->
+                    "zaterdag"
+
+                Sun ->
+                    "zondag"
+
+        twoDigitString n =
+            if n < 10 then
+                "0" ++ String.fromInt n
+
+            else
+                String.fromInt n
+
+        dateString =
+            dd ++ " " ++ String.fromInt d ++ " " ++ m ++ ", " ++ String.fromInt h ++ ":" ++ twoDigitString mn
+    in
+    dateString
