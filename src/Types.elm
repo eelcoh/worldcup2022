@@ -5,6 +5,7 @@ module Types exposing
     , App(..)
     , Card(..)
     , Comment
+    , Credentials(..)
     , Flags
     , FormInfoMsg(..)
     , Info(..)
@@ -38,6 +39,7 @@ type App
     = Home
     | Blog
     | Form
+    | Login
 
 
 
@@ -105,6 +107,7 @@ init formId sz navKey =
     , activities = activitiesInit
     , app = Home
     , token = NotAsked
+    , credentials = Empty
     , timeZone = Time.utc
     }
 
@@ -122,6 +125,7 @@ type alias Model msg =
     , activities : ActivitiesModel msg
     , app : App
     , token : WebData Token
+    , credentials : Credentials
     , timeZone : Time.Zone
     }
 
@@ -166,6 +170,10 @@ type Msg
     | SavedPost (WebData (List Activity))
     | HidePostInput
     | ShowPostInput
+    | FetchedToken (WebData Token)
+    | SetUsername String
+    | SetPassword String
+    | Authenticate
 
 
 initCards : Screen.Size -> List Card
@@ -265,6 +273,17 @@ type alias Post =
     , msg : String
     , passphrase : String
     }
+
+
+
+--
+
+
+type Credentials
+    = Empty
+    | WithUsername String
+    | WithPassword String
+    | Submittable String String
 
 
 type Token
