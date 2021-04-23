@@ -2,15 +2,19 @@ module Main exposing (main)
 
 -- import Html exposing (Html)
 
+import Activities
 import Browser
 import Browser.Events as Events
 import Browser.Navigation as Navigation
+import Element exposing (px)
 import Form.Screen as Screen
-import Form.View exposing (view)
+import Form.View
 import RemoteData exposing (RemoteData(..))
 import Task
 import Time
-import Types exposing (Flags, InputState(..), Model, Msg(..))
+import Types exposing (App(..), Flags, InputState(..), Model, Msg(..))
+import UI.Button
+import UI.Style
 import Update exposing (update)
 import Url
 
@@ -49,3 +53,66 @@ main =
         , onUrlRequest = UrlRequest
         , onUrlChange = UrlChange
         }
+
+
+view : Model Msg -> Browser.Document Msg
+view model =
+    let
+        contents =
+            let
+                contents_ =
+                    case model.app of
+                        Home ->
+                            Activities.view model
+
+                        Form ->
+                            Form.View.view model
+
+                        Blog ->
+                            Activities.view model
+            in
+            Element.el [ Element.padding 24 ] contents_
+
+        title =
+            "Voetbalpool - Corona Editie"
+
+        link app =
+            let
+                semantics =
+                    if app == model.app then
+                        UI.Style.Active
+
+                    else
+                        UI.Style.Potential
+
+                ( linkUrl, linkText ) =
+                    case app of
+                        Home ->
+                            ( "#home", "/home" )
+
+                        Form ->
+                            ( "#formulier", "/formulier" )
+
+                        Blog ->
+                            ( "#blog", "/blog" )
+            in
+            UI.Button.navlink semantics linkUrl linkText
+
+        links =
+            Element.row [ Element.padding 12, Element.spacing 12 ]
+                [ link Home
+                , link Form
+                , link Blog
+                ]
+
+        page =
+            Element.column
+                [ Element.padding 24, Element.spacing 24 ]
+                [ links
+                , contents
+                ]
+
+        body =
+            Element.layout (UI.Style.body []) page
+    in
+    { title = title, body = [ body ] }

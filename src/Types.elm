@@ -2,6 +2,7 @@ module Types exposing
     ( ActivitiesModel
     , Activity(..)
     , ActivityMeta
+    , App(..)
     , Card(..)
     , Comment
     , Flags
@@ -22,7 +23,6 @@ import Bets.Init
 import Bets.Types exposing (Bet, Group(..), Round(..))
 import Browser
 import Browser.Navigation as Navigation
-import Date
 import Form.Bracket.Types as Bracket
 import Form.GroupMatches.Types as GroupMatches
 import Form.Participant.Types as Participant
@@ -91,6 +91,7 @@ type InputState
     | Dirty
 
 
+init : Maybe String -> Screen.Size -> Navigation.Key -> Model Msg
 init formId sz navKey =
     { cards = initCards sz
     , bet = Bets.Init.bet
@@ -131,6 +132,7 @@ type FormInfoMsg
 
 type Msg
     = NavigateTo Page
+    | SetApp App
       -- | Answered Page Form.Question.Msg
     | FoundTimeZone Time.Zone
     | InfoMsg FormInfoMsg
@@ -195,6 +197,7 @@ type alias ActivitiesModel msg =
     }
 
 
+activitiesInit : ActivitiesModel Msg
 activitiesInit =
     { activities = NotAsked
     , comment = initComment

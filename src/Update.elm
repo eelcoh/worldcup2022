@@ -12,8 +12,8 @@ import Form.Info
 import Form.Participant as Participant
 import Form.Screen as Screen
 import Form.Topscorer as Topscorer
-import RemoteData exposing (RemoteData(..), WebData)
-import Types exposing (Card(..), InputState(..), Model, Msg(..), Token(..))
+import RemoteData exposing (RemoteData(..))
+import Types exposing (App(..), Card(..), InputState(..), Model, Msg(..), Token(..))
 import Url
 
 
@@ -22,6 +22,9 @@ update msg model =
     case msg of
         NavigateTo page ->
             ( { model | idx = page }, Cmd.none )
+
+        SetApp app ->
+            ( { model | app = app }, Cmd.none )
 
         FoundTimeZone tz ->
             ( { model | timeZone = tz }, Cmd.none )
@@ -137,8 +140,20 @@ update msg model =
                             -- is inside would be unnecessary.
                             ( model, Cmd.none )
 
-                        Just _ ->
-                            ( model
+                        Just f ->
+                            let
+                                app =
+                                    case f of
+                                        "home" ->
+                                            Home
+
+                                        "formulier" ->
+                                            Form
+
+                                        _ ->
+                                            Home
+                            in
+                            ( { model | app = app }
                             , Navigation.pushUrl model.navKey (Url.toString url)
                             )
 
@@ -239,7 +254,7 @@ update msg model =
                     model.activities.post
 
                 newPost =
-                    { oldPost | msg = "" }
+                    { oldPost | title = newTitle }
 
                 oldActivities =
                     model.activities

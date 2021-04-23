@@ -1,10 +1,10 @@
 module Activities exposing (..)
 
-import Element exposing (alignLeft, alignRight, column, height, padding, paddingXY, px, row, spacing, width)
+import Element exposing (alignLeft, alignRight, column, height, padding, paddingXY, px, row, spacing)
 import Element.Events as Events
 import Element.Input as Input
 import Http
-import Json.Decode exposing (Decoder, andThen, field, maybe)
+import Json.Decode exposing (Decoder, andThen, field)
 import Json.Encode
 import Markdown
 import RemoteData exposing (RemoteData(..), WebData)
@@ -17,7 +17,7 @@ import UI.Text
 
 
 fetchActivities : ActivitiesModel Msg -> Cmd Msg
-fetchActivities model =
+fetchActivities _ =
     Web.get "/activities" FetchedActivities decode
 
 
@@ -48,6 +48,11 @@ savePost model token =
     Web.postWithConfig config "/activities/blogs" SavedPost decode post
 
 
+view : Types.Model Msg -> Element.Element Msg
+view model =
+    viewActivities model.timeZone model.activities.activities
+
+
 viewActivities : Time.Zone -> WebData (List Activity) -> Element.Element Msg
 viewActivities tz wActivities =
     case wActivities of
@@ -57,7 +62,7 @@ viewActivities tz wActivities =
         Loading ->
             Element.text "Aan het ophalen..."
 
-        Failure err ->
+        Failure _ ->
             UI.Text.error "Oeps. Daar ging iets niet goed."
 
         Success activities ->
@@ -154,23 +159,11 @@ viewCommentInput model =
                 , UI.Button.pill UI.Style.Active ShowCommentInput "het prikbord"
                 ]
 
-        commentInputTrap2 v =
-            let
-                area =
-                    { onChange = SetCommentMsg
-                    , text = ""
-                    , label = Input.labelAbove [] (Element.text "Tekst")
-                    , placeholder = Nothing
-                    , spellcheck = True
-                    }
-            in
-            Input.multiline [ Events.onFocus ShowCommentInput, height (px 36) ] area
-
         authorInput v =
             let
                 area =
                     { onChange = SetCommentAuthor
-                    , text = ""
+                    , text = v
                     , label = Input.labelAbove [] (Element.text "Naam")
                     , placeholder = Nothing
                     }
@@ -302,9 +295,6 @@ encodeComment comment =
                 [ ( "author", Json.Encode.string comment.author )
                 , ( "msg", encodeMessage comment.msg )
                 ]
-
-        multlineMsg =
-            String.split "\n" comment.msg
     in
     Json.Encode.object
         [ ( "comment", encodedComment ) ]
@@ -376,10 +366,6 @@ encodeActivityMeta am =
         , ( "active", Json.Encode.bool am.active )
         , ( "uuid", Json.Encode.string am.uuid )
         ]
-
-
-type alias IncomingActivities =
-    { activities : List Activity }
 
 
 decode : Decoder (List Activity)

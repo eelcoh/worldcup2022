@@ -3,7 +3,6 @@ module Form.View exposing (view)
 import Bets.Bet
 import Bets.Types exposing (Group(..))
 import Bets.Types.Group as Group
-import Browser
 import Element exposing (padding, paddingXY, spacing)
 import Form.Bracket
 import Form.GroupMatches
@@ -21,7 +20,7 @@ import UI.Style
 -- View
 
 
-view : Model Msg -> Browser.Document Msg
+view : Model Msg -> Element.Element Msg
 view model =
     let
         getCard =
@@ -39,18 +38,8 @@ view model =
         card =
             getCard
                 |> makeCard
-
-        body =
-            viewCardChrome model card model.idx
-                |> Element.layout
-                    (UI.Style.body
-                        []
-                    )
-
-        title =
-            "Euro 2020"
     in
-    { title = title, body = [ body ] }
+    viewCardChrome model card model.idx
 
 
 viewCard : Model Msg -> Int -> Card -> Element.Element Msg

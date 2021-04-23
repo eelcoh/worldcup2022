@@ -1,4 +1,4 @@
-module UI.Button exposing (ScoreButton(..), ScoreButtonX(..), Size(..), button, maybeTeamBadge, maybeTeamButton, pill, scoreButton, submit, teamButton)
+module UI.Button exposing (ScoreButton(..), ScoreButtonX(..), Size(..), button, maybeTeamBadge, maybeTeamButton, navlink, pill, scoreButton, submit, teamButton)
 
 import Bets.Types
 import Element exposing (Element, centerX, centerY, fill, height, padding, px, text, width)
@@ -26,6 +26,15 @@ type ScoreButton
 type ScoreButtonX
     = SB Int ( Int, Int ) String
     | ZB Int
+
+
+navlink : ButtonSemantics -> String -> String -> Element msg
+navlink semantics link linkText =
+    let
+        linkStyle =
+            Style.button semantics [ padding 3, height (px 30), centerX, centerY ]
+    in
+    Element.link linkStyle { url = link, label = Element.text linkText }
 
 
 pill : ButtonSemantics -> msg -> String -> Element msg
