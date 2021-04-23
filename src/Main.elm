@@ -24,13 +24,21 @@ import Url
 
 
 init : Flags -> Url.Url -> Navigation.Key -> ( Model Msg, Cmd Msg )
-init flags _ navKey =
+init flags url navKey =
     let
+        ( app, msg ) =
+            Maybe.map getApp url.fragment
+                |> Maybe.withDefault ( Home, RefreshActivities )
+
+        cmd =
+            Task.succeed msg
+                |> Task.perform identity
+
         model =
             Types.init flags.formId (Screen.size flags.width flags.height) navKey
     in
-    ( model
-    , Task.perform FoundTimeZone Time.here
+    ( { model | app = app }
+    , Cmd.batch [ cmd, Task.perform FoundTimeZone Time.here ]
     )
 
 
@@ -116,3 +124,54 @@ view model =
             Element.layout (UI.Style.body []) page
     in
     { title = title, body = [ body ] }
+
+
+getApp : String -> ( App, Msg )
+getApp hash =
+    let
+        locs =
+            String.split "/" hash
+
+        -- emptyFunc =
+        --     \_ -> Cmd.none
+    in
+    case locs of
+        "#home" :: _ ->
+            ( Home, RefreshActivities )
+
+        "#blog" :: _ ->
+            ( Blog, RefreshActivities )
+
+        "#formulier" :: _ ->
+            ( Form, NoOp )
+
+        -- "#inzendingen" :: uuid :: _ ->
+        --     if (Uuid.isValidUuid uuid) then
+        --         ( Bets uuid, BetSelected )
+        --     else
+        --         ( Ranking, None )
+        -- "#inzendingen" :: _ ->
+        --     ( Ranking, None )
+        -- "#stand" :: uuid :: _ ->
+        --     if (Uuid.isValidUuid uuid) then
+        --         ( RankingDetailsView, RetrieveRankingDetails uuid )
+        --     else
+        --         ( Ranking, None )
+        -- "#stand" :: _ ->
+        --     ( Ranking, RefreshRanking )
+        -- "#wedstrijden" :: "wedstrijd" :: _ ->
+        --     ( EditMatchResult, None )
+        -- "#wedstrijden" :: [] ->
+        --     ( Results, RefreshResults )
+        -- "#knockouts" :: [] ->
+        --     ( KOResults, RefreshKnockoutsResults )
+        -- "#topscorer" :: [] ->
+        --     ( TSResults, RefreshTopscorerResults )
+        -- "#login" :: _ ->
+        --     ( Login, None )
+        _ ->
+            let
+                page =
+                    Debug.log "page" locs
+            in
+            ( Home, RefreshActivities )

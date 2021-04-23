@@ -363,3 +363,6 @@ update msg model =
                     { oldActivities | activities = res }
             in
             ( { model | activities = newActivities }, Cmd.none )
+
+        RefreshActivities ->
+            ( model, Activities.fetchActivities model.activities )

@@ -149,6 +149,7 @@ type Msg
     | UrlChange Url.Url
     | ScreenResize Int Int
       --
+    | RefreshActivities
     | FetchedActivities (WebData (List Activity))
     | FetchedBet (WebData Bet)
     | SetCommentMsg String
