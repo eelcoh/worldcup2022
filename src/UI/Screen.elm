@@ -1,4 +1,4 @@
-module Form.Screen exposing (Size, maxWidth, size)
+module UI.Screen exposing (Size, maxWidth, size)
 
 
 type alias Size =

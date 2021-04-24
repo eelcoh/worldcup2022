@@ -7,7 +7,7 @@ import Json.Decode exposing (Decoder, field)
 import Json.Encode
 import RemoteData exposing (RemoteData(..))
 import RemoteData.Http as Web
-import Types exposing (Credentials(..), Model, Msg(..), Token(..))
+import Types exposing (Access(..), Credentials(..), Model, Msg(..), Token(..))
 import UI.Button
 import UI.Style
 
@@ -78,14 +78,14 @@ view model =
         ]
 
 
-isAuthorised : Model Msg -> Bool
+isAuthorised : Model Msg -> Access
 isAuthorised model =
     case model.token of
         Success _ ->
-            True
+            Authorised
 
         _ ->
-            False
+            Unauthorised
 
 
 

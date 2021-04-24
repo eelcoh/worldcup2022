@@ -1,7 +1,7 @@
 module Form.Bracket.Types exposing (Angle, BracketState(..), IsWinner(..), Msg(..), State, createState, init, initialQualifierView)
 
 import Bets.Types exposing (Bracket(..), Candidate(..), CurrentSlot(..), Group(..), HasQualified(..), Slot, Team, Winner(..))
-import Form.Screen as Screen
+import UI.Screen as Screen
 
 
 type Msg

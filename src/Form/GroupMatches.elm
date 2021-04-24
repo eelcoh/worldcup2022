@@ -11,7 +11,7 @@ import Element.Events
 import Element.Input as Input
 import Form.GroupMatches.Types exposing (ChangeCursor(..), Msg(..), State, updateCursor)
 import List.Extra exposing (groupsOf)
-import UI.Button exposing (ScoreButton(..), ScoreButtonX(..))
+import UI.Button.Score exposing (displayScore)
 import UI.Style
 import UI.Team
 import UI.Text
@@ -67,7 +67,7 @@ view_ state mMatch matches =
                 , introduction
                 , displayMatches state.cursor matches
                 , viewInput state matchID (M.homeTeam match) (M.awayTeam match) mScore
-                , viewKeyboard state matchID
+                , viewKeyboard matchID
                 ]
 
         _ ->
@@ -82,122 +82,6 @@ displayHeader grp =
 introduction : Element.Element Msg
 introduction =
     Element.paragraph [] [ UI.Text.simpleText "Voorspel de uitslagen door op de knop met de gewenste score te klikken. Voor een juiste uitslag krijg je 3 punten. Heb je enkel de toto goed levert je dat 1 punt op." ]
-
-
-row00 : List ScoreButton
-row00 =
-    [ SR ( 3, 0 )
-    , SR ( 2, 0 )
-    , SR ( 1, 0 )
-    , SR ( 0, 0 )
-    , SR ( 0, 1 )
-    , SR ( 0, 2 )
-    , SR ( 0, 3 )
-    ]
-
-
-row01 : List ScoreButton
-row01 =
-    [ SR ( 6, 0 )
-    , SR ( 5, 0 )
-    , SR ( 4, 0 )
-    , ZR
-    , SR ( 0, 4 )
-    , SR ( 0, 5 )
-    , SR ( 0, 6 )
-    ]
-
-
-row10 : List ScoreButton
-row10 =
-    [ SR ( 4, 1 )
-    , SR ( 3, 1 )
-    , SR ( 2, 1 )
-    , SR ( 1, 1 )
-    , SR ( 1, 2 )
-    , SR ( 1, 3 )
-    , SR ( 1, 4 )
-    ]
-
-
-row11 : List ScoreButton
-row11 =
-    [ SR ( 7, 1 )
-    , SR ( 6, 1 )
-    , SR ( 5, 1 )
-    , ZR
-    , SR ( 1, 5 )
-    , SR ( 1, 6 )
-    , SR ( 1, 7 )
-    ]
-
-
-row20 : List ScoreButton
-row20 =
-    [ SR ( 5, 2 )
-    , SR ( 4, 2 )
-    , SR ( 3, 2 )
-    , SR ( 2, 2 )
-    , SR ( 2, 3 )
-    , SR ( 2, 4 )
-    , SR ( 2, 5 )
-    ]
-
-
-row3 : List ScoreButton
-row3 =
-    [ SR ( 6, 3 )
-    , SR ( 5, 3 )
-    , SR ( 4, 3 )
-    , SR ( 3, 3 )
-    , SR ( 3, 4 )
-    , SR ( 3, 5 )
-    , SR ( 3, 6 )
-    ]
-
-
-row4 : List ScoreButton
-row4 =
-    [ SR ( 5, 4 )
-    , SR ( 4, 4 )
-    , SR ( 4, 5 )
-    ]
-
-
-row5 : List ScoreButton
-row5 =
-    [ SR ( 5, 5 )
-    ]
-
-
-scores : List (List ScoreButtonX)
-scores =
-    [ row00
-    , row01
-    , row10
-    , row11
-    , row20
-    , row3
-    , row4
-    , row5
-    ]
-        |> List.map indexedScores
-
-
-indexedScores : List ScoreButton -> List ScoreButtonX
-indexedScores scoreList =
-    let
-        mkScoreButtonX s =
-            case s of
-                ( i, SR ( h, a ) ) ->
-                    SB i ( h, a ) (scoreString h a)
-
-                ( i, ZR ) ->
-                    ZB i
-    in
-    scoreList
-        |> List.indexedMap Tuple.pair
-        |> List.map mkScoreButtonX
 
 
 viewInput :
@@ -259,34 +143,6 @@ viewInput _ matchID homeTeam awayTeam mScore =
         ]
 
 
-viewKeyboard : a -> MatchID -> Element.Element Msg
-viewKeyboard _ matchID =
-    let
-        toButton s =
-            scoreButton UI.Style.Potential matchID s
-
-        toRow scoreList =
-            Element.row (UI.Style.scoreRow [ centerX, spacing 2, centerY ])
-                (List.map toButton scoreList)
-    in
-    Element.column (UI.Style.scoreColumn [ centerX, spacing 2 ])
-        (List.map toRow scores)
-
-
-scoreButton : UI.Style.ButtonSemantics -> MatchID -> ScoreButtonX -> Element.Element Msg
-scoreButton c matchID sb =
-    let
-        ( msg, txt ) =
-            case sb of
-                ZB _ ->
-                    ( NoOp, "" )
-
-                SB _ ( home, away ) t ->
-                    ( Update matchID home away, t )
-    in
-    UI.Button.scoreButton c msg txt
-
-
 displayMatches : MatchID -> List ( MatchID, AnswerGroupMatch ) -> Element.Element Msg
 displayMatches cursor matches =
     let
@@ -333,20 +189,34 @@ displayMatch cursor ( answerId, Answer (GroupMatch _ match mScore) _ ) =
     Just <| disp match mScore
 
 
-scoreString : Int -> Int -> String
-scoreString h a =
-    List.foldr (++) "" [ " ", String.fromInt h, "-", String.fromInt a, " " ]
+
+-- scoreButton : UI.Style.ButtonSemantics -> MatchID -> ScoreButtonX -> Element.Element Msg
+-- scoreButton c matchID sb =
+--     let
+--         ( msg, txt ) =
+--             case sb of
+--                 ZB _ ->
+--                     ( NoOp, "" )
+--                 SB _ ( home, away ) t ->
+--                     ( Update matchID home away, t )
+--     in
+--     UI.Button.scoreButton c msg txt
 
 
-displayScore : Maybe Score -> Element.Element Msg
-displayScore mScore =
-    let
-        txt =
-            case mScore of
-                Just score ->
-                    S.asString score
+viewKeyboard : MatchID -> Element.Element Msg
+viewKeyboard matchId =
+    UI.Button.Score.viewKeyboard NoOp (Update matchId)
 
-                Nothing ->
-                    " _-_ "
-    in
-    Element.el (UI.Style.score [ width (px 50), centerY ]) (Element.text txt)
+
+
+-- viewKeyboard : MatchID -> Element.Element Msg
+-- viewKeyboard matchID =
+--     let
+--         toButton s =
+--             scoreButton UI.Style.Potential matchID s
+--         toRow scoreList =
+--             Element.row (UI.Style.scoreRow [ centerX, spacing 2, centerY ])
+--                 (List.map toButton scoreList)
+--     in
+--     Element.column (UI.Style.scoreColumn [ centerX, spacing 2 ])
+--         (List.map toRow UI.Button.Score.scores)

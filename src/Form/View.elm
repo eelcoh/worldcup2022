@@ -8,11 +8,11 @@ import Form.Bracket
 import Form.GroupMatches
 import Form.Info
 import Form.Participant
-import Form.Screen as Screen
 import Form.Submit
 import Form.Topscorer
 import Types exposing (Card(..), Model, Msg(..))
 import UI.Button
+import UI.Screen as Screen
 import UI.Style
 
 
