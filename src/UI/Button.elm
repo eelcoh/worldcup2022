@@ -1,4 +1,4 @@
-module UI.Button exposing (ScoreButton(..), ScoreButtonX(..), Size(..), button, maybeTeamBadge, maybeTeamButton, navlink, pill, scoreButton, submit, teamButton)
+module UI.Button exposing (Size(..), button, maybeTeamBadge, maybeTeamButton, navlink, pill, submit, teamButton)
 
 import Bets.Types
 import Element exposing (Element, centerX, centerY, fill, height, padding, px, text, width)
@@ -16,16 +16,6 @@ type Size
     | XS
     | XXS
     | XXXS
-
-
-type ScoreButton
-    = SR ( Int, Int )
-    | ZR
-
-
-type ScoreButtonX
-    = SB Int ( Int, Int ) String
-    | ZB Int
 
 
 navlink : ButtonSemantics -> String -> String -> Element msg
@@ -88,23 +78,6 @@ button sz semantics msg buttonText =
             Style.button semantics [ w, h, onClick msg, centerX, centerY ]
     in
     Element.column buttonLayout [ text buttonText ]
-
-
-scoreButton : ButtonSemantics -> msg -> String -> Element msg
-scoreButton semantics msg buttonText =
-    let
-        w =
-            px 48
-                |> width
-
-        h =
-            px 28
-                |> height
-
-        buttonLayout =
-            Style.scoreButton semantics [ w, h, onClick msg, centerX, centerY, height (px 26) ]
-    in
-    Element.row buttonLayout [ text buttonText ]
 
 
 teamButton : ButtonSemantics -> msg -> Bets.Types.Team -> Element msg

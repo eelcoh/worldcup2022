@@ -1,5 +1,6 @@
 module Types exposing
-    ( ActivitiesModel
+    ( Access(..)
+    , ActivitiesModel
     , Activity(..)
     , ActivityMeta
     , App(..)
@@ -10,10 +11,17 @@ module Types exposing
     , FormInfoMsg(..)
     , Info(..)
     , InputState(..)
+    , MatchResult
+    , MatchResults
     , Model
     , Msg(..)
     , Page
     , Post
+    , RankingDetails
+    , RankingGroup
+    , RankingSummary
+    , RankingSummaryLine
+    , RoundScore
     , Token(..)
     , init
     , initComment
@@ -27,11 +35,11 @@ import Browser.Navigation as Navigation
 import Form.Bracket.Types as Bracket
 import Form.GroupMatches.Types as GroupMatches
 import Form.Participant.Types as Participant
-import Form.Screen as Screen
 import Form.Topscorer.Types as Topscorer
 import Html exposing (Html, div)
 import RemoteData exposing (RemoteData(..), WebData)
 import Time
+import UI.Screen as Screen
 import Url
 
 
@@ -40,6 +48,10 @@ type App
     | Blog
     | Form
     | Login
+    | Ranking
+    | RankingDetailsView
+    | Results
+    | EditMatchResult
 
 
 
@@ -108,6 +120,10 @@ init formId sz navKey =
     , app = Home
     , token = NotAsked
     , credentials = Empty
+    , ranking = NotAsked
+    , rankingDetails = NotAsked
+    , matchResults = NotAsked
+    , matchResult = NotAsked
     , timeZone = Time.utc
     }
 
@@ -126,6 +142,10 @@ type alias Model msg =
     , app : App
     , token : WebData Token
     , credentials : Credentials
+    , ranking : WebData RankingSummary
+    , rankingDetails : WebData RankingDetails
+    , matchResults : WebData MatchResults
+    , matchResult : WebData MatchResult
     , timeZone : Time.Zone
     }
 
@@ -170,10 +190,30 @@ type Msg
     | SavedPost (WebData (List Activity))
     | HidePostInput
     | ShowPostInput
+      -- Authenticate
     | FetchedToken (WebData Token)
     | SetUsername String
     | SetPassword String
     | Authenticate
+      -- Ranking
+    | RecreateRanking
+    | FetchedRanking (WebData RankingSummary)
+    | RefreshRanking
+    | FetchedRankingDetails (WebData RankingDetails)
+    | ViewRankingDetails String
+    | RetrieveRankingDetails String
+      -- Match Results
+    | FetchedMatchResults (WebData MatchResults)
+    | RefreshResults
+    | EditMatch MatchResult
+    | UpdateMatchResult MatchResult
+    | CancelMatchResult MatchResult
+    | StoredMatchResult (WebData MatchResult)
+
+
+type Access
+    = Unauthorised
+    | Authorised
 
 
 initCards : Screen.Size -> List Card
@@ -288,3 +328,62 @@ type Credentials
 
 type Token
     = Token String
+
+
+
+-- Ranking
+
+
+type alias RankingSummary =
+    { summary : List RankingGroup
+    , time : Time.Posix
+    }
+
+
+type alias RankingGroup =
+    { pos : Int
+    , bets : List RankingSummaryLine
+    , total : Int
+    }
+
+
+type alias RankingSummaryLine =
+    { name : String
+    , rounds : List RoundScore
+    , topscorer : Int
+    , total : Int
+    , uuid : String
+    }
+
+
+type alias RankingDetails =
+    { name : String
+    , rounds : List RoundScore
+    , topscorer : Int
+    , total : Int
+    , uuid : String
+    , bet : Bets.Types.Bet
+    }
+
+
+type alias RoundScore =
+    { round : String
+    , points : Int
+    }
+
+
+
+-- Results
+
+
+type alias MatchResults =
+    { results : List MatchResult }
+
+
+type alias MatchResult =
+    { matchResultId : String
+    , match : String
+    , homeTeam : Bets.Types.Team
+    , awayTeam : Bets.Types.Team
+    , score : Maybe Bets.Types.Score
+    }

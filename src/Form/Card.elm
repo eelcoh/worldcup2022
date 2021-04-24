@@ -3,8 +3,8 @@ module Form.Card exposing (findByCardId, getBracketCard, getGroupMatchesCard, up
 import Bets.Types exposing (Group(..), Round(..))
 import Form.Bracket.Types as Bracket
 import Form.GroupMatches.Types as GroupMatches
-import Form.Screen as Screen
 import Types exposing (Card(..), Info(..))
+import UI.Screen as Screen
 
 
 findByCardId : List Card -> Int -> Maybe Card

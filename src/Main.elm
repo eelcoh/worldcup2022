@@ -9,22 +9,25 @@ import Bets.Init
 import Browser
 import Browser.Events as Events
 import Browser.Navigation as Navigation
-import Element exposing (px)
+import Element
 import Form.Bracket as Bracket
 import Form.Card as Cards
 import Form.GroupMatches as GroupMatches
 import Form.Info
 import Form.Participant as Participant
-import Form.Screen as Screen
 import Form.Topscorer as Topscorer
 import Form.View
+import Ranking
 import RemoteData exposing (RemoteData(..))
+import Results
 import Task
 import Time
 import Types exposing (App(..), Card(..), Credentials(..), Flags, InputState(..), Model, Msg(..), Token(..))
 import UI.Button
+import UI.Screen as Screen
 import UI.Style
 import Url
+import Uuid.Barebones as Uuid
 
 
 
@@ -84,6 +87,18 @@ view model =
 
                         Login ->
                             Authentication.view model
+
+                        Ranking ->
+                            Ranking.view model
+
+                        RankingDetailsView ->
+                            Ranking.viewDetails model
+
+                        Results ->
+                            Results.view model
+
+                        EditMatchResult ->
+                            Results.edit model
             in
             Element.el [ Element.padding 24 ] contents_
 
@@ -107,6 +122,12 @@ view model =
                         Form ->
                             ( "#formulier", "/formulier" )
 
+                        Ranking ->
+                            ( "#stand", "/stand" )
+
+                        Results ->
+                            ( "#wedstrijden", "/wedstrijden" )
+
                         _ ->
                             ( "#blog", "/blog" )
             in
@@ -117,6 +138,7 @@ view model =
                 [ link Home
                 , link Form
                 , link Blog
+                , link Results
                 ]
 
         page =
@@ -159,17 +181,22 @@ getApp url =
                 --         ( Ranking, None )
                 -- "#inzendingen" :: _ ->
                 --     ( Ranking, None )
-                -- "#stand" :: uuid :: _ ->
-                --     if (Uuid.isValidUuid uuid) then
-                --         ( RankingDetailsView, RetrieveRankingDetails uuid )
-                --     else
-                --         ( Ranking, None )
-                -- "#stand" :: _ ->
-                --     ( Ranking, RefreshRanking )
-                -- "#wedstrijden" :: "wedstrijd" :: _ ->
-                --     ( EditMatchResult, None )
-                -- "#wedstrijden" :: [] ->
-                --     ( Results, RefreshResults )
+                "stand" :: uuid :: _ ->
+                    if Uuid.isValidUuid uuid then
+                        ( RankingDetailsView, RetrieveRankingDetails uuid )
+
+                    else
+                        ( Ranking, NoOp )
+
+                "stand" :: _ ->
+                    ( Ranking, RefreshRanking )
+
+                "wedstrijden" :: "wedstrijd" :: _ ->
+                    ( EditMatchResult, NoOp )
+
+                "wedstrijden" :: [] ->
+                    ( Results, RefreshResults )
+
                 -- "#knockouts" :: [] ->
                 --     ( KOResults, RefreshKnockoutsResults )
                 -- "#topscorer" :: [] ->
@@ -180,7 +207,7 @@ getApp url =
                 _ ->
                     let
                         page =
-                            Debug.log "page" hash
+                            Debug.log "page ::" hash
                     in
                     ( Home, RefreshActivities )
 
@@ -601,6 +628,114 @@ update msg model =
             case model.credentials of
                 Submittable uid pw ->
                     ( model, Authentication.authenticate uid pw )
+
+                _ ->
+                    ( model, Cmd.none )
+
+        RecreateRanking ->
+            let
+                cmd =
+                    case model.token of
+                        RemoteData.Success token ->
+                            Ranking.recreate token
+
+                        _ ->
+                            Cmd.none
+            in
+            ( model, cmd )
+
+        FetchedRanking ranking ->
+            ( { model | ranking = ranking }, Cmd.none )
+
+        --
+        ViewRankingDetails uuid ->
+            let
+                url =
+                    "#stand/" ++ uuid
+
+                cmd =
+                    Navigation.load url
+            in
+            ( model, cmd )
+
+        RetrieveRankingDetails uuid ->
+            let
+                cmd =
+                    Ranking.fetchRankingDetails uuid
+            in
+            ( model, cmd )
+
+        FetchedRankingDetails results ->
+            ( { model | rankingDetails = results }, Cmd.none )
+
+        RefreshRanking ->
+            case model.ranking of
+                Success _ ->
+                    ( model, Cmd.none )
+
+                _ ->
+                    ( model, Ranking.fetchRanking )
+
+        FetchedMatchResults results ->
+            let
+                nwModel =
+                    case results of
+                        Failure e ->
+                            let
+                                d =
+                                    Debug.log "oeps" e
+                            in
+                            { model | matchResults = results }
+
+                        _ ->
+                            { model | matchResults = results }
+            in
+            ( nwModel, Cmd.none )
+
+        StoredMatchResult result ->
+            ( { model | matchResult = result }, Results.fetchMatchResults )
+
+        RefreshResults ->
+            case model.matchResults of
+                Success _ ->
+                    ( model, Cmd.none )
+
+                _ ->
+                    ( model, Results.fetchMatchResults )
+
+        EditMatch match ->
+            let
+                url =
+                    "#wedstrijden/wedstrijd/" ++ match.match
+
+                cmd =
+                    Navigation.load url
+            in
+            ( { model | matchResult = Success match, app = EditMatchResult }, cmd )
+
+        UpdateMatchResult match ->
+            case model.token of
+                Success token ->
+                    let
+                        cmd =
+                            Results.updateMatchResults token match
+                    in
+                    ( model, cmd )
+
+                _ ->
+                    ( model, Cmd.none )
+
+        CancelMatchResult match ->
+            case model.token of
+                Success token ->
+                    let
+                        canceledMatch =
+                            { match | score = Nothing }
+
+                        cmd =
+                            Results.updateMatchResults token canceledMatch
+                    in
+                    ( model, cmd )
 
                 _ ->
                     ( model, Cmd.none )
