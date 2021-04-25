@@ -1,6 +1,8 @@
 module Bets.Types.Round exposing
-    ( decode
+    ( compare
+    , decode
     , encode
+    , fromInt
     , isSameOrANextRound
     , nextRound
     , toInt
@@ -38,8 +40,8 @@ toInt r =
             6
 
 
-toRound : Int -> Round
-toRound i =
+fromInt : Int -> Round
+fromInt i =
     case i of
         1 ->
             I
@@ -92,6 +94,11 @@ nextRound r =
             Nothing
 
 
+compare : Round -> Round -> Order
+compare r1 r2 =
+    Basics.compare (toInt r1) (toInt r2)
+
+
 encode : Round -> Json.Encode.Value
 encode r =
     Json.Encode.int (toInt r)
@@ -112,4 +119,4 @@ encode r =
 decode : Decoder Round
 decode =
     Json.Decode.int
-        |> Json.Decode.map toRound
+        |> Json.Decode.map fromInt

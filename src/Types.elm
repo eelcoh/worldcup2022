@@ -7,21 +7,25 @@ module Types exposing
     , Card(..)
     , Comment
     , Credentials(..)
+    , DataStatus(..)
     , Flags
     , FormInfoMsg(..)
     , Info(..)
     , InputState(..)
+    , KnockoutsResults
     , MatchResult
     , MatchResults
     , Model
     , Msg(..)
     , Page
     , Post
+    , Qualified(..)
     , RankingDetails
     , RankingGroup
     , RankingSummary
     , RankingSummaryLine
     , RoundScore
+    , TeamRounds
     , Token(..)
     , init
     , initComment
@@ -124,6 +128,7 @@ init formId sz navKey =
     , rankingDetails = NotAsked
     , matchResults = NotAsked
     , matchResult = NotAsked
+    , knockoutsResults = Fresh NotAsked
     , timeZone = Time.utc
     }
 
@@ -146,6 +151,7 @@ type alias Model msg =
     , rankingDetails : WebData RankingDetails
     , matchResults : WebData MatchResults
     , matchResult : WebData MatchResult
+    , knockoutsResults : DataStatus (WebData KnockoutsResults)
     , timeZone : Time.Zone
     }
 
@@ -209,6 +215,14 @@ type Msg
     | UpdateMatchResult MatchResult
     | CancelMatchResult MatchResult
     | StoredMatchResult (WebData MatchResult)
+      -- Knockouts
+    | FetchedKnockoutsResults (WebData KnockoutsResults)
+    | StoredKnockoutsResults (WebData KnockoutsResults)
+    | Qualify Bets.Types.Round Bets.Types.HasQualified Bets.Types.Team
+    | UpdateKnockoutsResults
+    | InitialiseKnockoutsResults
+    | RefreshKnockoutsResults
+    | ChangeQualify Bets.Types.Round Bets.Types.HasQualified Bets.Types.Team
 
 
 type Access
@@ -387,3 +401,30 @@ type alias MatchResult =
     , awayTeam : Bets.Types.Team
     , score : Maybe Bets.Types.Score
     }
+
+
+
+-- Knockouts
+
+
+type alias KnockoutsResults =
+    { teams : List ( String, TeamRounds )
+    }
+
+
+type alias TeamRounds =
+    { team : Bets.Types.Team
+    , roundsQualified : List ( Bets.Types.Round, Bets.Types.HasQualified )
+    }
+
+
+type DataStatus a
+    = Fresh a
+    | Filthy a
+    | Stale a
+
+
+type Qualified
+    = Did
+    | DidNot
+    | NotYet

@@ -17,12 +17,14 @@ import Form.Info
 import Form.Participant as Participant
 import Form.Topscorer as Topscorer
 import Form.View
+import Knockouts
 import Ranking
 import RemoteData exposing (RemoteData(..))
 import Results
 import Task
 import Time
-import Types exposing (App(..), Card(..), Credentials(..), Flags, InputState(..), Model, Msg(..), Token(..))
+import Types exposing (App(..), Card(..), Credentials(..), DataStatus(..), Flags, InputState(..), Model, Msg(..), Token(..))
+import Types.DataStatus as DataStatus
 import UI.Button
 import UI.Screen as Screen
 import UI.Style
@@ -739,3 +741,65 @@ update msg model =
 
                 _ ->
                     ( model, Cmd.none )
+
+        -- Knockouts
+        FetchedKnockoutsResults results ->
+            ( { model | knockoutsResults = Fresh results }, Cmd.none )
+
+        StoredKnockoutsResults results ->
+            ( { model | knockoutsResults = Fresh results }, Cmd.none )
+
+        Qualify rnd q team ->
+            let
+                kos =
+                    DataStatus.map (Knockouts.update rnd q team) model.knockoutsResults
+            in
+            ( { model | knockoutsResults = kos }, Cmd.none )
+
+        UpdateKnockoutsResults ->
+            let
+                cmd =
+                    case ( model.knockoutsResults, model.token ) of
+                        ( Filthy (Success res), Success token ) ->
+                            Knockouts.storeKnockoutsResults token res
+
+                        _ ->
+                            Cmd.none
+            in
+            ( model, cmd )
+
+        InitialiseKnockoutsResults ->
+            let
+                cmd =
+                    case model.token of
+                        Success token ->
+                            Knockouts.inititaliseKnockoutsResults token
+
+                        _ ->
+                            Cmd.none
+            in
+            ( model, cmd )
+
+        RefreshKnockoutsResults ->
+            let
+                cmd =
+                    Knockouts.fetchKnockoutsResults
+            in
+            ( model, cmd )
+
+        ChangeQualify round qualified team ->
+            let
+                newKnockoutsResults =
+                    case model.knockoutsResults of
+                        Fresh knockouts ->
+                            Knockouts.update round qualified team knockouts
+                                |> Filthy
+
+                        Filthy knockouts ->
+                            Knockouts.update round qualified team knockouts
+                                |> Filthy
+
+                        Stale _ ->
+                            model.knockoutsResults
+            in
+            ( { model | knockoutsResults = newKnockoutsResults }, Cmd.none )
