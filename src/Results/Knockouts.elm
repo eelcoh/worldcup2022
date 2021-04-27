@@ -1,4 +1,4 @@
-module Knockouts exposing (..)
+module Results.Knockouts exposing (..)
 
 import Bets.Types exposing (HasQualified(..), Round(..), Team)
 import Bets.Types.Bracket

@@ -1,5 +1,6 @@
 elm-stuff
 build
+test
 .idea
 .vscode
 .DS_Store
