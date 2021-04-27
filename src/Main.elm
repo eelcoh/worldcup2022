@@ -17,10 +17,11 @@ import Form.Info
 import Form.Participant as Participant
 import Form.Topscorer as Topscorer
 import Form.View
-import Knockouts
-import Ranking
 import RemoteData exposing (RemoteData(..))
-import Results
+import Results.Knockouts as Knockouts
+import Results.Matches as Matches
+import Results.Ranking as Ranking
+import Results.Topscorers
 import Task
 import Time
 import Types exposing (App(..), Card(..), Credentials(..), DataStatus(..), Flags, InputState(..), Model, Msg(..), Token(..))
@@ -97,10 +98,10 @@ view model =
                             Ranking.viewDetails model
 
                         Results ->
-                            Results.view model
+                            Matches.view model
 
                         EditMatchResult ->
-                            Results.edit model
+                            Matches.edit model
             in
             Element.el [ Element.padding 24 ] contents_
 
@@ -695,7 +696,7 @@ update msg model =
             ( nwModel, Cmd.none )
 
         StoredMatchResult result ->
-            ( { model | matchResult = result }, Results.fetchMatchResults )
+            ( { model | matchResult = result }, Matches.fetchMatchResults )
 
         RefreshResults ->
             case model.matchResults of
@@ -703,7 +704,7 @@ update msg model =
                     ( model, Cmd.none )
 
                 _ ->
-                    ( model, Results.fetchMatchResults )
+                    ( model, Matches.fetchMatchResults )
 
         EditMatch match ->
             let
@@ -720,7 +721,7 @@ update msg model =
                 Success token ->
                     let
                         cmd =
-                            Results.updateMatchResults token match
+                            Matches.updateMatchResults token match
                     in
                     ( model, cmd )
 
@@ -735,7 +736,7 @@ update msg model =
                             { match | score = Nothing }
 
                         cmd =
-                            Results.updateMatchResults token canceledMatch
+                            Matches.updateMatchResults token canceledMatch
                     in
                     ( model, cmd )
 
@@ -803,3 +804,58 @@ update msg model =
                             model.knockoutsResults
             in
             ( { model | knockoutsResults = newKnockoutsResults }, Cmd.none )
+
+        -- Topscorer
+        RefreshTopscorerResults ->
+            let
+                cmd =
+                    Results.Topscorers.fetchTopscorerResults
+            in
+            ( model, cmd )
+
+        ChangeTopscorerResults hasQualified topscorer ->
+            let
+                newTopscorersResults =
+                    case model.topscorerResults of
+                        Fresh topscorerResults ->
+                            Results.Topscorers.update hasQualified topscorer topscorerResults
+                                |> Filthy
+
+                        Filthy topscorerResults ->
+                            Results.Topscorers.update hasQualified topscorer topscorerResults
+                                |> Filthy
+
+                        Stale _ ->
+                            model.topscorerResults
+            in
+            ( { model | topscorerResults = newTopscorersResults }, Cmd.none )
+
+        UpdateTopscorerResults ->
+            let
+                cmd =
+                    case ( model.topscorerResults, model.token ) of
+                        ( Filthy (Success res), Success token ) ->
+                            Results.Topscorers.storeTopscorerResults token res
+
+                        _ ->
+                            Cmd.none
+            in
+            ( model, cmd )
+
+        InitialiseTopscorerResults ->
+            let
+                cmd =
+                    case model.token of
+                        Success token ->
+                            Results.Topscorers.inititaliseTopscorerResults token
+
+                        _ ->
+                            Cmd.none
+            in
+            ( model, cmd )
+
+        FetchedTopscorerResults results ->
+            ( { model | topscorerResults = Fresh results }, Cmd.none )
+
+        StoredTopscorerResults results ->
+            ( { model | topscorerResults = Fresh results }, Cmd.none )

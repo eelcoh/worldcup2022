@@ -27,13 +27,14 @@ module Types exposing
     , RoundScore
     , TeamRounds
     , Token(..)
+    , TopscorerResults
     , init
     , initComment
     , initPost
     )
 
 import Bets.Init
-import Bets.Types exposing (Bet, Group(..), Round(..))
+import Bets.Types exposing (Bet, Group(..), Round(..), Topscorer)
 import Browser
 import Browser.Navigation as Navigation
 import Form.Bracket.Types as Bracket
@@ -129,6 +130,7 @@ init formId sz navKey =
     , matchResults = NotAsked
     , matchResult = NotAsked
     , knockoutsResults = Fresh NotAsked
+    , topscorerResults = Fresh NotAsked
     , timeZone = Time.utc
     }
 
@@ -152,6 +154,7 @@ type alias Model msg =
     , matchResults : WebData MatchResults
     , matchResult : WebData MatchResult
     , knockoutsResults : DataStatus (WebData KnockoutsResults)
+    , topscorerResults : DataStatus (WebData TopscorerResults)
     , timeZone : Time.Zone
     }
 
@@ -223,6 +226,13 @@ type Msg
     | InitialiseKnockoutsResults
     | RefreshKnockoutsResults
     | ChangeQualify Bets.Types.Round Bets.Types.HasQualified Bets.Types.Team
+      -- Topscorer
+    | RefreshTopscorerResults
+    | ChangeTopscorerResults Bets.Types.HasQualified Topscorer
+    | UpdateTopscorerResults
+    | InitialiseTopscorerResults
+    | FetchedTopscorerResults (WebData TopscorerResults)
+    | StoredTopscorerResults (WebData TopscorerResults)
 
 
 type Access
@@ -428,3 +438,12 @@ type Qualified
     = Did
     | DidNot
     | NotYet
+
+
+
+-- Topscorer
+
+
+type alias TopscorerResults =
+    { topscorers : List ( Bets.Types.HasQualified, Topscorer )
+    }

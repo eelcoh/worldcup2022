@@ -1,4 +1,4 @@
-module Ranking exposing (fetchRanking, fetchRankingDetails, recreate, view, viewDetails)
+module Results.Ranking exposing (fetchRanking, fetchRankingDetails, recreate, view, viewDetails)
 
 import API.Date as Date
 import Bets.Bet

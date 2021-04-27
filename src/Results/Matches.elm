@@ -1,10 +1,9 @@
-module Results exposing (..)
+module Results.Matches exposing (..)
 
 import Authentication
 import Bets.Types exposing (Match, Score)
 import Bets.Types.Score as S
 import Bets.Types.Team
-import Bets.View
 import Element exposing (height, padding, paddingXY, px, spacing, width)
 import Element.Border as Border
 import Element.Events as Events

@@ -1,6 +1,7 @@
 module Bets.Types.Topscorer exposing
     ( decode
     , encode
+    , equal
     , getPlayer
     , getTeam
     , isComplete
@@ -10,7 +11,7 @@ module Bets.Types.Topscorer exposing
 
 import Bets.Json.Encode exposing (mStrEnc)
 import Bets.Types exposing (Player, Team, Topscorer)
-import Bets.Types.Team
+import Bets.Types.Team as Team
 import Json.Decode exposing (Decoder, field, maybe)
 import Json.Encode
 import Maybe.Extra as M
@@ -76,7 +77,7 @@ encode : Topscorer -> Json.Encode.Value
 encode ( mName, mTeam ) =
     Json.Encode.object
         [ ( "name", mStrEnc mName )
-        , ( "team", Bets.Types.Team.encodeMaybe mTeam )
+        , ( "team", Team.encodeMaybe mTeam )
         ]
 
 
@@ -98,4 +99,17 @@ decodeTSObj =
     Json.Decode.map2
         TopscorerObject
         (field "name" (maybe Json.Decode.string))
-        (field "team" (maybe Bets.Types.Team.decode))
+        (field "team" (maybe Team.decode))
+
+
+equal : Topscorer -> Topscorer -> Bool
+equal ( ts1, t1 ) ( ts2, t2 ) =
+    let
+        teamEqual =
+            Maybe.map2 Team.equal t1 t2
+
+        topscorerEqual =
+            Maybe.map2 (==) ts1 ts2
+    in
+    Maybe.map2 (&&) teamEqual topscorerEqual
+        |> Maybe.withDefault False
