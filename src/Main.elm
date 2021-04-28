@@ -229,7 +229,7 @@ update : Msg -> Model Msg -> ( Model Msg, Cmd Msg )
 update msg model =
     case msg of
         NavigateTo page ->
-            ( { model | idx = page }, Cmd.none )
+            ( { model | idx = Debug.log "page" page }, Cmd.none )
 
         SetApp app ->
             ( { model | app = app }, Cmd.none )

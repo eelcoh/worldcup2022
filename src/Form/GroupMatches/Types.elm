@@ -69,7 +69,7 @@ nextMatch matchID matches =
             mId /= matchID
 
         findNext =
-            dropWhile isNotCurrentMatch matches
+            dropWhile isNotCurrentMatch (Debug.log "matches" matches)
                 |> List.tail
     in
     Maybe.withDefault matchID (findNext |> Maybe.andThen List.head)
@@ -79,9 +79,9 @@ updateCursor : State -> Bet -> ChangeCursor -> State
 updateCursor model bet changeCursor =
     let
         nxtMatch matches_ =
-            case changeCursor of
+            case Debug.log "change cursor" changeCursor of
                 Implicit ->
-                    nextMatch model.cursor matches_
+                    nextMatch (Debug.log "current cursor" model.cursor) matches_
 
                 Explicit newCur ->
                     newCur

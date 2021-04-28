@@ -280,18 +280,18 @@ matches =
     -- Group E
     , m09 = match "m09" t.e3 t.e4 (date 2020 Jun 15) (time 14 0) bilbao
     , m10 = match "m10" t.e1 t.e2 (date 2020 Jun 15) (time 20 0) dublin
-    , m22 = match "m22" t.e4 t.e2 (date 2020 Jun 20) (time 20 0) bilbao
     , m21 = match "m21" t.e1 t.e3 (date 2020 Jun 19) (time 14 0) dublin
+    , m22 = match "m22" t.e4 t.e2 (date 2020 Jun 20) (time 20 0) bilbao
     , m33 = match "m33" t.e4 t.e1 (date 2020 Jun 24) (time 20 0) bilbao
     , m34 = match "m34" t.e2 t.e3 (date 2020 Jun 24) (time 20 0) dublin
 
     -- Group F
-    , m12 = match "m12" t.f1 t.f2 (date 2020 Jun 16) (time 17 0) munchen
     , m11 = match "m11" t.f3 t.f4 (date 2020 Jun 16) (time 14 0) boekarest
+    , m12 = match "m12" t.f1 t.f2 (date 2020 Jun 16) (time 17 0) munchen
     , m24 = match "m24" t.f4 t.f2 (date 2020 Jun 20) (time 17 0) munchen
     , m23 = match "m23" t.f1 t.f3 (date 2020 Jun 20) (time 20 0) boekarest
-    , m36 = match "m36" t.f4 t.f1 (date 2020 Jun 24) (time 16 0) munchen
     , m35 = match "m35" t.f2 t.f3 (date 2020 Jun 24) (time 16 0) boekarest
+    , m36 = match "m36" t.f4 t.f1 (date 2020 Jun 24) (time 16 0) munchen
     }
 
 
