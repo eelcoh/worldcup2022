@@ -46,8 +46,8 @@ initMatches =
     , Init.answerGroupMatch "m21" E matches.m21
     , Init.answerGroupMatch "m33" E matches.m33
     , Init.answerGroupMatch "m34" E matches.m34
-    , Init.answerGroupMatch "m12" F matches.m12
     , Init.answerGroupMatch "m11" F matches.m11
+    , Init.answerGroupMatch "m12" F matches.m12
     , Init.answerGroupMatch "m24" F matches.m24
     , Init.answerGroupMatch "m23" F matches.m23
     , Init.answerGroupMatch "m36" F matches.m36

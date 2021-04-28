@@ -247,7 +247,7 @@ initCards sz =
     , GroupMatchesCard <| GroupMatches.init B "m03"
     , GroupMatchesCard <| GroupMatches.init C "m05"
     , GroupMatchesCard <| GroupMatches.init D "m07"
-    , GroupMatchesCard <| GroupMatches.init E "m10"
+    , GroupMatchesCard <| GroupMatches.init E "m09"
     , GroupMatchesCard <| GroupMatches.init F "m11"
     , BracketCard <| Bracket.init sz
     , TopscorerCard
