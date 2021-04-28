@@ -115,9 +115,6 @@ flagUrlRound teamID =
         "AUT" ->
             "assets/svg/austria.svg"
 
-        "PLA" ->
-            "assets/svg/playoff.svg"
-
         "ENG" ->
             "assets/svg/england.svg"
 
