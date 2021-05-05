@@ -4,7 +4,6 @@ import Element exposing (alignLeft, alignTop, spacing, width)
 import Element.Font as Font
 import Element.Input as Input
 import Time exposing (Month(..), Weekday(..))
-import Types exposing (Msg)
 import UI.Color
 import UI.Style as Style
 
