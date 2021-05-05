@@ -2,6 +2,7 @@ module Bets.Types.Answer.Bracket exposing
     ( decode
     , encode
     , isComplete
+    , isCompleteQualifiers
     , setQualifier
     , setWinner
     , summary
@@ -40,6 +41,11 @@ setQualifier (Answer bracket points) slot qualifier =
 isComplete : AnswerBracket -> Bool
 isComplete (Answer bracket _) =
     Bets.Types.Bracket.isComplete bracket
+
+
+isCompleteQualifiers : AnswerBracket -> Bool
+isCompleteQualifiers (Answer bracket _) =
+    Bets.Types.Bracket.isCompleteQualifiers bracket
 
 
 summary : String

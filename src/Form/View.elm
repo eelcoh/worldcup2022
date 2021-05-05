@@ -2,8 +2,7 @@ module Form.View exposing (view)
 
 import Bets.Bet
 import Bets.Types exposing (Group(..))
-import Bets.Types.Group as Group
-import Element exposing (padding, paddingXY, spacing)
+import Element exposing (padding, paddingXY, px, spacing, width)
 import Form.Bracket
 import Form.GroupMatches
 import Form.Info
@@ -39,7 +38,8 @@ view model =
             getCard
                 |> makeCard
     in
-    viewCardChrome model card model.idx
+    Element.row [ Element.centerX ]
+        [ viewCardChrome model card model.idx ]
 
 
 viewCard : Model Msg -> Int -> Card -> Element.Element Msg
@@ -48,14 +48,13 @@ viewCard model _ card =
         IntroCard intro ->
             Element.map InfoMsg (Form.Info.view intro)
 
-        -- QuestionCard qModel ->
-        --     Element.map (Answered i) (Form.Question.view model.bet qModel)
-        -- QuestionSetCard qsModel ->
-        --     Element.map (QuestionSetMsg i) (Form.QuestionSet.view qsModel model.bet)
         GroupMatchesCard groupMatchesState ->
             Element.map (GroupMatchMsg groupMatchesState.group) (Form.GroupMatches.view model.bet groupMatchesState)
 
         BracketCard bracketState ->
+            Element.map BracketMsg (Form.Bracket.view model.bet bracketState)
+
+        BracketKnockoutsCard bracketState ->
             Element.map BracketMsg (Form.Bracket.view model.bet bracketState)
 
         TopscorerCard ->
@@ -81,12 +80,15 @@ viewPill model idx ( i, card ) =
         semantics =
             case card of
                 IntroCard _ ->
-                    mkpillModel False
+                    mkpillModel True
 
                 GroupMatchesCard state ->
                     mkpillModel (Form.GroupMatches.isComplete state.group model.bet)
 
                 BracketCard _ ->
+                    mkpillModel (Form.Bracket.isCompleteQualifiers model.bet)
+
+                BracketKnockoutsCard _ ->
                     mkpillModel (Form.Bracket.isComplete model.bet)
 
                 TopscorerCard ->
@@ -98,10 +100,19 @@ viewPill model idx ( i, card ) =
                 SubmitCard ->
                     mkpillModel False
 
+        -- = Active
+        -- | Inactive
+        -- | Wrong
+        -- | Right
+        -- | Perhaps
+        -- | Irrelevant
+        -- | Potential
+        -- | Selected
+        -- | Focus
         mkpillModel complete =
             case ( complete, current ) of
                 ( True, True ) ->
-                    UI.Style.Selected
+                    UI.Style.Right
 
                 ( True, False ) ->
                     UI.Style.Right
@@ -116,28 +127,7 @@ viewPill model idx ( i, card ) =
             NavigateTo i
 
         contents =
-            case card of
-                IntroCard _ ->
-                    "Start"
-
-                GroupMatchesCard state ->
-                    if state.group == A then
-                        "Wedstrijden " ++ Group.toString state.group
-
-                    else
-                        Group.toString state.group
-
-                BracketCard _ ->
-                    "Schema"
-
-                TopscorerCard ->
-                    "Topscorer"
-
-                ParticipantCard ->
-                    "Over jou"
-
-                SubmitCard ->
-                    "Insturen"
+            " "
     in
     UI.Button.pill semantics
         msg
@@ -162,22 +152,22 @@ viewCardChrome model card i =
         nextPill =
             UI.Button.pill UI.Style.Irrelevant (NavigateTo next) "volgende"
 
+        nav =
+            Element.row [ Element.spacing 20, Element.centerX ] [ prevPill, nextPill ]
+
         pillsPlus =
-            prevPill
-                :: List.append pills [ nextPill ]
-                |> Element.wrappedRow (UI.Style.none [ spacing 8, padding 0 ])
+            Element.wrappedRow [ spacing 8, padding 0, Element.centerX ] pills
     in
     Element.column
-        (UI.Style.none
-            [ paddingXY 0 20
-            , spacing 30
-            , Element.centerX
-            , Element.width
-                (Element.fill
-                    |> Element.maximum (Screen.maxWidth model.screen)
-                )
-            ]
-        )
+        [ paddingXY 0 20
+        , spacing 30
+        , Element.centerX
+        , Element.width
+            (Element.fill
+                |> Element.maximum (Screen.maxWidth model.screen)
+            )
+        ]
         [ card
+        , nav
         , pillsPlus
         ]

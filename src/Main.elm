@@ -9,7 +9,7 @@ import Bets.Init
 import Browser
 import Browser.Events as Events
 import Browser.Navigation as Navigation
-import Element
+import Element exposing (paddingXY, spacing)
 import Form.Bracket as Bracket
 import Form.Card as Cards
 import Form.GroupMatches as GroupMatches
@@ -80,13 +80,13 @@ view model =
                 contents_ =
                     case model.app of
                         Home ->
-                            Activities.view model
+                            viewHome model
 
                         Form ->
                             Form.View.view model
 
                         Blog ->
-                            Activities.view model
+                            viewBlog model
 
                         Login ->
                             Authentication.view model
@@ -136,17 +136,24 @@ view model =
             in
             UI.Button.navlink semantics linkUrl linkText
 
+        linkList =
+            case model.token of
+                RemoteData.Success (Token _) ->
+                    [ Home, Form, Blog, Results ]
+
+                _ ->
+                    [ Home, Form ]
+
         links =
             Element.row [ Element.padding 12, Element.spacing 12 ]
-                [ link Home
-                , link Form
-                , link Blog
-                , link Results
-                ]
+                (List.map link linkList)
 
         page =
             Element.column
-                [ Element.padding 24, Element.spacing 24 ]
+                [ Element.padding 24
+                , Element.spacing 24
+                , Element.centerX
+                ]
                 [ links
                 , contents
                 ]
@@ -155,6 +162,13 @@ view model =
             Element.layout (UI.Style.body []) page
     in
     { title = title, body = [ body ] }
+
+
+width model =
+    Element.width
+        (Element.fill
+            |> Element.maximum (Screen.maxWidth model.screen)
+        )
 
 
 getApp : Url.Url -> ( App, Cmd Msg )
@@ -219,6 +233,30 @@ getApp url =
                 |> Task.perform identity
     in
     ( app, cmd )
+
+
+viewHome : Model Msg -> Element.Element Msg
+viewHome model =
+    Element.column
+        [ paddingXY 0 20
+        , spacing 30
+        , width model
+        ]
+        [ Activities.viewCommentInput model.activities
+        , Activities.view model
+        ]
+
+
+viewBlog : Model Msg -> Element.Element Msg
+viewBlog model =
+    Element.column
+        [ paddingXY 0 20
+        , spacing 30
+        , width model
+        ]
+        [ Activities.viewPostInput model.activities
+        , Activities.view model
+        ]
 
 
 
@@ -562,7 +600,7 @@ update msg model =
                     model.activities
 
                 newActivities =
-                    { oldActivities | showPost = False }
+                    { oldActivities | showPost = True }
             in
             ( { model | activities = newActivities }, Cmd.none )
 

@@ -1,6 +1,7 @@
 module UI.Style exposing
     ( ButtonSemantics(..)
     , activeMatch
+    , attribution
     , body
     , bullet
     , button
@@ -12,6 +13,7 @@ module UI.Style exposing
     , buttonRight
     , buttonSelected
     , buttonWrong
+    , darkBox
     , emphasis
     , error
     , flag
@@ -27,6 +29,7 @@ module UI.Style exposing
     , matches
     , menu
     , none
+    , normalBox
     , page
     , score
     , scoreButton
@@ -45,7 +48,7 @@ module UI.Style exposing
     , wrapper
     )
 
-import Element
+import Element exposing (fill, padding, px, width)
 import Element.Background as Background
 import Element.Border as Border
 import Element.Font as Font
@@ -190,6 +193,38 @@ introduction attrs =
             ]
 
 
+attribution : List (Element.Attribute msg) -> List (Element.Attribute msg)
+attribution attrs =
+    attrs
+        ++ [ UI.Font.slab
+           , Font.letterSpacing 1.4
+           , Font.size (scaled 1)
+           , Font.hairline
+           , Font.color Color.primaryText
+           , Element.spacing 10
+           , Element.paddingXY 0 8
+           ]
+
+
+normalBox : List (Element.Attribute msg) -> List (Element.Attribute msg)
+normalBox attrs =
+    attrs
+        ++ [ padding 20
+           , width fill
+           , Border.rounded 5
+           ]
+
+
+darkBox : List (Element.Attribute msg) -> List (Element.Attribute msg)
+darkBox attrs =
+    attrs
+        ++ [ padding 20
+           , width fill
+           , Background.color Color.primary
+           , Border.rounded 5
+           ]
+
+
 
 -- [ UI.Font.slab
 --    , Font.hairline
@@ -237,7 +272,7 @@ buttonActive =
 
 buttonInactive : List (Element.Attribute msg)
 buttonInactive =
-    [ Background.color Color.secondaryDark
+    [ Background.color Color.primary
     , Font.color Color.secondaryText
     , Border.width 1
     , Element.spacing 10
@@ -557,15 +592,17 @@ none attrs =
 
 bullet : List (Element.Attribute msg) -> List (Element.Attribute msg)
 bullet attrs =
-    attrs
+    textBase attrs
 
 
 textInput : List (Element.Attribute msg) -> List (Element.Attribute msg)
 textInput attrs =
     attrs
         ++ [ Border.width 2
-           , Border.color Color.secondaryLight
+           , Border.color Color.primaryDark
+           , Font.color Color.primaryDark
            , UI.Font.input
+           , Element.height (px 50)
            ]
 
 

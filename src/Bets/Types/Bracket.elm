@@ -9,6 +9,7 @@ module Bets.Types.Bracket exposing
     , getFreeSlots
     , getQualifiers
     , isComplete
+    , isCompleteQualifiers
     , proceed
     , proceedAway
     , proceedHome
@@ -240,6 +241,16 @@ isComplete brkt =
 
                 _ ->
                     isComplete home && isComplete away
+
+
+isCompleteQualifiers : Bracket -> Bool
+isCompleteQualifiers brkt =
+    case brkt of
+        TeamNode _ _ qual _ ->
+            M.isJust qual
+
+        MatchNode _ _ home away _ _ ->
+            isCompleteQualifiers home && isCompleteQualifiers away
 
 
 candidatesForTeamNode : Bracket -> Candidate -> Slot -> List Selection
