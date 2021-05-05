@@ -1,7 +1,8 @@
-module UI.Text exposing (boldText, bulletText, dateText, displayHeader, error, simpleText)
+module UI.Text exposing (boldText, bulletText, dateText, displayHeader, error, labelText, simpleText)
 
-import Element exposing (alignLeft, spacing, width)
+import Element exposing (alignLeft, alignTop, spacing, width)
 import Element.Font as Font
+import Element.Input as Input
 import Time exposing (Month(..), Weekday(..))
 import UI.Color
 import UI.Style as Style
@@ -14,7 +15,7 @@ displayHeader txt =
 
 simpleText : String -> Element.Element msg
 simpleText txt =
-    Element.paragraph (Style.text []) [ Element.text txt ]
+    Element.el (Style.text []) (Element.text txt)
 
 
 error : String -> Element.Element msg
@@ -27,7 +28,7 @@ bulletText txt =
     let
         bullet =
             Element.el
-                [ Element.paddingEach { top = 5, right = 0, bottom = 0, left = 0 } ]
+                [ Element.paddingEach { top = 7, right = 0, bottom = 0, left = 0 }, alignTop ]
                 (Element.el (Style.bullet [ alignLeft ]) (Element.text "•"))
 
         contents =
@@ -38,7 +39,12 @@ bulletText txt =
 
 boldText : String -> Element.Element msg
 boldText txt =
-    Element.paragraph (Style.emphasis [ Element.spacing 10 ]) [ Element.text txt ]
+    Element.el (Style.emphasis [ Element.spacing 10 ]) (Element.text txt)
+
+
+labelText : String -> Input.Label msg
+labelText txt =
+    Input.labelAbove (Style.emphasis [ Element.spacing 10 ]) (Element.text txt)
 
 
 dateText : Time.Zone -> Time.Posix -> String

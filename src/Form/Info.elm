@@ -30,37 +30,37 @@ view info =
         cardContents =
             case info of
                 Intro ->
-                    Element.paragraph (UI.Style.none [ spacing 16 ]) introduction
+                    Element.textColumn (UI.Style.none [ spacing 16 ]) introduction
 
                 FirstRoundIntro ->
-                    UI.Text.simpleText "Hello FirstRoundIntro"
+                    Element.text "Hello FirstRoundIntro"
 
                 GroupIntro group ->
-                    UI.Text.simpleText ("Hello GroupIntro " ++ Group.toString group)
+                    Element.text ("Hello GroupIntro " ++ Group.toString group)
 
                 GroupStandingsIntro group ->
-                    UI.Text.simpleText ("Hello GroupStandingsIntro " ++ Group.toString group)
+                    Element.text ("Hello GroupStandingsIntro " ++ Group.toString group)
 
                 BestThirdIntro ->
-                    UI.Text.simpleText "Hello BestThirdIntro"
+                    Element.text "Hello BestThirdIntro"
 
                 BracketIntro ->
                     UI.Text.displayHeader "Hello BracketIntro"
 
                 BracketView ->
-                    UI.Text.simpleText "Hello BracketView"
+                    Element.text "Hello BracketView"
 
                 BracketRoundIntro round_ ->
-                    UI.Text.simpleText ("Hello BracketRoundIntro " ++ Round.toString round_)
+                    Element.text ("Hello BracketRoundIntro " ++ Round.toString round_)
 
                 TopscorerIntro ->
-                    UI.Text.simpleText "Hello TopscorerIntro"
+                    Element.text "Hello TopscorerIntro"
 
                 AboutYouIntro ->
-                    UI.Text.simpleText "Hello AboutYouIntro"
+                    Element.text "Hello AboutYouIntro"
 
                 ThankYou ->
-                    UI.Text.simpleText "Hello ThankYou"
+                    Element.text "Hello ThankYou"
     in
     cardContents
 
@@ -70,7 +70,7 @@ introduction =
     [ UI.Text.displayHeader "Hier is de voetbalpool weer!"
     , Element.paragraph (UI.Style.introduction [ spacing 16 ])
         [ Element.text "Welkom op het formulier voor de voetbalpool. Vul achtereenvolgens de volgende vragen in:" ]
-    , Element.paragraph (UI.Style.introduction [ spacing 16 ])
+    , Element.column (UI.Style.introduction [ spacing 16 ])
         [ UI.Text.bulletText "Uitslagen van de wedstrijden voor iedere poule."
         , UI.Text.bulletText "De landen die de volgende ronde halen. Het is wat ingewikkeld. Eerst moet je de nummers 1 2 en 3 in de eindstand van een poule voorspellen. De nummers 1 en 2 gaan door. Van de zes nummers 3 gaan er maar vier door. Die moet je ook nog even voorspellen."
         , UI.Text.bulletText "Klik vervolgens het schema volledig bij elkaar."
@@ -78,9 +78,9 @@ introduction =
         , UI.Text.bulletText "En vertel ons wie je bent"
         ]
     , Element.paragraph (UI.Style.introduction [])
-        [ UI.Text.simpleText "Als voorgaande jaren is de inleg "
+        [ Element.text "Als voorgaande jaren is de inleg "
         , UI.Text.boldText "vijf euro"
-        , UI.Text.simpleText ", en de verdeling 50%, 30% en 20% voor de winnaar, nummer 2 en nummer 3. Bij gelijke stand wordt de opbrengst gedeeld."
+        , Element.text ", en de verdeling 50%, 30% en 20% voor de winnaar, nummer 2 en nummer 3. Bij gelijke stand wordt de opbrengst gedeeld."
         ]
     , attribution
     ]
@@ -88,13 +88,13 @@ introduction =
 
 attribution : Element.Element msg
 attribution =
-    Element.paragraph (UI.Style.introduction [ spacing 7 ])
-        [ UI.Text.simpleText "Icons made by "
+    Element.paragraph (UI.Style.attribution [ spacing 7 ])
+        [ Element.text "Icons made by "
         , Element.link []
             { url = "https://www.flaticon.com/authors/freepik"
             , label = Element.text "Freepik"
             }
-        , UI.Text.simpleText " from "
+        , Element.text " from "
         , Element.link []
             { url = "https://www.flaticon.com/"
             , label = Element.text "www.flaticon.com."

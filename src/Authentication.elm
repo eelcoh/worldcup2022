@@ -1,6 +1,6 @@
 module Authentication exposing (..)
 
-import Element exposing (height, padding, px, spacing)
+import Element exposing (fill, height, padding, px, spacing, width)
 import Element.Events as Events
 import Element.Input as Input
 import Json.Decode exposing (Decoder, field)
@@ -10,6 +10,7 @@ import RemoteData.Http as Web
 import Types exposing (Access(..), Credentials(..), Model, Msg(..), Token(..))
 import UI.Button
 import UI.Style
+import UI.Text
 
 
 authenticate : String -> String -> Cmd Msg
@@ -32,7 +33,7 @@ view model =
                     { onChange = SetUsername
                     , text = v
                     , placeholder = Nothing
-                    , label = Input.labelAbove [] (Element.text "Username")
+                    , label = UI.Text.labelText "username"
                     , spellcheck = True
                     }
             in
@@ -44,7 +45,7 @@ view model =
                     { onChange = SetPassword
                     , text = v
                     , placeholder = Nothing
-                    , label = Input.labelAbove [] (Element.text "Password")
+                    , label = UI.Text.labelText "password"
                     }
             in
             Input.text [ height (px 36) ] area
@@ -71,7 +72,7 @@ view model =
                     ( username uid, password pw, True )
     in
     Element.column
-        [ padding 10, spacing 20 ]
+        (UI.Style.darkBox [ padding 10, spacing 20, width fill ])
         [ inpUsername
         , inpPassword
         , loginButton isSubmittable

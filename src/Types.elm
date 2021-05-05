@@ -82,6 +82,7 @@ type Card
       -- | QuestionCard Questions.Model
     | GroupMatchesCard GroupMatches.State
     | BracketCard Bracket.State
+    | BracketKnockoutsCard Bracket.State
     | TopscorerCard
     | ParticipantCard
     | SubmitCard
@@ -250,6 +251,7 @@ initCards sz =
     , GroupMatchesCard <| GroupMatches.init E "m09"
     , GroupMatchesCard <| GroupMatches.init F "m11"
     , BracketCard <| Bracket.init sz
+    , BracketKnockoutsCard <| Bracket.initialKnockouts sz
     , TopscorerCard
     , ParticipantCard
     , SubmitCard
@@ -276,7 +278,7 @@ activitiesInit =
     , comment = initComment
     , post = initPost
     , contents = div [] []
-    , showComment = True
+    , showComment = False
     , showPost = False
     }
 

@@ -67,7 +67,7 @@ view bet =
                 inp =
                     { onChange = \val -> Set (k val)
                     , text = Tuple.second v
-                    , label = Element.Input.labelHidden (Tuple.first v)
+                    , label = UI.Text.labelText (Tuple.first v)
                     , placeholder = Just (placeholder (Tuple.first v))
                     }
             in
@@ -87,7 +87,7 @@ view bet =
                 [ UI.Text.simpleText """Graag volledig invullen, zodat wij je goed kunnen bereiken als je gewonnen hebt."""
                 ]
     in
-    Element.column (UI.Style.none [ spacing 7 ]) (header :: introduction :: lines)
+    Element.column (UI.Style.none [ spacing 12 ]) (header :: introduction :: lines)
 
 
 isComplete : Bet -> Bool

@@ -1,6 +1,8 @@
 module Activities exposing (..)
 
-import Element exposing (alignLeft, alignRight, column, height, padding, paddingXY, px, row, spacing)
+import Element exposing (alignLeft, alignRight, column, fill, height, padding, paddingXY, px, row, spacing, width)
+import Element.Background
+import Element.Border
 import Element.Events as Events
 import Element.Input as Input
 import Http
@@ -12,6 +14,7 @@ import RemoteData.Http as Web exposing (defaultConfig)
 import Time
 import Types exposing (ActivitiesModel, Activity(..), ActivityMeta, Comment, Msg(..), Post)
 import UI.Button
+import UI.Color exposing (background)
 import UI.Style
 import UI.Text
 
@@ -89,20 +92,20 @@ viewActivity tz activity =
 blogBox : String -> String -> String -> Time.Zone -> Time.Posix -> Element.Element Msg
 blogBox author title blog tz dt =
     column
-        [ padding 20 ]
-        [ Element.paragraph [] [ Element.text title ]
+        (UI.Style.normalBox [])
+        [ Element.paragraph (UI.Style.header2 [ width fill ]) [ Element.text title ]
         , blogView blog
-        , Element.el [ alignRight ] (Element.text (author ++ ", " ++ UI.Text.dateText tz dt))
+        , Element.el (UI.Style.attribution [ alignRight ]) (Element.text (author ++ ", " ++ UI.Text.dateText tz dt))
         ]
 
 
 commentBox : String -> String -> Time.Zone -> Time.Posix -> Element.Element Msg
 commentBox author comment tz dt =
     column
-        [ padding 20 ]
+        (UI.Style.darkBox [])
         [ row
             [ alignLeft ]
-            [ Element.el [] (Element.text (author ++ " zegt:")) ]
+            [ Element.el (UI.Style.attribution []) (Element.text (author ++ " zegt:")) ]
         , row
             [ alignLeft ]
             [ commentView comment ]
@@ -119,7 +122,7 @@ blogView c =
             Markdown.toHtml [] c
                 |> Element.html
     in
-    Element.el [] comment
+    Element.paragraph (UI.Style.introduction []) [ comment ]
 
 
 commentView : String -> Element.Element Msg
@@ -129,12 +132,12 @@ commentView c =
             Markdown.toHtml [] c
                 |> Element.html
     in
-    Element.el [] comment
+    Element.paragraph (UI.Style.introduction []) [ comment ]
 
 
 timeView : Time.Zone -> Time.Posix -> Element.Element Msg
 timeView tz dt =
-    Element.el [] (Element.text (UI.Text.dateText tz dt))
+    Element.el (UI.Style.attribution []) (Element.text (UI.Text.dateText tz dt))
 
 
 viewCommentInput : ActivitiesModel Msg -> Element.Element Msg
@@ -146,25 +149,38 @@ viewCommentInput model =
                     { onChange = SetCommentMsg
                     , text = v
                     , placeholder = Nothing
-                    , label = Input.labelAbove [] (Element.text "zeg wat")
+                    , label = UI.Text.labelText "zeg wat"
                     , spellcheck = True
                     }
             in
-            Input.multiline [ height (px 120) ] area
+            Input.multiline [ width fill, height (px 120) ] area
 
-        commentInputTrap =
+        commentInputTrap_ =
             Element.paragraph
-                [ paddingXY 0 0, spacing 0 ]
+                [ padding 0, spacing 0, width fill ]
                 [ Element.text "Schrijf vooral iets op "
                 , UI.Button.pill UI.Style.Active ShowCommentInput "het prikbord"
                 ]
+
+        commentInputTrap =
+            let
+                area =
+                    { onChange = \_ -> NoOp
+                    , label = UI.Text.labelText "zeg wat"
+                    , text = ""
+                    , placeholder = Nothing
+                    }
+            in
+            Input.text
+                [ Events.onFocus ShowCommentInput, height (px 36), width fill ]
+                area
 
         authorInput v =
             let
                 area =
                     { onChange = SetCommentAuthor
                     , text = v
-                    , label = Input.labelAbove [] (Element.text "Naam")
+                    , label = UI.Text.labelText "naam"
                     , placeholder = Nothing
                     }
             in
@@ -180,7 +196,7 @@ viewCommentInput model =
         input =
             if model.showComment then
                 Element.column
-                    [ padding 10, spacing 20 ]
+                    [ spacing 20, width fill ]
                     [ commentInput model.comment.msg
                     , authorInput model.comment.author
                     , saveButton
@@ -194,7 +210,7 @@ viewCommentInput model =
         --     [ commentInputTrap
         --     ]
     in
-    Element.el [ paddingXY 0 0 ] input
+    Element.el (UI.Style.normalBox []) input
 
 
 viewPostInput : ActivitiesModel Msg -> Element.Element Msg
@@ -206,7 +222,7 @@ viewPostInput model =
                     { onChange = SetPostTitle
                     , text = v
                     , placeholder = Nothing
-                    , label = Input.labelAbove [] (Element.text "Titel")
+                    , label = UI.Text.labelText "titel"
                     }
             in
             Input.text [ height (px 36) ] area
@@ -217,7 +233,7 @@ viewPostInput model =
                     { onChange = SetPostMsg
                     , text = v
                     , placeholder = Nothing
-                    , label = Input.labelAbove [] (Element.text "Tekst")
+                    , label = UI.Text.labelText "tekst"
                     , spellcheck = True
                     }
             in
@@ -227,7 +243,7 @@ viewPostInput model =
             let
                 area =
                     { onChange = \_ -> NoOp
-                    , label = Input.labelAbove [] (Element.text "Nieuwe Blog post.")
+                    , label = UI.Text.labelText "nieuwe blogpost"
                     , text = ""
                     , placeholder = Nothing
                     }
@@ -238,7 +254,7 @@ viewPostInput model =
             let
                 area =
                     { onChange = SetPostPassphrase
-                    , label = Input.labelAbove [] (Element.text "Wachtwoord")
+                    , label = UI.Text.labelText "wachtwoord"
                     , text = v
                     , placeholder = Nothing
                     }
@@ -249,7 +265,7 @@ viewPostInput model =
             let
                 area =
                     { onChange = SetPostAuthor
-                    , label = Input.labelAbove [] (Element.text "Naam")
+                    , label = UI.Text.labelText "naam"
                     , text = v
                     , placeholder = Nothing
                     }
@@ -266,7 +282,7 @@ viewPostInput model =
         input =
             if model.showPost then
                 Element.column
-                    [ padding 20, spacing 20 ]
+                    [ padding 0, spacing 20, width fill ]
                     [ titleInput model.post.title
                     , postInput model.post.msg
                     , passphraseInput model.post.passphrase
@@ -276,11 +292,11 @@ viewPostInput model =
 
             else
                 Element.column
-                    [ padding 20, spacing 20 ]
+                    [ padding 20, spacing 20, width fill ]
                     [ postInputTrap
                     ]
     in
-    Element.el [ paddingXY 20 20 ] input
+    Element.el (UI.Style.darkBox [ width fill ]) input
 
 
 

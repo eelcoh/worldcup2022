@@ -1,4 +1,4 @@
-module Form.Bracket exposing (isComplete, update, view)
+module Form.Bracket exposing (isComplete, isCompleteQualifiers, update, view)
 
 import Bets.Bet
 import Bets.Types exposing (Answer(..), Bet, Bracket(..), Candidate(..), CurrentSlot(..), Group(..), HasQualified(..), Winner(..))
@@ -16,6 +16,11 @@ import UI.Text
 isComplete : Bet -> Bool
 isComplete bet =
     Bets.Types.Answer.Bracket.isComplete bet.answers.bracket
+
+
+isCompleteQualifiers : Bet -> Bool
+isCompleteQualifiers bet =
+    Bets.Types.Answer.Bracket.isCompleteQualifiers bet.answers.bracket
 
 
 update : Msg -> Bet -> State -> ( Bet, State, Cmd Msg )
@@ -122,5 +127,6 @@ view bet state =
         , introduction
         , viewRings bet bracket state
         , candidatePanel
-        , viewToggle
+
+        -- , viewToggle
         ]
