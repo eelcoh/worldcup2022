@@ -42,7 +42,7 @@ submit semantics msg buttonText =
         buttonLayout =
             Style.button semantics [ padding 10, height (px 76), width (px 150), onClick msg, centerX, centerY ]
     in
-    Element.column buttonLayout [ Element.el [] (text buttonText) ]
+    Element.column buttonLayout [ Element.el [ centerX, centerY ] (text buttonText) ]
 
 
 button : Size -> ButtonSemantics -> msg -> String -> Element msg
