@@ -196,7 +196,7 @@ viewCommentInput model =
         input =
             if model.showComment then
                 Element.column
-                    [ spacing 20 ]
+                    [ spacing 20, width fill ]
                     [ commentInput model.comment.msg
                     , authorInput model.comment.author
                     , saveButton
