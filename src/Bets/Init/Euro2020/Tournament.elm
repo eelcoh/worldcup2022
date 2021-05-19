@@ -19,6 +19,7 @@ module Bets.Init.Euro2020.Tournament exposing
 
 import Bets.Types exposing (Bracket(..), Candidate(..), Group(..), HasQualified(..), Round(..), Stadium, Team, TeamData, TeamDatum, Tournament6x4, Winner(..))
 import Bets.Types.DateTime exposing (date, time)
+import Bets.Types.Group as Group
 import Bets.Types.Match exposing (match)
 import Bets.Types.Team exposing (team)
 import Time exposing (Month(..))
@@ -72,53 +73,74 @@ slot s t =
 bracket : Bracket
 bracket =
     let
+        firstPlace grp =
+            let
+                code =
+                    "W" ++ Group.toString grp
+            in
+            TeamNode code (FirstPlace grp) Nothing TBD
+
+        secondPlace grp =
+            let
+                code =
+                    "R" ++ Group.toString grp
+            in
+            TeamNode code (SecondPlace grp) Nothing TBD
+
+        bestThird idx grps =
+            let
+                code =
+                    "T" ++ String.fromInt idx
+            in
+            TeamNode code (BestThirdFrom grps) Nothing TBD
+
         tnwa =
-            TeamNode "WA" (FirstPlace A) Nothing TBD
+            firstPlace A
 
         tnwb =
-            TeamNode "WB" (FirstPlace B) Nothing TBD
+            firstPlace B
 
         tnwc =
-            TeamNode "WC" (FirstPlace C) Nothing TBD
+            firstPlace C
 
         tnwd =
-            TeamNode "WD" (FirstPlace D) Nothing TBD
+            firstPlace D
 
         tnwe =
-            TeamNode "WE" (FirstPlace E) Nothing TBD
+            firstPlace E
 
         tnwf =
-            TeamNode "WF" (FirstPlace F) Nothing TBD
+            firstPlace F
 
         tnra =
-            TeamNode "RA" (SecondPlace A) Nothing TBD
+            secondPlace A
 
         tnrb =
-            TeamNode "RB" (SecondPlace B) Nothing TBD
+            secondPlace B
 
         tnrc =
-            TeamNode "RC" (SecondPlace C) Nothing TBD
+            secondPlace C
 
         tnrd =
-            TeamNode "RD" (SecondPlace D) Nothing TBD
+            secondPlace D
 
         tnre =
-            TeamNode "RE" (SecondPlace E) Nothing TBD
+            secondPlace E
 
         tnrf =
-            TeamNode "RF" (SecondPlace F) Nothing TBD
+            secondPlace F
 
         tnt1 =
-            TeamNode "T1" (BestThirdFrom [ A, B, C ]) Nothing TBD
+            bestThird 1 [ A, B, C ]
 
         tnt2 =
-            TeamNode "T2" (BestThirdFrom [ A, B, C, D ]) Nothing TBD
+            bestThird 2 [ A, B, C, D ]
 
         tnt3 =
-            TeamNode "T3" (BestThirdFrom [ A, D, E, F ]) Nothing TBD
+            bestThird 3 [ A, D, E, F ]
 
         tnt4 =
-            TeamNode "T4" (BestThirdFrom [ D, E, F ]) Nothing TBD
+            bestThird 4 [ D, E, F ]
 
         -- Second round matches
         mn37 =
@@ -351,6 +373,7 @@ teams =
 
 
 -- teams
+-- regex  \([^)]*\),
 -- Group A (Rome/Baku): Turkey, Italy (hosts), Wales, Switzerland
 
 
@@ -398,42 +421,7 @@ denmark : TeamDatum
 denmark =
     { team = { teamID = "DEN", teamName = "Denmark" }
     , players =
-        [ "Kasper Schmeichel"
-        , "Jonas Lössl"
-        , "Frederik Rönnow"
-        , "Jesper Hansen"
-        , "Simon Kjaer"
-        , "Andreas Christensen"
-        , "Mathias 'Zanka' Jörgensen"
-        , "Jannik Vestergaard"
-        , "Andreas Bjelland"
-        , "Henrik Dalsgaard"
-        , "Peter Ankersen"
-        , "Nicolai Boilesen"
-        , "Jens Stryger"
-        , "Riza Durmisi"
-        , "Jonas Knudsen"
-        , "William Kvist"
-        , "Robert Skov"
-        , "Thomas Delaney"
-        , "Lukas Lerager"
-        , "Lasse Schöne"
-        , "Mike Jensen"
-        , "Christian Eriksen"
-        , "Daniel Wass"
-        , "Pierre-Emile Höjbjerg"
-        , "Mathias Jensen"
-        , "Michael Krohn-Dehli"
-        , "Pione Sisto"
-        , "Martin Braithwaite"
-        , "Andreas Cornelius"
-        , "Viktor Fischer"
-        , "Yussuf Poulsen"
-        , "Nicolai Jörgensen"
-        , "Nicklas Bendtner"
-        , "Kasper Dolberg"
-        , "Kenneth Zohore"
-        ]
+        []
     , group = B
     }
 
@@ -451,35 +439,7 @@ russia : TeamDatum
 russia =
     { team = team "RUS" "Rusland"
     , players =
-        [ "Soslan Dzhanaev"
-        , "Igor Akinfeev"
-        , "Vladimir Gabulov"
-        , "Andrey Lyunev"
-        , "Vladimir Granat"
-        , "Ruslan Kambolov"
-        , "Fyodor Kudryashov"
-        , "Ilya Kutepov"
-        , "Roman Neustädter"
-        , "Konstantin Rausch"
-        , "Igor Smolnikov,"
-        , "Mario Fernandes"
-        , "Andrei Semyonov"
-        , "Yuri Gazinski"
-        , "Aleksandr Golovin"
-        , "Alan Dzagoev"
-        , "Aleksandr Erokhin"
-        , "Yuri Zhirkov"
-        , "Daler Kuzyaev"
-        , "Roman Zobnin"
-        , "Aleksandr Samedov"
-        , "Anton Miranchuk"
-        , "Denis Cheryshev"
-        , "Aleksandr Tashaev"
-        , "Fyodor Chalov"
-        , "Artem Dzyuba"
-        , "Fyodor Smolov"
-        , "Aleksei Miranchuk"
-        ]
+        []
     , group = B
     }
 
@@ -490,32 +450,30 @@ belgium =
     , players =
         [ "Thibaut Courtois"
         , "Simon Mignolet"
-        , "Koen Casteels"
         , "Matz Sels"
         , "Toby Alderweireld"
         , "Dedryck Boyata"
-        , "Jan Vertonghen"
+        , "Jason Denayer"
         , "Thomas Vermaelen"
-        , "Thomas Meunier"
-        , "Christian Kabasele"
-        , "Vincent Kompany"
-        , "Laurent Ciman"
-        , "Jordan Lukaku"
-        , "Leander Dendoncker"
-        , "Axel Witsel"
+        , "Jan Vertonghen"
         , "Kevin De Bruyne"
-        , "Marouane Fellaini"
-        , "Mousa Dembele"
-        , "Youri Tielemans"
+        , "Timothy Castagne"
+        , "Thomas Meunier"
         , "Yannick Carrasco"
         , "Nacer Chadli"
-        , "Adnan Januzaj"
-        , "Romelu Lukaku"
-        , "Eden Hazard"
-        , "Dries Mertens"
+        , "Leander Dendoncker"
         , "Thorgan Hazard"
+        , "Dennis Praet"
+        , "Youri Tielemans"
+        , "Hans Vanaken"
+        , "Axel Witsel"
         , "Michy Batshuayi"
         , "Christian Benteke"
+        , "Jérémy Doku"
+        , "Eden Hazard"
+        , "Romelu Lukaku"
+        , "Dries Mertens"
+        , "Leandro Trossard"
         ]
     , group = B
     }
@@ -547,7 +505,37 @@ austria : TeamDatum
 austria =
     { team = { teamID = "AUT", teamName = "Oostenrijk" }
     , players =
-        []
+        [ "Daniel Bachmann"
+        , "Heinz Lindner"
+        , "Pavao Pervan"
+        , "Alexander Schlager"
+        , "David Alaba"
+        , "Aleksandar Dragovic"
+        , "Marco Friedl"
+        , "Martin Hinteregger"
+        , "Stefan Lainer"
+        , "Philipp Lienhart"
+        , "Phillipp Mwene"
+        , "Stefan Posch"
+        , "Christopher Trimmel"
+        , "Andreas Ulmer"
+        , "Husein Balic"
+        , "Julian Baumgartlinger"
+        , "Christoph Baumgartner"
+        , "Florian Grillitsch"
+        , "Stefan Ilsanker"
+        , "Konrad Laimer"
+        , "Valentino Lazaro"
+        , "Marcel Sabitzer"
+        , "Louis Schaub"
+        , "Xaver Schlager"
+        , "Alessandro Schöpf"
+        , "Marko Arnautovic"
+        , "Adrian Grbic"
+        , "Michael Gregoritsch"
+        , "Sasa Kalajdzic"
+        , "Karim Onisiwo"
+        ]
     , group = C
     }
 
@@ -569,30 +557,7 @@ england : TeamDatum
 england =
     { team = { teamID = "ENG", teamName = "Engeland" }
     , players =
-        [ "Jack Butland"
-        , "Jordan Pickford"
-        , "Nick Pope"
-        , "Trent Alexander-Arnold"
-        , "Gary Cahill"
-        , "Kyle Walker"
-        , "John Stones"
-        , "Harry Maguire"
-        , "Kieran Trippier"
-        , "Danny Rose"
-        , "Phil Jones"
-        , "Ashley Young"
-        , "Eric Dier"
-        , "Dele Alli"
-        , "Jesse Lingard"
-        , "Jordan Henderson"
-        , "Fabian Delph"
-        , "Ruben Loftus-Cheek"
-        , "Jamie Vardy"
-        , "Marcus Rashford"
-        , "Raheem Sterling"
-        , "Danny Welbeck"
-        , "Harry Kane"
-        ]
+        []
     , group = D
     }
 
@@ -601,30 +566,40 @@ croatia : TeamDatum
 croatia =
     { team = team "CRO" "Kroatië"
     , players =
-        [ "Danijel Subasic"
+        [ "Dominik Livakovic"
         , "Lovre Kalinic"
-        , "Dominik Livakovic"
-        , "Vedran Corluka"
-        , "Domagoj Vida"
-        , "Ivan Strinic"
-        , "Dejan Lovren"
+        , "Simon Sluga"
         , "Sime Vrsaljko"
-        , "Josip Pivaric"
-        , "Tin Jedvaj"
-        , "Matej Mitrovic"
+        , "Domagoj Vida"
+        , "Josip Juranovic"
+        , "Dejan Lovren"
         , "Duje Caleta-Car"
+        , "Borna Barisic"
+        , "Mile Skoric"
+        , "Josko Gvardiol"
+        , "Domagoj Bradaric"
         , "Luka Modric"
-        , "Mateo Kovacic"
-        , "Ivan Rakitic"
-        , "Milan Badelj"
         , "Marcelo Brozovic"
-        , "Filip Bradaric"
-        , "Mario Mandzukic"
+        , "Milan Badelj"
+        , "Mateo Kovacic"
+        , "Nikola Vlasic"
+        , "Mario Pasalic"
+        , "Luka Ivanusec"
+        , "Bruno Petkovic"
         , "Ivan Perisic"
-        , "Nikola Kalinic"
         , "Andrej Kramaric"
-        , "Marko Pjaca"
+        , "Josip Brekalo"
         , "Ante Rebic"
+        , "Mislav Orsic"
+        , "Ante Budimir"
+        , "Filip Uremovic"
+        , "Marko Livaja"
+        , "Toma Basic"
+        , "Marin Pongracic"
+        , "Kristijan Lovric"
+        , "Lovro Majer"
+        , "Ivica Ivusic"
+        , "Nikola Moro"
         ]
     , group = D
     }
@@ -656,30 +631,7 @@ spain : TeamDatum
 spain =
     { team = team "ESP" "Spanje"
     , players =
-        [ "David de Gea"
-        , "Pepe Reina"
-        , "Kepa Arrizabalaga"
-        , "Jordi Alba"
-        , "Nacho Monreal"
-        , "Álvaro Odriozola"
-        , "Nacho Fernandez"
-        , "Dani Carvajal"
-        , "Gerard Piqué"
-        , "Sergio Ramos"
-        , "Cesar Azpilicueta"
-        , "Sergio Busquets"
-        , "Isco"
-        , "Thiago Alcántara"
-        , "David Silva"
-        , "Andrés Iniesta"
-        , "Saúl Ñíguez"
-        , "Koke"
-        , "Marco Asensio"
-        , "Iago Aspas"
-        , "Diego Costa"
-        , "Rodrigo Moreno"
-        , "Lucas Vázquez"
-        ]
+        []
     , group = E
     }
 
@@ -688,30 +640,7 @@ sweden : TeamDatum
 sweden =
     { team = team "SWE" "Zweden"
     , players =
-        [ "Karl-Johan Johnsson"
-        , "Kristoffer Nordfeldt"
-        , "Robin Olsen"
-        , "Ludwig Augustinsson"
-        , "Andreas Granqvist"
-        , "Filip Helander"
-        , "Pontus Jansson"
-        , "Emil Krafth"
-        , "Mikael Lustig"
-        , "Victor Linderlöf"
-        , "Martin Olsson"
-        , "Viktor Claesson"
-        , "Jimmy Durmaz"
-        , "Albin Ekdal"
-        , "Emil Forsberg"
-        , "Oscar Hiljemark"
-        , "Sebastian Larsson"
-        , "Marcus Rohdén"
-        , "Gustav Svensson"
-        , "Marcus Berg"
-        , "John Guidetti"
-        , "Isaac Kiese Thelin"
-        , "Ola Toivonen"
-        ]
+        []
     , group = E
     }
 
@@ -720,41 +649,33 @@ poland : TeamDatum
 poland =
     { team = team "POL" "Polen"
     , players =
-        [ "Bartosz Bialkowski"
-        , "Lukasz Fabianski"
+        [ "Lukasz Fabianski"
         , "Lukasz Skorupski"
         , "Wojciech Szczesny"
+        , "Radoslaw Majecki"
         , "Jan Bednarek"
         , "Bartosz Bereszynski"
-        , "Thiago Cionek"
-        , "Kamil Glik"
-        , "Michal Pazdan"
-        , "Artur Jedrzejczyk"
-        , "Marcin Kaminski"
-        , "Tomasz Kedziora"
-        , "Lukasz Piszczek"
-        , "Jakub Blaszczykowski"
         , "Pawel Dawidowicz"
+        , "Kamil Glik"
+        , "Michal Helik"
+        , "Tomasz Kedziora"
+        , "Kamil Piatkowski"
+        , "Tymoteusz Puchacz"
+        , "Maciej Rybus"
         , "Przemyslaw Frankowski"
-        , "Jacek Goralski"
-        , "Kamil Grosicki"
-        , "Rafal Kurzawa"
-        , "Szymon Zurkowski"
-        , "Damian Kadzior"
+        , "Kamil Jozwiak"
+        , "Mateusz Klich"
+        , "Kacper Kozlowski"
         , "Grzegorz Krychowiak"
         , "Karol Linetty"
-        , "Maciej Makuszewski"
-        , "Sebastian Szymanski"
-        , "Krzysztof Maczynski"
-        , "Slawomir Peszko"
-        , "Maciej Rybus"
+        , "Jakub Moder"
+        , "Przemyslaw Placheta"
         , "Piotr Zielinski"
-        , "Dawid Kownacki"
         , "Robert Lewandowski"
+        , "Dawid Kownacki"
         , "Arkadiusz Milik"
-        , "Krzysztof Piatek"
-        , "Lukasz Teodorczyk"
-        , "Kamil Wilczek"
+        , "Karol Swiderski"
+        , "Jakub Swierczok"
         ]
     , group = E
     }
@@ -764,7 +685,31 @@ slovakia : TeamDatum
 slovakia =
     { team = { teamID = "SVK", teamName = "Slowakije" }
     , players =
-        []
+        [ "Martin Dúbravka"
+        , "Marek Rodák"
+        , "Dusan Kuciak"
+        , "Peter Pekarík"
+        , "Lubomír Satka"
+        , "Denis Vavro"
+        , "Milan Skriniar"
+        , "Tomás Hubocan"
+        , "Jakub Holúbek"
+        , "Marek Hamsík"
+        , "Stanislav Lobotka"
+        , "Patrik Hrosovsky"
+        , "Juraj Kucka"
+        , "Ondrej Duda"
+        , "Róbert Mak"
+        , "Vladimír Weiss"
+        , "László Bénes"
+        , "Lukáa Haraslín"
+        , "Tomás Suslov"
+        , "Matús Bero"
+        , "Erik Jirka"
+        , "Michal Duris"
+        , "Róbert Bozeník"
+        , "Dávid Strelec"
+        ]
     , group = E
     }
 
@@ -786,30 +731,7 @@ portugal : TeamDatum
 portugal =
     { team = team "POR" "Portugal"
     , players =
-        [ "Anthony Lopes"
-        , "Beto"
-        , "Rui Patricio"
-        , "Bruno Alves"
-        , "Cédric Soares"
-        , "José Fonte"
-        , "Mário Rui"
-        , "Pepe"
-        , "Raphaël Guerreiro"
-        , "Ricardo Pereira"
-        , "Rúben Dias"
-        , "Adrien Silva"
-        , "Bruno Fernandes"
-        , "William Carvalho"
-        , "João Mario"
-        , "João Moutinho"
-        , "Manuel Fernandes"
-        , "André Silva"
-        , "Bernardo Silva"
-        , "Cristiano Ronaldo"
-        , "Gelson Martins"
-        , "Gonçalo Guedes"
-        , "Ricardo Quaresma"
-        ]
+        []
     , group = F
     }
 
@@ -818,30 +740,7 @@ france : TeamDatum
 france =
     { team = { teamID = "FRA", teamName = "Frankrijk" }
     , players =
-        [ "Hugo Lloris"
-        , "Steve Mandanda"
-        , "Alphonse Areola"
-        , "Djibril Sidibé"
-        , "Benjamin Pavard"
-        , "Raphaël Varane"
-        , "Presnel Kimpembe"
-        , "Adil Rami"
-        , "Samuel Umtiti"
-        , "Lucas Hernández"
-        , "Benjamin Mendy"
-        , "Paul Pogba"
-        , "N'Golo Kanté"
-        , "Corentin Tolisso"
-        , "Blaise Matuidi"
-        , "Steven N’Zonzi"
-        , "Thomas Lemar"
-        , "Kylian Mbappé"
-        , "Olivier Giroud"
-        , "Antoine Griezmann"
-        , "Ousmane Dembélé"
-        , "Nabil Fékir"
-        , "Florian Thauvin"
-        ]
+        []
     , group = F
     }
 
@@ -850,33 +749,32 @@ germany : TeamDatum
 germany =
     { team = team "GER" "Duitsland"
     , players =
-        [ "Manuel Neuer"
-        , "Bernd Leno"
-        , "Marc-André ter Stegen"
+        [ "Bernd Leno"
+        , "Manuel Neuer"
         , "Kevin Trapp"
+        , "Mathias Ginter"
+        , "Robin Gosens"
+        , "Christian Günter"
+        , "Marcel Halstenberg"
         , "Mats Hummels"
-        , "Joshua Kimmich"
-        , "Niklas Süle"
-        , "Jerome Boateng"
-        , "Matthias Ginter"
-        , "Jonas Hector"
-        , "Marvin Plattenhardt"
+        , "Lukas Klostermann"
+        , "Robin Koch"
         , "Antonio Rüdiger"
-        , "Jonathan Tah"
-        , "Sebastian Rudy"
-        , "Thomas Müller"
+        , "Niklas Süle"
+        , "Emre Can"
         , "Leon Goretzka"
         , "Ilkay Gündogan"
-        , "Sami Khedira"
+        , "Kai Havertz"
+        , "Joshua Kimmich"
         , "Toni Kroos"
-        , "Mesut Özil"
-        , "Marco Reus"
-        , "Mario Gomez"
+        , "Thomas Müller"
+        , "Jamal Musiala"
+        , "Florian Neuhaus"
+        , "Serge Gnabry"
+        , "Jonas Hofmann"
         , "Leroy Sané"
-        , "Julian Draxler"
+        , "Kevin Volland"
         , "Timo Werner"
-        , "Julian Brandt"
-        , "Nils Petersen"
         ]
     , group = F
     }

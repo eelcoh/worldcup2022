@@ -7,7 +7,7 @@ module Form.Participant exposing
 import Bets.Bet exposing (setParticipant)
 import Bets.Types exposing (Bet)
 import Bets.Types.Participant
-import Element exposing (height, px, spacing, width)
+import Element exposing (fill, height, px, spacing, width)
 import Element.Input
 import Form.Participant.Types exposing (Attr(..), Msg(..))
 import UI.Style
@@ -83,7 +83,7 @@ view bet =
             UI.Text.displayHeader "Wie ben jij"
 
         introduction =
-            Element.paragraph (UI.Style.introduction [ width (px 600), spacing 7 ])
+            Element.paragraph (UI.Style.introduction [ width fill, spacing 7 ])
                 [ UI.Text.simpleText """Graag volledig invullen, zodat wij je goed kunnen bereiken als je gewonnen hebt."""
                 ]
     in

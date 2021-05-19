@@ -3,40 +3,40 @@ module Form.Submit exposing (view)
 import Element
 import RemoteData exposing (RemoteData(..))
 import Types exposing (Card(..), Info(..), InputState(..), Model, Msg(..))
-import UI.Button
-import UI.Style
+import UI.Button exposing (submit)
+import UI.Style exposing (ButtonSemantics(..))
 import UI.Text
 
 
 view : Model Msg -> Bool -> Element.Element Msg
 view model submittable =
     let
-        ( introText, ( semantics, msg, buttonText ) ) =
+        ( introText, btn ) =
             case ( submittable, model.savedBet, model.betState ) of
                 ( True, _, Dirty ) ->
-                    ( introSubmittable, ( UI.Style.Active, SubmitMsg, "inzenden" ) )
+                    ( introSubmittable, submit Active SubmitMsg "inzenden" )
 
                 ( False, NotAsked, Dirty ) ->
-                    ( introNotReady, ( UI.Style.Inactive, NoOp, "inzenden" ) )
+                    ( introNotReady, submit Inactive NoOp "inzenden" )
 
                 ( _, Success _, Clean ) ->
-                    ( introSubmitted, ( UI.Style.Right, Restart, "opnieuw" ) )
+                    ( introSubmitted, submit Right Restart "opnieuw" )
 
                 ( _, Success _, Dirty ) ->
-                    ( introSubmittable, ( UI.Style.Right, SubmitMsg, "inzenden" ) )
+                    ( introSubmittable, submit Right SubmitMsg "inzenden" )
 
                 ( _, Failure _, _ ) ->
-                    ( introSubmittedErr, ( UI.Style.Inactive, NoOp, "inzenden" ) )
+                    ( introSubmittedErr, submit Inactive NoOp "inzenden" )
 
                 ( _, Loading, _ ) ->
-                    ( introSubmitting, ( UI.Style.Inactive, NoOp, "inzenden" ) )
+                    ( introSubmitting, submit Inactive NoOp "inzenden" )
 
                 ( _, _, Clean ) ->
-                    ( introNotReady, ( UI.Style.Inactive, NoOp, "inzenden" ) )
+                    ( introNotReady, submit Inactive NoOp "inzenden" )
     in
     Element.column (UI.Style.none [ Element.spacing 16 ])
         [ introText
-        , UI.Button.submit semantics msg buttonText
+        , btn
         ]
 
 
@@ -58,10 +58,10 @@ introNotReady =
 introSubmitted : Element.Element Msg
 introSubmitted =
     Element.paragraph (UI.Style.none [])
-        [ UI.Text.simpleText "Dank voor het meedoen! Neem contact op met Arnaud of Eelco over het overmaken dan wel inleveren van de 5 euro inlegkosten."
-        , UI.Text.simpleText "Misschien wil je nog een keer meedoen? Vul dan gewoon het "
-        , Element.link [] { url = "/voetbalpool/formulier", label = Element.text "formulier" }
-        , UI.Text.simpleText "opnieuw in."
+        [ Element.text "Dank voor het meedoen! Neem contact op met Arnaud of Eelco over het overmaken dan wel inleveren van de 5 euro inlegkosten."
+        , Element.text "Misschien wil je nog een keer meedoen? Vul dan gewoon het "
+        , Element.link (UI.Style.introduction []) { url = "/voetbalpool/formulier", label = Element.text "formulier" }
+        , Element.text "opnieuw in."
         ]
 
 
