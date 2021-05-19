@@ -256,13 +256,13 @@ page attrs =
 
 buttonActive : List (Element.Attribute msg)
 buttonActive =
-    [ Background.color Color.orange
-    , Font.color Color.panel
+    [ Background.color Color.green
+    , Font.color Color.primary
     , Border.width 1
     , Element.pointer
     , Element.mouseOver
-        [ Background.color Color.secondaryLight
-        , Font.color Color.secondaryText
+        [ Background.color Color.green
+        , Font.color Color.primaryText
         ]
     , UI.Font.button
     , Element.centerY

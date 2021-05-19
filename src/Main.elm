@@ -267,7 +267,7 @@ update : Msg -> Model Msg -> ( Model Msg, Cmd Msg )
 update msg model =
     case msg of
         NavigateTo page ->
-            ( { model | idx = Debug.log "page" page }, Cmd.none )
+            ( { model | idx = page }, Cmd.none )
 
         SetApp app ->
             ( { model | app = app }, Cmd.none )
@@ -348,7 +348,7 @@ update msg model =
         SubmittedBet savedBet ->
             let
                 ( newBet, nwInputState ) =
-                    case savedBet of
+                    case Debug.log "saved" savedBet of
                         Success b ->
                             ( b, Clean )
 
@@ -367,6 +367,7 @@ update msg model =
                         | bet = Bets.Init.bet
                         , savedBet = NotAsked
                         , betState = Clean
+                        , idx = 0
                     }
             in
             ( nwState, Cmd.none )

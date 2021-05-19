@@ -4,6 +4,7 @@ import Bets.Init.Euro2020.Tournament as Tournament
 import Bets.Types exposing (Bracket(..), Candidate(..), Group, Team)
 import Bets.Types.Group as Group
 import Json.Decode exposing (Decoder, andThen, field)
+import Json.Decode.Extra exposing (fromResult)
 import Json.Encode
 
 
@@ -53,13 +54,13 @@ encode spot =
         FirstPlace grp ->
             Json.Encode.object
                 [ ( "candidate-type", Json.Encode.string "first-place" )
-                , ( "group", Group.encode grp )
+                , ( "groups", Json.Encode.list Group.encode [ grp ] )
                 ]
 
         SecondPlace grp ->
             Json.Encode.object
                 [ ( "candidate-type", Json.Encode.string "second-place" )
-                , ( "group", Group.encode grp )
+                , ( "groups", Json.Encode.list Group.encode [ grp ] )
                 ]
 
         BestThirdFrom grps ->
@@ -77,18 +78,31 @@ decode =
 
 decodeAnswerTDetails : String -> Decoder Candidate
 decodeAnswerTDetails s =
-    case s of
-        "first-place" ->
-            Json.Decode.map FirstPlace
-                (field "group" Group.decode)
+    let
+        makeCandidate constructor grps =
+            List.head grps
+                |> Maybe.map constructor
+                |> Result.fromMaybe "Multiple groups for single group position"
 
-        "second-place" ->
-            Json.Decode.map SecondPlace
-                (field "group" Group.decode)
+        makeBestThirds grps =
+            Result.Ok (BestThirdFrom grps)
 
-        "best-thirds-from" ->
-            Json.Decode.map BestThirdFrom
-                (field "group" (Json.Decode.list Group.decode))
+        decode_ s_ =
+            case s_ of
+                "first-place" ->
+                    Json.Decode.map (makeCandidate FirstPlace)
+                        (field "groups" (Json.Decode.list Group.decode))
 
-        _ ->
-            Json.Decode.fail "unknown type of candidate"
+                "second-place" ->
+                    Json.Decode.map (makeCandidate SecondPlace)
+                        (field "groups" (Json.Decode.list Group.decode))
+
+                "best-thirds-from" ->
+                    Json.Decode.map makeBestThirds
+                        (field "groups" (Json.Decode.list Group.decode))
+
+                _ ->
+                    Json.Decode.succeed (Result.Err "unknown candidate type")
+    in
+    decode_ s
+        |> Json.Decode.andThen fromResult

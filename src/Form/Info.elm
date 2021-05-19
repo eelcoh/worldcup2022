@@ -7,7 +7,7 @@ module Form.Info exposing
 import Bets.Types exposing (Bet)
 import Bets.Types.Group as Group
 import Bets.Types.Round as Round
-import Element exposing (spacing)
+import Element exposing (fill, spacing, width)
 import Types exposing (FormInfoMsg(..), Info(..))
 import UI.Style
 import UI.Text
@@ -30,7 +30,7 @@ view info =
         cardContents =
             case info of
                 Intro ->
-                    Element.textColumn (UI.Style.none [ spacing 16 ]) introduction
+                    Element.textColumn (UI.Style.none [ width fill, spacing 16 ]) introduction
 
                 FirstRoundIntro ->
                     Element.text "Hello FirstRoundIntro"

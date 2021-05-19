@@ -147,10 +147,10 @@ viewCardChrome model card i =
             List.map (viewPill model i) (List.indexedMap (\a b -> ( a, b )) model.cards)
 
         prevPill =
-            UI.Button.pill UI.Style.Irrelevant (NavigateTo prev) "vorige"
+            UI.Button.pill UI.Style.Focus (NavigateTo prev) "vorige"
 
         nextPill =
-            UI.Button.pill UI.Style.Irrelevant (NavigateTo next) "volgende"
+            UI.Button.pill UI.Style.Focus (NavigateTo next) "volgende"
 
         nav =
             Element.row [ Element.spacing 20, Element.centerX ] [ prevPill, nextPill ]
@@ -167,7 +167,7 @@ viewCardChrome model card i =
                 |> Element.maximum (Screen.maxWidth model.screen)
             )
         ]
-        [ card
+        [ pillsPlus
         , nav
-        , pillsPlus
+        , card
         ]

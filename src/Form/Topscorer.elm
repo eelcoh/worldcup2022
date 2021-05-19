@@ -177,7 +177,7 @@ mkPlayerButton act ( player, isSelected ) =
         c =
             case isSelected of
                 Selected ->
-                    UI.Style.Selected
+                    UI.Style.Focus
 
                 _ ->
                     UI.Style.Potential

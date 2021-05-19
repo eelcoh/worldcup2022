@@ -117,7 +117,6 @@ init formId sz navKey =
     , bet = Bets.Init.bet
     , savedBet = NotAsked
     , idx = 0
-    , card = div [] []
     , formId = formId
     , betState = Clean
     , navKey = navKey
@@ -141,7 +140,6 @@ type alias Model msg =
     , bet : Bet
     , savedBet : WebData Bet
     , idx : Page
-    , card : Html msg
     , formId : Maybe String
     , betState : InputState
     , navKey : Navigation.Key
