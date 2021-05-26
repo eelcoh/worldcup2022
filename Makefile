@@ -6,6 +6,8 @@ HTML = src/index.html
 
 build: build-directory html js 
 
+debug: build-directory html js-debug
+
 build-directory:
 	mkdir -p $(BUILD)
 
@@ -13,8 +15,10 @@ html:
 	cp $(HTML) $(BUILD)/index.html
 
 js:
-	elm make $(SRC)/Main.elm --output $(BUILD)/main.js
+	elm make $(SRC)/Main.elm --optimize --output $(BUILD)/main.js
 
+js-debug:
+	elm make $(SRC)/Main.elm  --output $(BUILD)/main.js
 
 clean:
 	echo "Removing build artifacts..."

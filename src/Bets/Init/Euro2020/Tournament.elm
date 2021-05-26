@@ -487,7 +487,33 @@ netherlands : TeamDatum
 netherlands =
     { team = { teamID = "NED", teamName = "Nederland" }
     , players =
-        []
+        [ "Jasper Cillessen"
+        , "Tim Krul"
+        , "Maarten Stekelenburg"
+        , "Patrick van Aanholt"
+        , "Nathan Aké"
+        , "Daley Blind"
+        , "Denzel Dumfries"
+        , "Matthijs de Ligt"
+        , "Jurriën Timber"
+        , "Joël Veltman"
+        , "Stefan de Vrij"
+        , "Owen Wijndal"
+        , "Donny van de Beek"
+        , "Ryan Gravenberch"
+        , "Frenkie de Jong"
+        , "Davy Klaassen"
+        , "Teun Koopmeiners"
+        , "Marten de Roon"
+        , "Georginio Wijnaldum"
+        , "Steven Berghuis"
+        , "Memphis Depay"
+        , "Cody Gakpo"
+        , "Luuk de Jong"
+        , "Donyell Malen"
+        , "Quincy Promes"
+        , "Wout Weghorst"
+        ]
     , group = C
     }
 

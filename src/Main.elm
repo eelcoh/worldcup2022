@@ -222,10 +222,6 @@ getApp url =
                     ( Login, NoOp )
 
                 _ ->
-                    let
-                        page =
-                            Debug.log "page ::" hash
-                    in
                     ( Home, RefreshActivities )
 
         cmd =
@@ -348,7 +344,7 @@ update msg model =
         SubmittedBet savedBet ->
             let
                 ( newBet, nwInputState ) =
-                    case Debug.log "saved" savedBet of
+                    case savedBet of
                         Success b ->
                             ( b, Clean )
 
@@ -723,10 +719,6 @@ update msg model =
                 nwModel =
                     case results of
                         Failure e ->
-                            let
-                                d =
-                                    Debug.log "oeps" e
-                            in
                             { model | matchResults = results }
 
                         _ ->

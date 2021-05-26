@@ -131,9 +131,6 @@ displayMatch access match =
 edit : Model Msg -> Element.Element Msg
 edit model =
     let
-        d =
-            Debug.log "edit"
-
         access =
             Authentication.isAuthorised model
 

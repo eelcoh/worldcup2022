@@ -1,6 +1,7 @@
 elm-stuff
 build
 test
+errors
 .idea
 .vscode
 .DS_Store
