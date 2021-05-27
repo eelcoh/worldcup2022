@@ -72,7 +72,7 @@ introduction =
         [ Element.text "Welkom op het formulier voor de voetbalpool. Vul achtereenvolgens de volgende vragen in:" ]
     , Element.column (UI.Style.introduction [ spacing 16 ])
         [ UI.Text.bulletText "Uitslagen van de wedstrijden voor iedere poule."
-        , UI.Text.bulletText "De landen die de volgende ronde halen. Het is wat ingewikkeld. Eerst moet je de nummers 1 2 en 3 in de eindstand van een poule voorspellen. De nummers 1 en 2 gaan door. Van de zes nummers 3 gaan er maar vier door. Die moet je ook nog even voorspellen."
+        , UI.Text.bulletText "De landen die de volgende ronde halen. De nummers 1 en 2 gaan van een poule gaan door. Van de zes nummers 3 gaan er maar vier door. Die moet je ook nog even voorspellen. Het schema daarvoor is wat ingewikkeld."
         , UI.Text.bulletText "Klik vervolgens het schema volledig bij elkaar."
         , UI.Text.bulletText "Selecteer je topscorer."
         , UI.Text.bulletText "En vertel ons wie je bent"

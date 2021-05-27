@@ -156,10 +156,10 @@ viewCardChrome model card i =
             Element.row [ Element.spacing 20, Element.centerX ] [ prevPill, nextPill ]
 
         pillsPlus =
-            Element.wrappedRow [ spacing 8, padding 0, Element.centerX ] pills
+            Element.row [ spacing 8, padding 0, Element.centerX ] pills
     in
     Element.column
-        [ paddingXY 0 20
+        [ padding 0
         , spacing 30
         , Element.centerX
         , Element.width

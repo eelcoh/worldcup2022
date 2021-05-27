@@ -5,7 +5,7 @@ import Bets.Types exposing (Answer(..), Bet, Bracket(..), Candidate(..), Current
 import Bets.Types.Answer.Bracket
 import Bets.Types.Bracket as B
 import Bets.Types.Candidate as Candidate
-import Element
+import Element exposing (fill, spacing, width)
 import Form.Bracket.Types exposing (BracketState(..), Msg(..), State, createState, initialQualifierView)
 import Form.Bracket.View exposing (viewCandidatesPanel, viewRings)
 import UI.Button exposing (pill)
@@ -100,10 +100,26 @@ view bet state =
             UI.Text.displayHeader "Klik je een weg door het schema"
 
         introtext =
-            """Dit is het schema voor de tweede ronde en verder. Eerst moet je invullen welke landen de tweede ronde uberhaupt halen, en daarna gaat het om het knockout schema. In het midden staat de finale, daarboven en onder de ronden die daaraan voorafgaan. Voor de juiste kwartfinalisten krijg je 4 punten. Halve finalisten leveren 7 punten op, finalisten 10 punten en de kampioen 13 punten."""
+            case state.bracketState of
+                ShowMatches ->
+                    [ Element.text "Dit is het schema voor de het knockout schema. In het midden staat de finale, daarboven en onder de ronden die daaraan voorafgaan. "
+                    ]
+
+                ShowSecondRoundSelection _ _ ->
+                    [ Element.text "Selecteer de landen voor de tweede ronde."
+                    ]
 
         introduction =
-            Element.paragraph [] [ UI.Text.simpleText introtext ]
+            Element.paragraph (UI.Style.introduction []) introtext
+
+        extroduction =
+            Element.column (UI.Style.introduction [ spacing 16 ])
+                [ UI.Text.bulletText "1 punt voor ieder juist land in de tweede rond. "
+                , UI.Text.bulletText "4 punten per kwartfinalist. "
+                , UI.Text.bulletText "7 punten per halve finalist. "
+                , UI.Text.bulletText "10 punten per finalist. "
+                , UI.Text.bulletText "13 punten voor de kampioen. "
+                ]
 
         candidatePanel =
             case state.bracketState of
@@ -113,20 +129,20 @@ view bet state =
                 _ ->
                     Element.none
 
-        viewToggle =
-            case state.bracketState of
-                ShowSecondRoundSelection _ _ ->
-                    pill Active CloseQualifierView "naar het schema"
-
-                ShowMatches ->
-                    pill Active OpenQualifierView "terug naar de tweede ronde"
+        -- viewToggle =
+        --     case state.bracketState of
+        --         ShowSecondRoundSelection _ _ ->
+        --             pill Active CloseQualifierView "naar het schema"
+        --         ShowMatches ->
+        --             pill Active OpenQualifierView "terug naar de tweede ronde"
     in
     Element.column
-        [ Element.spacingXY 0 20, Element.centerX ]
+        [ Element.spacingXY 0 20, width fill, Element.centerX ]
         [ header
         , introduction
         , viewRings bet bracket state
         , candidatePanel
+        , extroduction
 
         -- , viewToggle
         ]

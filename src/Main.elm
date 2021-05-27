@@ -9,7 +9,7 @@ import Bets.Init
 import Browser
 import Browser.Events as Events
 import Browser.Navigation as Navigation
-import Element exposing (paddingXY, spacing)
+import Element exposing (paddingXY, px, spacing)
 import Form.Bracket as Bracket
 import Form.Card as Cards
 import Form.GroupMatches as GroupMatches
@@ -17,6 +17,8 @@ import Form.Info
 import Form.Participant as Participant
 import Form.Topscorer as Topscorer
 import Form.View
+import Html.Attributes exposing (property)
+import Json.Encode as Encode
 import RemoteData exposing (RemoteData(..))
 import Results.Knockouts as Knockouts
 import Results.Matches as Matches
@@ -164,13 +166,6 @@ view model =
     { title = title, body = [ body ] }
 
 
-width model =
-    Element.width
-        (Element.fill
-            |> Element.maximum (Screen.maxWidth model.screen)
-        )
-
-
 getApp : Url.Url -> ( App, Cmd Msg )
 getApp url =
     let
@@ -236,9 +231,10 @@ viewHome model =
     Element.column
         [ paddingXY 0 20
         , spacing 30
-        , width model
+        , Screen.width model.screen
+        , Screen.className "home"
         ]
-        [ Activities.viewCommentInput model.activities
+        [ Activities.viewCommentInput model.activities (px <| Screen.maxWidth model.screen)
         , Activities.view model
         ]
 
@@ -248,9 +244,10 @@ viewBlog model =
     Element.column
         [ paddingXY 0 20
         , spacing 30
-        , width model
+        , Screen.width model.screen
+        , Screen.className "blog"
         ]
-        [ Activities.viewPostInput model.activities
+        [ Activities.viewPostInput model.activities (px <| Screen.maxWidth model.screen)
         , Activities.view model
         ]
 

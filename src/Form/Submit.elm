@@ -42,22 +42,22 @@ view model submittable =
 
 introSubmittable : Element.Element Msg
 introSubmittable =
-    Element.paragraph (UI.Style.none []) [ UI.Text.simpleText "Het formulier is compleet. Klik op inzenden om het in te sturen" ]
+    Element.paragraph (UI.Style.introduction []) [ Element.text "Het formulier is compleet. Klik op inzenden om het in te sturen" ]
 
 
 introSubmitting : Element.Element Msg
 introSubmitting =
-    Element.paragraph (UI.Style.none []) [ UI.Text.simpleText "Het formulier is compleet. Klik op inzenden om het in te sturen. Verzenden...." ]
+    Element.paragraph (UI.Style.introduction []) [ Element.text "Het formulier is compleet. Klik op inzenden om het in te sturen. Verzenden...." ]
 
 
 introNotReady : Element.Element Msg
 introNotReady =
-    Element.paragraph (UI.Style.none []) [ UI.Text.simpleText "Het formulier is nog niet helemaal ingevuld. Je kunt het nog niet insturen. Kijk op de 'tabs' bovenin welke er nog rood zijn." ]
+    Element.paragraph (UI.Style.introduction []) [ Element.text "Het formulier is nog niet helemaal ingevuld. Je kunt het nog niet insturen. Kijk op de 'tabs' bovenin welke er nog rood zijn." ]
 
 
 introSubmitted : Element.Element Msg
 introSubmitted =
-    Element.paragraph (UI.Style.none [])
+    Element.paragraph (UI.Style.introduction [])
         [ Element.text "Dank voor het meedoen! Neem contact op met Arnaud of Eelco over het overmaken dan wel inleveren van de 5 euro inlegkosten."
         , Element.text "Misschien wil je nog een keer meedoen? Vul dan gewoon het "
         , Element.link (UI.Style.introduction []) { url = "/voetbalpool/formulier", label = Element.text "formulier" }
@@ -67,4 +67,4 @@ introSubmitted =
 
 introSubmittedErr : Element.Element Msg
 introSubmittedErr =
-    Element.paragraph (UI.Style.none []) [ UI.Text.simpleText "Whoops! Daar ging iets niet goed. " ]
+    Element.paragraph (UI.Style.introduction []) [ Element.text "Whoops! Daar ging iets niet goed. " ]

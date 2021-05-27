@@ -1,8 +1,6 @@
 module Activities exposing (..)
 
-import Element exposing (alignLeft, alignRight, column, fill, height, padding, paddingXY, px, row, spacing, width)
-import Element.Background
-import Element.Border
+import Element exposing (Length, alignLeft, alignRight, column, fill, height, padding, paddingXY, px, row, spacing, spacingXY, width)
 import Element.Events as Events
 import Element.Input as Input
 import Http
@@ -14,7 +12,7 @@ import RemoteData.Http as Web exposing (defaultConfig)
 import Time
 import Types exposing (ActivitiesModel, Activity(..), ActivityMeta, Comment, Msg(..), Post)
 import UI.Button
-import UI.Color exposing (background)
+import UI.Screen as Screen
 import UI.Style
 import UI.Text
 
@@ -53,11 +51,15 @@ savePost model token =
 
 view : Types.Model Msg -> Element.Element Msg
 view model =
-    viewActivities model.timeZone model.activities.activities
+    let
+        screenWidth =
+            px <| Screen.maxWidth model.screen
+    in
+    viewActivities screenWidth model.timeZone model.activities.activities
 
 
-viewActivities : Time.Zone -> WebData (List Activity) -> Element.Element Msg
-viewActivities tz wActivities =
+viewActivities : Length -> Time.Zone -> WebData (List Activity) -> Element.Element Msg
+viewActivities wdth tz wActivities =
     case wActivities of
         NotAsked ->
             Element.text "Aan het ophalen."
@@ -70,14 +72,14 @@ viewActivities tz wActivities =
 
         Success activities ->
             List.map (viewActivity tz) activities
-                |> Element.column [ spacing 20 ]
+                |> Element.column [ Screen.className "activities", width wdth, spacingXY 0 20, paddingXY 0 20 ]
 
 
 viewActivity : Time.Zone -> Activity -> Element.Element Msg
 viewActivity tz activity =
     case activity of
         ANewBet activityMeta name uuid ->
-            Element.el [ padding 20 ] (Element.text (name ++ "doet mee"))
+            Element.el [ paddingXY 0 20 ] (Element.text (name ++ "doet mee"))
 
         AComment activityMeta author comment ->
             commentBox author comment tz activityMeta.date
@@ -86,14 +88,14 @@ viewActivity tz activity =
             blogBox author blogTitle blog tz activityMeta.date
 
         ANewRanking activityMeta ->
-            Element.el [ padding 20 ] (Element.text "De stand is bijgewerkt")
+            Element.el [ paddingXY 0 20 ] (Element.text "De stand is bijgewerkt")
 
 
 blogBox : String -> String -> String -> Time.Zone -> Time.Posix -> Element.Element Msg
 blogBox author title blog tz dt =
     column
-        (UI.Style.normalBox [])
-        [ Element.paragraph (UI.Style.header2 [ width fill ]) [ Element.text title ]
+        (UI.Style.normalBox [ paddingXY 0 20, Screen.className "blogBox" ])
+        [ Element.paragraph (UI.Style.header2 []) [ Element.text title ]
         , blogView blog
         , Element.el (UI.Style.attribution [ alignRight ]) (Element.text (author ++ ", " ++ UI.Text.dateText tz dt))
         ]
@@ -102,7 +104,7 @@ blogBox author title blog tz dt =
 commentBox : String -> String -> Time.Zone -> Time.Posix -> Element.Element Msg
 commentBox author comment tz dt =
     column
-        (UI.Style.darkBox [])
+        (UI.Style.darkBox [ paddingXY 0 20, Screen.className "commentBox" ])
         [ row
             [ alignLeft ]
             [ Element.el (UI.Style.attribution []) (Element.text (author ++ " zegt:")) ]
@@ -140,8 +142,8 @@ timeView tz dt =
     Element.el (UI.Style.attribution []) (Element.text (UI.Text.dateText tz dt))
 
 
-viewCommentInput : ActivitiesModel Msg -> Element.Element Msg
-viewCommentInput model =
+viewCommentInput : ActivitiesModel Msg -> Length -> Element.Element Msg
+viewCommentInput model w =
     let
         commentInput v =
             let
@@ -153,15 +155,14 @@ viewCommentInput model =
                     , spellcheck = True
                     }
             in
-            Input.multiline [ width fill, height (px 120) ] area
+            Input.multiline [ height (px 120) ] area
 
-        commentInputTrap_ =
-            Element.paragraph
-                [ padding 0, spacing 0, width fill ]
-                [ Element.text "Schrijf vooral iets op "
-                , UI.Button.pill UI.Style.Active ShowCommentInput "het prikbord"
-                ]
-
+        -- commentInputTrap_ =
+        --     Element.paragraph
+        --         [ padding 0, spacing 0 ]
+        --         [ Element.text "Schrijf vooral iets op "
+        --         , UI.Button.pill UI.Style.Active ShowCommentInput "het prikbord"
+        --         ]
         commentInputTrap =
             let
                 area =
@@ -172,7 +173,7 @@ viewCommentInput model =
                     }
             in
             Input.text
-                [ Events.onFocus ShowCommentInput, height (px 36), width fill ]
+                [ Events.onFocus ShowCommentInput, height (px 36) ]
                 area
 
         authorInput v =
@@ -188,7 +189,7 @@ viewCommentInput model =
 
         saveButton =
             if (model.comment.msg == "") || (model.comment.author == "") then
-                UI.Button.pill UI.Style.Inactive NoOp "je moet beide velden invullen"
+                UI.Button.pill UI.Style.Inactive NoOp "prik!"
 
             else
                 UI.Button.pill UI.Style.Active SaveComment "prik!"
@@ -196,7 +197,7 @@ viewCommentInput model =
         input =
             if model.showComment then
                 Element.column
-                    [ spacing 20, width fill ]
+                    [ paddingXY 0 20, spacingXY 0 20, width fill ]
                     [ commentInput model.comment.msg
                     , authorInput model.comment.author
                     , saveButton
@@ -210,11 +211,11 @@ viewCommentInput model =
         --     [ commentInputTrap
         --     ]
     in
-    Element.el (UI.Style.normalBox []) input
+    Element.el (UI.Style.normalBox [ Screen.className "commentInputBox" ]) input
 
 
-viewPostInput : ActivitiesModel Msg -> Element.Element Msg
-viewPostInput model =
+viewPostInput : ActivitiesModel Msg -> Length -> Element.Element Msg
+viewPostInput model w =
     let
         titleInput v =
             let
@@ -274,7 +275,7 @@ viewPostInput model =
 
         saveButton =
             if (model.post.msg == "") || (model.post.author == "") || (model.post.passphrase == "") then
-                UI.Button.pill UI.Style.Inactive NoOp "je moet alle velden invullen"
+                UI.Button.pill UI.Style.Inactive NoOp "post!"
 
             else
                 UI.Button.pill UI.Style.Active SavePost "post!"
@@ -282,7 +283,7 @@ viewPostInput model =
         input =
             if model.showPost then
                 Element.column
-                    [ padding 0, spacing 20, width fill ]
+                    [ paddingXY 0 20, spacingXY 0 20, width fill ]
                     [ titleInput model.post.title
                     , postInput model.post.msg
                     , passphraseInput model.post.passphrase
@@ -292,11 +293,11 @@ viewPostInput model =
 
             else
                 Element.column
-                    [ padding 20, spacing 20, width fill ]
+                    [ paddingXY 0 20, spacingXY 0 20, width fill ]
                     [ postInputTrap
                     ]
     in
-    Element.el (UI.Style.darkBox [ width fill ]) input
+    Element.el (UI.Style.darkBox []) input
 
 
 
