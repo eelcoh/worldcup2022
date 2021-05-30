@@ -595,11 +595,19 @@ bullet attrs =
     textBase attrs
 
 
-textInput : List (Element.Attribute msg) -> List (Element.Attribute msg)
-textInput attrs =
+textInput : Bool -> List (Element.Attribute msg) -> List (Element.Attribute msg)
+textInput hasError attrs =
+    let
+        borderColor =
+            if hasError then
+                Color.red
+
+            else
+                Color.primaryDark
+    in
     attrs
         ++ [ Border.width 2
-           , Border.color Color.primaryDark
+           , Border.color borderColor
            , Font.color Color.primaryDark
            , UI.Font.input
            , Element.height (px 50)

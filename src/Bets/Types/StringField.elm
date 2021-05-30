@@ -6,6 +6,19 @@ import Json.Decode exposing (Decoder)
 import Json.Encode
 
 
+value : StringField -> String
+value sf =
+    case sf of
+        Initial s ->
+            s
+
+        Changed s ->
+            s
+
+        Error s ->
+            s
+
+
 isValid : StringField -> Bool
 isValid sf =
     case sf of

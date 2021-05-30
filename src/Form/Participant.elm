@@ -28,6 +28,13 @@ update msg bet =
             else
                 Changed s
 
+        toStringEmailField s =
+            if Email.isValid s then
+                Changed s
+
+            else
+                Error s
+
         newParticipant attr participant =
             case attr of
                 Name n ->
@@ -40,7 +47,7 @@ update msg bet =
                     { participant | residence = toStringField e }
 
                 Email e ->
-                    { participant | email = toStringField e }
+                    { participant | email = toStringEmailField e }
 
                 Phone p ->
                     { participant | phone = toStringField p }
@@ -67,33 +74,33 @@ view bet =
         keys =
             [ Name, Postal, Residence, Email, Phone, Knows ]
 
-        stringFieldValue sf =
-            case sf of
-                Initial s ->
-                    s
-
-                Changed s ->
-                    s
-
-                Error s ->
-                    s
-
         values p =
-            List.map stringFieldValue [ p.name, p.address, p.residence, p.email, p.phone, p.howyouknowus ]
+            [ p.name, p.address, p.residence, p.email, p.phone, p.howyouknowus ]
 
         placeholder p =
             Element.Input.placeholder [] (Element.text p)
 
         inputField ( k, v ) =
             let
+                ( stringVal, hasError ) =
+                    case Tuple.second v of
+                        Initial s ->
+                            ( s, False )
+
+                        Changed s ->
+                            ( s, False )
+
+                        Error s ->
+                            ( s, True )
+
                 inp =
                     { onChange = \val -> Set (k val)
-                    , text = Tuple.second v
+                    , text = stringVal
                     , label = UI.Text.labelText (Tuple.first v)
                     , placeholder = Just (placeholder (Tuple.first v))
                     }
             in
-            Element.Input.text (UI.Style.textInput [ width (px 260), height (px 36) ]) inp
+            Element.Input.text (UI.Style.textInput hasError [ width (px 260), height (px 36) ]) inp
 
         lines =
             values bet.participant
