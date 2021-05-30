@@ -912,7 +912,32 @@ czechia : TeamDatum
 czechia =
     { team = { teamID = "CZE", teamName = "Tsjechië" }
     , players =
-        []
+        [ "Ales Mandous"
+        , "Jiri Pavlenka"
+        , "Tomás Vaclík"
+        , "Jan Boril"
+        , "Jakub Brabec"
+        , "Ondrej Celustka"
+        , "Vladimír Coufal"
+        , "Pavel Kaderábek"
+        , "Tomás Kalas"
+        , "Ales Mateju"
+        , "David Zima"
+        , "Antonín Barák"
+        , "Vladimír Darida"
+        , "Adam Hlozek"
+        , "Tomás Holes"
+        , "Jakub Jankto"
+        , "Alex Král"
+        , "Lukás Masopust"
+        , "Jakub Pesek"
+        , "Petr Sevcík"
+        , "Tomás Soucek"
+        , "Michael Krmenčík"
+        , "Tomás Pekhart"
+        , "Patrik Schick"
+        , "Matej Vydra"
+        ]
     , group = D
     }
 
