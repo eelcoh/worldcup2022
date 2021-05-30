@@ -38,7 +38,7 @@ view model =
             getCard
                 |> makeCard
     in
-    Element.row [ Element.centerX ]
+    Element.row [ Element.centerX, Screen.className "card" ]
         [ viewCardChrome model card model.idx ]
 
 

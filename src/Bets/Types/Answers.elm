@@ -1,5 +1,6 @@
 module Bets.Types.Answers exposing
-    ( decode
+    ( cleanThirds
+    , decode
     , encode
     , setQualifier
     , setScore
@@ -7,7 +8,7 @@ module Bets.Types.Answers exposing
     , setWinner
     )
 
-import Bets.Types exposing (Answers, MatchID, Qualifier, Score, Slot, Topscorer, Winner)
+import Bets.Types exposing (Answers, Group, MatchID, Qualifier, Score, Slot, Topscorer, Winner)
 import Bets.Types.Answer.Bracket as Br
 import Bets.Types.Answer.GroupMatches as Gm
 import Bets.Types.Answer.Topscorer as Ts
@@ -25,14 +26,19 @@ setTopscorer answers ts =
     { answers | topscorer = Ts.set answers.topscorer ts }
 
 
-setQualifier : Answers -> Slot -> Qualifier -> Answers
-setQualifier answers slot winner =
-    { answers | bracket = Br.setQualifier answers.bracket slot winner }
+setQualifier : Answers -> Slot -> Group -> Qualifier -> Answers
+setQualifier answers slot grp winner =
+    { answers | bracket = Br.setQualifier answers.bracket slot grp winner }
 
 
 setWinner : Answers -> Slot -> Winner -> Answers
 setWinner answers slot winner =
     { answers | bracket = Br.setWinner answers.bracket slot winner }
+
+
+cleanThirds : Answers -> Group -> Answers
+cleanThirds answers grp =
+    { answers | bracket = Br.cleanThirds answers.bracket grp }
 
 
 setScore : Answers -> MatchID -> Score -> Answers

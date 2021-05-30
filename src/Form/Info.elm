@@ -9,6 +9,7 @@ import Bets.Types.Group as Group
 import Bets.Types.Round as Round
 import Element exposing (fill, spacing, width)
 import Types exposing (FormInfoMsg(..), Info(..))
+import UI.Page exposing (page)
 import UI.Style
 import UI.Text
 
@@ -30,7 +31,7 @@ view info =
         cardContents =
             case info of
                 Intro ->
-                    Element.textColumn (UI.Style.none [ width fill, spacing 16 ]) introduction
+                    page "introduction" introduction
 
                 FirstRoundIntro ->
                     Element.text "Hello FirstRoundIntro"
@@ -72,7 +73,7 @@ introduction =
         [ Element.text "Welkom op het formulier voor de voetbalpool. Vul achtereenvolgens de volgende vragen in:" ]
     , Element.column (UI.Style.introduction [ spacing 16 ])
         [ UI.Text.bulletText "Uitslagen van de wedstrijden voor iedere poule."
-        , UI.Text.bulletText "De landen die de volgende ronde halen. De nummers 1 en 2 gaan van een poule gaan door. Van de zes nummers 3 gaan er maar vier door. Die moet je ook nog even voorspellen. Het schema daarvoor is wat ingewikkeld."
+        , UI.Text.bulletText "De landen die de volgende ronde halen. De nummers 1 en 2 gaan van een poule gaan door. Van de zes nummers 3 gaan er maar vier door. "
         , UI.Text.bulletText "Klik vervolgens het schema volledig bij elkaar."
         , UI.Text.bulletText "Selecteer je topscorer."
         , UI.Text.bulletText "En vertel ons wie je bent"

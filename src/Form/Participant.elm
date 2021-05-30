@@ -5,11 +5,15 @@ module Form.Participant exposing
     )
 
 import Bets.Bet exposing (setParticipant)
-import Bets.Types exposing (Bet)
+import Bets.Types exposing (Bet, StringField(..))
 import Bets.Types.Participant
-import Element exposing (fill, height, px, spacing, width)
+import Bets.Types.StringField as StringField
+import Element exposing (fill, height, paddingXY, px, spacing, width)
 import Element.Input
+import Email
 import Form.Participant.Types exposing (Attr(..), Msg(..))
+import UI.Page exposing (page)
+import UI.Screen as Screen
 import UI.Style
 import UI.Text
 
@@ -17,25 +21,32 @@ import UI.Text
 update : Msg -> Bet -> ( Bet, Cmd Msg )
 update msg bet =
     let
+        toStringField s =
+            if s == "" then
+                Error s
+
+            else
+                Changed s
+
         newParticipant attr participant =
             case attr of
                 Name n ->
-                    { participant | name = Just n }
+                    { participant | name = toStringField n }
 
                 Postal a ->
-                    { participant | address = Just a }
+                    { participant | address = toStringField a }
 
                 Residence e ->
-                    { participant | residence = Just e }
+                    { participant | residence = toStringField e }
 
                 Email e ->
-                    { participant | email = Just e }
+                    { participant | email = toStringField e }
 
                 Phone p ->
-                    { participant | phone = Just p }
+                    { participant | phone = toStringField p }
 
                 Knows h ->
-                    { participant | howyouknowus = Just h }
+                    { participant | howyouknowus = toStringField h }
 
         newBet attr participant =
             newParticipant attr participant
@@ -56,8 +67,19 @@ view bet =
         keys =
             [ Name, Postal, Residence, Email, Phone, Knows ]
 
+        stringFieldValue sf =
+            case sf of
+                Initial s ->
+                    s
+
+                Changed s ->
+                    s
+
+                Error s ->
+                    s
+
         values p =
-            List.map (Maybe.withDefault "") [ p.name, p.address, p.residence, p.email, p.phone, p.howyouknowus ]
+            List.map stringFieldValue [ p.name, p.address, p.residence, p.email, p.phone, p.howyouknowus ]
 
         placeholder p =
             Element.Input.placeholder [] (Element.text p)
@@ -87,7 +109,8 @@ view bet =
                 [ UI.Text.simpleText """Graag volledig invullen, zodat wij je goed kunnen bereiken als je gewonnen hebt."""
                 ]
     in
-    Element.column (UI.Style.none [ spacing 12 ]) (header :: introduction :: lines)
+    page "participant"
+        (header :: introduction :: lines)
 
 
 isComplete : Bet -> Bool

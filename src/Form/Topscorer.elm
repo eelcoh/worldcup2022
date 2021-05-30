@@ -5,10 +5,11 @@ import Bets.Init.Euro2020.Tournament exposing (initTeamData)
 import Bets.Types exposing (Answer(..), Bet, Team, TeamDatum, Topscorer)
 import Bets.Types.Answer.Topscorer
 import Bets.Types.Topscorer as TS
-import Element exposing (padding, spacing)
+import Element exposing (centerX, fill, padding, paddingXY, spacing, width)
 import Form.Topscorer.Types exposing (IsSelected(..), Msg(..))
 import List.Extra
 import UI.Button
+import UI.Page exposing (page)
 import UI.Style
 import UI.Text
 
@@ -85,7 +86,7 @@ viewTopscorer topscorer =
         headertext =
             UI.Text.displayHeader "Wie wordt de topscorer?"
     in
-    Element.column (UI.Style.none [ Element.spacing 16 ])
+    page "topscorer"
         ([ headertext
          , introduction
          , warning

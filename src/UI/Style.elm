@@ -200,7 +200,7 @@ attribution attrs =
            , Font.letterSpacing 1.4
            , Font.size (scaled 1)
            , Font.hairline
-           , Font.color Color.primaryText
+           , Font.color Color.secondaryLight
            , Element.spacing 10
            , Element.paddingXY 0 8
            ]

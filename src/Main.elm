@@ -234,7 +234,7 @@ viewHome model =
         , Screen.width model.screen
         , Screen.className "home"
         ]
-        [ Activities.viewCommentInput model.activities (px <| Screen.maxWidth model.screen)
+        [ Activities.viewCommentInput model.activities
         , Activities.view model
         ]
 
@@ -247,7 +247,7 @@ viewBlog model =
         , Screen.width model.screen
         , Screen.className "blog"
         ]
-        [ Activities.viewPostInput model.activities (px <| Screen.maxWidth model.screen)
+        [ Activities.viewPostInput model.activities
         , Activities.view model
         ]
 

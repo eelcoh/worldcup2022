@@ -1,5 +1,6 @@
 module Bets.Bet exposing
-    ( decode
+    ( cleanThirds
+    , decode
     ,  encode
        -- , findAllGroupMatchAnswers
 
@@ -63,9 +64,14 @@ setWinner bet slot winner =
     { bet | answers = A.setWinner bet.answers slot winner }
 
 
-setQualifier : Bet -> Slot -> Qualifier -> Bet
-setQualifier bet slot qualifier =
-    { bet | answers = A.setQualifier bet.answers slot qualifier }
+setQualifier : Bet -> Slot -> Group -> Qualifier -> Bet
+setQualifier bet slot grp qualifier =
+    { bet | answers = A.setQualifier bet.answers slot grp qualifier }
+
+
+cleanThirds : Bet -> Group -> Bet
+cleanThirds bet grp =
+    { bet | answers = A.cleanThirds bet.answers grp }
 
 
 setMatchScore : Bet -> MatchID -> Score -> Bet

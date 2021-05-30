@@ -12,6 +12,7 @@ import Element.Input as Input
 import Form.GroupMatches.Types exposing (ChangeCursor(..), Msg(..), State, updateCursor)
 import List.Extra exposing (groupsOf)
 import UI.Button.Score exposing (displayScore)
+import UI.Page exposing (page)
 import UI.Screen as Screen
 import UI.Style
 import UI.Team
@@ -63,7 +64,7 @@ view_ : State -> Maybe ( MatchID, AnswerGroupMatch ) -> List ( MatchID, AnswerGr
 view_ state mMatch matches =
     case mMatch of
         Just ( matchID, Answer (GroupMatch g match mScore) _ ) ->
-            Element.column (UI.Style.page [ centerX, spacing 20, paddingXY 20 0, Screen.className "groupmatch", width fill ])
+            page "groupmatch"
                 [ displayHeader g
                 , introduction
                 , displayMatches state.cursor matches

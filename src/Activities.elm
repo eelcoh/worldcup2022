@@ -1,6 +1,6 @@
 module Activities exposing (..)
 
-import Element exposing (Length, alignLeft, alignRight, column, fill, height, padding, paddingXY, px, row, spacing, spacingXY, width)
+import Element exposing (Length, alignLeft, alignRight, column, fill, height, paddingXY, px, row, spacingXY, width)
 import Element.Events as Events
 import Element.Input as Input
 import Http
@@ -142,8 +142,8 @@ timeView tz dt =
     Element.el (UI.Style.attribution []) (Element.text (UI.Text.dateText tz dt))
 
 
-viewCommentInput : ActivitiesModel Msg -> Length -> Element.Element Msg
-viewCommentInput model w =
+viewCommentInput : ActivitiesModel Msg -> Element.Element Msg
+viewCommentInput model =
     let
         commentInput v =
             let
@@ -214,8 +214,8 @@ viewCommentInput model w =
     Element.el (UI.Style.normalBox [ Screen.className "commentInputBox" ]) input
 
 
-viewPostInput : ActivitiesModel Msg -> Length -> Element.Element Msg
-viewPostInput model w =
+viewPostInput : ActivitiesModel Msg -> Element.Element Msg
+viewPostInput model =
     let
         titleInput v =
             let

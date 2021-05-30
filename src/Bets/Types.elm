@@ -33,6 +33,7 @@ module Bets.Types exposing
     , Selection
     , Slot
     , Stadium
+    , StringField(..)
     , Team
     , TeamData
     , TeamDatum
@@ -67,46 +68,6 @@ type alias Bet =
 
 type alias AnswerGroupMatches =
     List ( MatchID, AnswerGroupMatch )
-
-
-
--- { m01 : AnswerGroupMatch
--- , m02 : AnswerGroupMatch
--- , m03 : AnswerGroupMatch
--- , m04 : AnswerGroupMatch
--- , m05 : AnswerGroupMatch
--- , m06 : AnswerGroupMatch
--- , m07 : AnswerGroupMatch
--- , m08 : AnswerGroupMatch
--- , m09 : AnswerGroupMatch
--- , m10 : AnswerGroupMatch
--- , m11 : AnswerGroupMatch
--- , m12 : AnswerGroupMatch
--- , m13 : AnswerGroupMatch
--- , m14 : AnswerGroupMatch
--- , m15 : AnswerGroupMatch
--- , m16 : AnswerGroupMatch
--- , m17 : AnswerGroupMatch
--- , m18 : AnswerGroupMatch
--- , m19 : AnswerGroupMatch
--- , m20 : AnswerGroupMatch
--- , m21 : AnswerGroupMatch
--- , m22 : AnswerGroupMatch
--- , m23 : AnswerGroupMatch
--- , m24 : AnswerGroupMatch
--- , m25 : AnswerGroupMatch
--- , m26 : AnswerGroupMatch
--- , m27 : AnswerGroupMatch
--- , m28 : AnswerGroupMatch
--- , m29 : AnswerGroupMatch
--- , m30 : AnswerGroupMatch
--- , m31 : AnswerGroupMatch
--- , m32 : AnswerGroupMatch
--- , m33 : AnswerGroupMatch
--- , m34 : AnswerGroupMatch
--- , m35 : AnswerGroupMatch
--- , m36 : AnswerGroupMatch
--- }
 
 
 type alias Points =
@@ -312,13 +273,19 @@ type Candidate
 
 
 type alias Participant =
-    { name : Maybe String
-    , address : Maybe String
-    , residence : Maybe String
-    , phone : Maybe String
-    , email : Maybe String
-    , howyouknowus : Maybe String
+    { name : StringField
+    , address : StringField
+    , residence : StringField
+    , phone : StringField
+    , email : StringField
+    , howyouknowus : StringField
     }
+
+
+type StringField
+    = Initial String
+    | Changed String
+    | Error String
 
 
 type DateTime

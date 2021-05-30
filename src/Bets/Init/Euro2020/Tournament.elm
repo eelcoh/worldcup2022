@@ -6,6 +6,7 @@ module Bets.Init.Euro2020.Tournament exposing
     , bracket
     , budapest
     , glasgow
+    , groupMembers
     , initTeamData
     , kopenhagen
     , londen
@@ -369,6 +370,16 @@ initTeamData =
 teams : List Team
 teams =
     List.map .team initTeamData
+
+
+groupMembers : Group -> List Team
+groupMembers grp =
+    let
+        inGroup td =
+            td.group == grp
+    in
+    List.filter inGroup initTeamData
+        |> List.map .team
 
 
 

@@ -5,10 +5,10 @@ import Bets.Types exposing (Answer(..), Bet, Bracket(..), Candidate(..), Current
 import Bets.Types.Answer.Bracket
 import Bets.Types.Bracket as B
 import Bets.Types.Candidate as Candidate
-import Element exposing (fill, spacing, width)
+import Element exposing (spacing)
 import Form.Bracket.Types exposing (BracketState(..), Msg(..), State, createState, initialQualifierView)
 import Form.Bracket.View exposing (viewCandidatesPanel, viewRings)
-import UI.Button exposing (pill)
+import UI.Page exposing (page)
 import UI.Style exposing (ButtonSemantics(..))
 import UI.Text
 
@@ -40,10 +40,18 @@ update msg bet state =
             in
             ( bet, { state | bracketState = bracketState }, Cmd.none )
 
-        SetSlot slot team ->
+        SetSlot slot cand grp team ->
             let
+                cleanedBet =
+                    case cand of
+                        BestThirdFrom _ ->
+                            Bets.Bet.cleanThirds bet grp
+
+                        _ ->
+                            bet
+
                 newBet =
-                    Bets.Bet.setQualifier bet slot (Just team)
+                    Bets.Bet.setQualifier cleanedBet slot grp (Just team)
 
                 nextSlot =
                     Bets.Bet.getBracket newBet
@@ -102,11 +110,11 @@ view bet state =
         introtext =
             case state.bracketState of
                 ShowMatches ->
-                    [ Element.text "Dit is het schema voor de het knockout schema. In het midden staat de finale, daarboven en onder de ronden die daaraan voorafgaan. "
+                    [ Element.text "Dit is het knockout schema. In het midden staat de finale, daarboven en onder de ronden die daaraan voorafgaan. "
                     ]
 
                 ShowSecondRoundSelection _ _ ->
-                    [ Element.text "Selecteer de landen voor de tweede ronde."
+                    [ Element.text "Selecteer de landen voor de tweede ronde. Nummers 1 en 2 van elke poule gaan door. Van de 6 nummers 3 gaan er 4 door. De plaatsing daarvan is wat ingewikkeld; ga ik niet uitleggen. Maar van sommige groepen kan de nummer drie in meer plekken in het schema terecht komen dan van andere groepen. "
                     ]
 
         introduction =
@@ -114,7 +122,7 @@ view bet state =
 
         extroduction =
             Element.column (UI.Style.introduction [ spacing 16 ])
-                [ UI.Text.bulletText "1 punt voor ieder juist land in de tweede rond. "
+                [ UI.Text.bulletText "1 punt voor ieder juist land in de tweede ronde. "
                 , UI.Text.bulletText "4 punten per kwartfinalist. "
                 , UI.Text.bulletText "7 punten per halve finalist. "
                 , UI.Text.bulletText "10 punten per finalist. "
@@ -136,8 +144,7 @@ view bet state =
         --         ShowMatches ->
         --             pill Active OpenQualifierView "terug naar de tweede ronde"
     in
-    Element.column
-        [ Element.spacingXY 0 20, width fill, Element.centerX ]
+    page "bracket"
         [ header
         , introduction
         , viewRings bet bracket state

@@ -14,6 +14,7 @@ import Svg.Events as Events
 import Svg.PathD exposing (Segment(..), pathD)
 import UI.Button
 import UI.Color.RGB as RGB
+import UI.Screen as Screen
 import UI.Style exposing (ButtonSemantics(..))
 
 
@@ -68,7 +69,7 @@ viewRings bet bracket state =
                         , viewCandidatesCircle state candidate
                         ]
     in
-    Element.el [ width dimsPx, height dimsPx, Element.centerX ]
+    Element.el [ width dimsPx, height dimsPx, Element.centerX, Screen.className "rings" ]
         (Element.html <|
             Svg.svg
                 [ Attributes.width sz
@@ -292,7 +293,7 @@ viewCandidatesPanel _ bracket slot candidates =
         button { currentSlot, group, team } =
             let
                 msg =
-                    SetSlot slot team
+                    SetSlot slot candidates group team
             in
             ( group, mkTeamButton msg team currentSlot )
     in

@@ -7,7 +7,7 @@ import UI.Screen as Screen
 type Msg
     = SetWinner Slot Winner
     | SetQualifier Slot Candidate
-    | SetSlot Slot Team
+    | SetSlot Slot Candidate Group Team
     | CloseQualifierView
     | OpenQualifierView
 

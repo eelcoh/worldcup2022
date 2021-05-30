@@ -1,11 +1,12 @@
 module Form.Submit exposing (view)
 
-import Element
+import Element exposing (centerX, fill, paddingXY, spacing, width)
 import RemoteData exposing (RemoteData(..))
 import Types exposing (Card(..), Info(..), InputState(..), Model, Msg(..))
 import UI.Button exposing (submit)
+import UI.Page exposing (page)
+import UI.Screen as Screen
 import UI.Style exposing (ButtonSemantics(..))
-import UI.Text
 
 
 view : Model Msg -> Bool -> Element.Element Msg
@@ -34,7 +35,7 @@ view model submittable =
                 ( _, _, Clean ) ->
                     ( introNotReady, submit Inactive NoOp "inzenden" )
     in
-    Element.column (UI.Style.none [ Element.spacing 16 ])
+    page "submit"
         [ introText
         , btn
         ]
