@@ -28,6 +28,7 @@ module Types exposing
     , TeamRounds
     , Token(..)
     , TopscorerResults
+    , UUID
     , init
     , initComment
     , initPost
@@ -57,6 +58,7 @@ type App
     | RankingDetailsView
     | Results
     | EditMatchResult
+    | BetsDetailsView
 
 
 
@@ -175,6 +177,8 @@ type Msg
     | ParticipantMsg Participant.Msg
     | SubmitMsg
     | SubmittedBet (WebData Bet)
+    | BetSelected UUID
+    | FetchedBet (WebData Bet)
     | NoOp
     | Restart
     | UrlRequest Browser.UrlRequest
@@ -183,7 +187,6 @@ type Msg
       --
     | RefreshActivities
     | FetchedActivities (WebData (List Activity))
-    | FetchedBet (WebData Bet)
     | SetCommentMsg String
     | SetCommentAuthor String
     | SaveComment
