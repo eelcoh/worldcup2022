@@ -34,10 +34,10 @@ view model =
             Element.text "Aan het ophalen..."
 
         Failure err ->
-            let
-                t =
-                    Debug.log "error! " err
-            in
+            -- let
+            --     t =
+            --         Debug.log "error! " err
+            -- in
             UI.Text.error "Oeps. Daar ging iets niet goed."
 
         Success bet ->
@@ -51,7 +51,7 @@ viewBet bet screenSize =
             Screen.width screenSize
     in
     Element.column
-        [ spacing 20, w ]
+        [ spacing 40, w ]
         [ displayParticipant bet.participant
         , UI.Text.displayHeader "De wedstrijden"
         , matchesIntro
@@ -305,8 +305,27 @@ viewMatchWinner bet mBracket =
 
                 dash =
                     Element.text " - "
+
+                -- in
+                -- Element.row [ spacing 7 ] [ homeButton, awayButton ]
+                -- homeButton =
+                --     mkButton HomeTeam slot homeHasQ home
+                -- awayButton =
+                --     mkButton AwayTeam slot awayHasQ away
+                -- dash =
+                --     Element.text " - "
+                -- in
+                -- Element.row [ spacing 7 ] [ homeButton, awayButton ]
+                style =
+                    UI.Style.matchRow UI.Style.Perhaps
+                        [ UI.Font.button
+                        , Element.centerY
+                        , width (px 160)
+                        , height (px 100)
+                        ]
             in
-            Element.row [ spacing 7 ] [ homeButton, awayButton ]
+            Element.row style
+                [ homeButton, dash, awayButton ]
 
         _ ->
             Element.none
@@ -373,20 +392,42 @@ mkButtonChamp mBracket =
             []
     in
     UI.Button.maybeTeamBadgeSmall qualified mTeam
+        |> badge
 
 
 displayTopscorer : Answer Topscorer -> Element.Element Msg
 displayTopscorer (Answer ts points) =
     let
         tsName mTs =
-            Maybe.map (UI.Button.pill UI.Style.Irrelevant Types.NoOp) mTs
+            Maybe.map (UI.Button.pill UI.Style.Right Types.NoOp) mTs
                 |> Maybe.withDefault (error "no topscorer")
+
+        teamBadge =
+            UI.Button.maybeTeamBadgeSmall Potential (Tuple.second ts)
+                |> badge
     in
     Element.row
-        [ spacing 20, centerY, padding 20, height (px 100) ]
-        [ UI.Button.maybeTeamBadgeSmall Potential (Tuple.second ts)
+        [ spacing 20 ]
+        [ teamBadge
         , tsName (Tuple.first ts)
         ]
+
+
+badge el =
+    Element.el
+        [ height (px 100)
+        , width (px 80)
+        , Background.color Color.panel
+        , Font.color Color.primaryText
+        , Font.size (scaled 1)
+        , Font.center
+        , centerY
+        , Element.pointer
+        , UI.Font.match
+        , Border.rounded 10
+        , spacing 0
+        ]
+        el
 
 
 error : String -> Element.Element msg

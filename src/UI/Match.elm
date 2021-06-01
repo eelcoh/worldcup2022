@@ -16,10 +16,10 @@ display : Match -> Maybe Score -> Element.Attribute msg -> UI.Style.ButtonSemant
 display match_ mScore handler semantics =
     let
         home =
-            UI.Team.viewTeam (Match.homeTeam match_)
+            UI.Team.viewTeamSmall (Match.homeTeam match_)
 
         away =
-            UI.Team.viewTeam (Match.awayTeam match_)
+            UI.Team.viewTeamSmall (Match.awayTeam match_)
 
         sc =
             displayScore mScore
@@ -31,38 +31,7 @@ display match_ mScore handler semantics =
                 , Element.centerY
                 , width (px 160)
                 , height (px 100)
-
-                -- , spacing 5
-                -- , centerY
-                -- , centerX
-                -- , padding 0
-                -- , width (px 160)
-                -- , height (px 100)
                 ]
     in
     Element.row style
         [ home, sc, away ]
-
-
-
---             , Border.color Color.panel
---             , Element.spacing 20
---             , Element.padding 20
---             , Border.rounded 5
---             , UI.Font.button
---             , Element.centerY
---             , centerY
---             , paddingXY 10 5
---             , width (px 180)
---             , height (px 100)
---             ]
---   [ Background.color Color.panel
---             , Font.color Color.primaryText
---             , Font.size (scaled 1)
---             , Font.center
---             , Element.pointer
---             , UI.Font.match
---             , Border.color border
---             , Border.width 1
---             , Border.rounded 10
---             ]

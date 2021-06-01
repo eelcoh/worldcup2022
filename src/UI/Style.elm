@@ -423,7 +423,7 @@ teamBadge semantics attrs =
     , Font.color Color.primaryText
     , Border.color borderColor
     , Border.width 1
-    , Element.spacing 20
+    , Element.spacing 10
     , Element.padding 10
     , Border.rounded 5
     , Font.center
@@ -441,7 +441,7 @@ teamButtonTBPotential =
     , Font.color Color.primaryText
     , Border.width 1
     , Border.color Color.panel
-    , Element.spacing 20
+    , Element.spacing 10
     , Element.padding 10
     , Border.rounded 5
     , Font.center
@@ -458,7 +458,7 @@ teamButtonTBSelected =
     , Font.color Color.primaryText
     , Border.width 1
     , Border.color Color.right
-    , Element.spacing 20
+    , Element.spacing 10
     , Element.padding 10
     , Border.rounded 5
     , Font.center

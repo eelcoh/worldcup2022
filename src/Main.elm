@@ -194,7 +194,7 @@ getApp url =
                     ( Form, NoOp )
 
                 "inzendingen" :: uuid :: _ ->
-                    if Uuid.isValidUuid (Debug.log "bets details" uuid) then
+                    if Uuid.isValidUuid uuid then
                         ( BetsDetailsView, BetSelected uuid )
 
                     else
