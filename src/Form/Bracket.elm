@@ -110,7 +110,7 @@ view bet state =
         introtext =
             case state.bracketState of
                 ShowMatches ->
-                    [ Element.text "Dit is het knockout schema. In het midden staat de finale, daarboven en onder de ronden die daaraan voorafgaan. "
+                    [ Element.text "Dit is het knockout schema. In het midden staat de finale, daarboven en onder de ronden die daaraan voorafgaan. Klik op een land om het door te laten gaan naar de volgende ronde, net zo lang tot je een kampioen hebt."
                     ]
 
                 ShowSecondRoundSelection _ _ ->
