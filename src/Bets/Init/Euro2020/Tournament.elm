@@ -431,7 +431,7 @@ wales : TeamDatum
 wales =
     { team = { teamID = "WAL", teamName = "Wales" }
     , players =
-        []
+        [ "Wayne Hennessey", "Danny Ward", "Adam Davies", "Chris Gunter", "Ben Davies", "Connor Roberts", "Ethan Ampadu", "Chris Mepham", "Joe Rodon", "James Lawrence", "Neco Williams", "Rhys Norrington-Davies", "Ben Cabango", "Aaron Ramsey", "Joe Allen", "Jonny Williams (Cardiff City, Harry Wilson", "Daniel James", "David Brooks", "Joe Morrell", "Matt Smith", "Dylan Levitt", "Rubin Colwill", "Gareth Bale", "Kieffer Moore", "Tyler Roberts" ]
     , group = A
     }
 
@@ -559,7 +559,33 @@ finland : TeamDatum
 finland =
     { team = { teamID = "FIN", teamName = "Finland" }
     , players =
-        []
+        [ "Lukáš Hrádecký"
+        , "Jesse Joronen"
+        , "Anssi Jaakkola"
+        , "Nikolai Alho"
+        , "Paulus Arajuuri"
+        , "Albin Granlund"
+        , "Nicholas Hamalainen"
+        , "Robert Ivanov"
+        , "Daniel O’Shaughnessy"
+        , "Juhani Ojala"
+        , "Jere Uronen"
+        , "Leo Väisänen"
+        , "Sauli Väisänen"
+        , "Frederik Jensen"
+        , "Glen Kamara"
+        , "Joni Kauko"
+        , "Thomas Lam"
+        , "Rasmus Schüller"
+        , "Pyry Soiri"
+        , "Tim Sparv"
+        , "Onni Valakari"
+        , "Jasin-Amin Assehnoun"
+        , "Marcus Forss"
+        , "Lassi Lappalainen"
+        , "Joel Pohjanpalo"
+        , "Teemu Pukki"
+        ]
     , group = B
     }
 
@@ -646,7 +672,7 @@ netherlands : TeamDatum
 netherlands =
     { team = { teamID = "NED", teamName = "Nederland" }
     , players =
-        [ "Jasper Cillessen"
+        [ "Marco Bizot"
         , "Tim Krul"
         , "Maarten Stekelenburg"
         , "Patrick van Aanholt"
