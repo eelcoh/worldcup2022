@@ -12,8 +12,8 @@ import Element.Input as Input
 import Form.GroupMatches.Types exposing (ChangeCursor(..), Msg(..), State, updateCursor)
 import List.Extra exposing (groupsOf)
 import UI.Button.Score exposing (displayScore)
+import UI.Match
 import UI.Page exposing (page)
-import UI.Screen as Screen
 import UI.Style
 import UI.Team
 import UI.Text
@@ -155,7 +155,7 @@ displayMatches cursor matches =
             groupsOf 2 matches
 
         row matches_ =
-            Element.row (UI.Style.matches [ spacing 20, width (px 400) ]) (List.filterMap display matches_)
+            Element.row (UI.Style.matches [ spacing 20 ]) (List.filterMap display matches_)
     in
     --
     Element.column [ centerX, spacing 20 ] (List.map row rows)
@@ -171,24 +171,14 @@ displayMatch cursor ( answerId, Answer (GroupMatch _ match mScore) _ ) =
             else
                 UI.Style.Potential
 
-        disp match_ mScore_ =
+        disp =
             let
                 handler =
                     Element.Events.onClick (SelectMatch answerId)
-
-                home =
-                    UI.Team.viewTeam (M.homeTeam match_)
-
-                away =
-                    UI.Team.viewTeam (M.awayTeam match_)
-
-                sc =
-                    displayScore mScore_
             in
-            Element.row (UI.Style.matchRow semantics [ handler, spacing 5, centerY, centerX, padding 0, width (px 160), height (px 100) ])
-                [ home, sc, away ]
+            UI.Match.display match mScore handler semantics
     in
-    Just <| disp match mScore
+    Just <| disp
 
 
 

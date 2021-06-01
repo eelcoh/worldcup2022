@@ -1,4 +1,4 @@
-module UI.Team exposing (viewTeam, viewTeamFull)
+module UI.Team exposing (viewTeam, viewTeamFull, viewTeamSmall)
 
 import Bets.Types exposing (Team)
 import Bets.Types.Team as T
@@ -37,6 +37,35 @@ viewTeam mTeam =
         ]
 
 
+viewTeamSmall : Maybe Team -> Element msg
+viewTeamSmall mTeam =
+    let
+        teamNameTxt =
+            Maybe.map T.display mTeam
+                |> Maybe.withDefault "..."
+
+        flagUrl =
+            T.flagUrl mTeam
+
+        img =
+            { src = flagUrl
+            , description =
+                teamNameTxt
+            }
+    in
+    column teamBoxSmall
+        [ row [ Element.centerX ]
+            [ image
+                [ height (px 30)
+                , width (px 30)
+                ]
+                img
+            ]
+        , row teamName
+            [ Element.el [ height (px 20) ] (Element.text teamNameTxt) ]
+        ]
+
+
 viewTeamFull : Maybe Team -> Element msg
 viewTeamFull team =
     let
@@ -66,6 +95,18 @@ viewTeamFull team =
 teamBox : List (Element.Attribute msg)
 teamBox =
     [ height (px 70)
+    , Font.color Color.primaryText
+    , Font.size (UI.Font.scaled 1)
+    , Font.center
+    , Element.centerX
+    , Element.spacingXY 0 20
+    ]
+
+
+teamBoxSmall : List (Element.Attribute msg)
+teamBoxSmall =
+    [ height (px 70)
+    , width (px 30)
     , Font.color Color.primaryText
     , Font.size (UI.Font.scaled 1)
     , Font.center

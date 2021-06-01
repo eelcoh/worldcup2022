@@ -148,7 +148,7 @@ viewDetails model =
             UI.Text.error "Oeps. Daar ging iets niet goed."
 
         Success details ->
-            Bets.View.view details.bet model.screen
+            Bets.View.viewBet details.bet model.screen
 
 
 decode : Decoder RankingSummary

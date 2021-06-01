@@ -78,13 +78,9 @@ isComplete participant =
     let
         emailValid =
             StringField.emailIsValid participant.email
-
-        valid =
-            Debug.log "email is valid?" emailValid
     in
     List.map StringField.isValid [ participant.name, participant.address, participant.phone, participant.howyouknowus ]
         |> (::) (StringField.emailIsValid participant.email)
-        |> Debug.log "all"
         |> Bool.Extra.all
 
 

@@ -1,4 +1,4 @@
-module API.Bets exposing (placeBet)
+module API.Bets exposing (createBet, fetchBet, placeBet, updateBet)
 
 -- import Http exposing (expectJson)
 
@@ -6,7 +6,7 @@ import Bets.Bet
 import Bets.Types exposing (Bet)
 import RemoteData exposing (RemoteData(..))
 import RemoteData.Http as Http
-import Types exposing (Msg(..))
+import Types exposing (Msg(..), UUID)
 
 
 placeBet : Bet -> Cmd Msg
@@ -37,6 +37,11 @@ placeBet bet =
 --             }
 -- in
 -- Http.post msg req
+
+
+fetchBet : UUID -> Cmd Msg
+fetchBet uuid =
+    Http.get ("/bets/" ++ uuid) FetchedBet Bets.Bet.decode
 
 
 createBet : Bet -> Cmd Msg

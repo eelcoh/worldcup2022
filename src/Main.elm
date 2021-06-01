@@ -6,6 +6,7 @@ import API.Bets
 import Activities
 import Authentication
 import Bets.Init
+import Bets.View
 import Browser
 import Browser.Events as Events
 import Browser.Navigation as Navigation
@@ -87,6 +88,9 @@ view model =
                         Form ->
                             Form.View.view model
 
+                        BetsDetailsView ->
+                            Bets.View.view model
+
                         Blog ->
                             viewBlog model
 
@@ -123,6 +127,9 @@ view model =
                     case app of
                         Home ->
                             ( "#home", "/home" )
+
+                        BetsDetailsView ->
+                            ( "#inzendingen", "/inzendingen" )
 
                         Form ->
                             ( "#formulier", "/formulier" )
@@ -186,13 +193,16 @@ getApp url =
                 "formulier" :: _ ->
                     ( Form, NoOp )
 
-                -- "#inzendingen" :: uuid :: _ ->
-                --     if (Uuid.isValidUuid uuid) then
-                --         ( Bets uuid, BetSelected )
-                --     else
-                --         ( Ranking, None )
-                -- "#inzendingen" :: _ ->
-                --     ( Ranking, None )
+                "inzendingen" :: uuid :: _ ->
+                    if Uuid.isValidUuid uuid then
+                        ( BetsDetailsView, BetSelected uuid )
+
+                    else
+                        ( Ranking, NoOp )
+
+                "inzendingen" :: _ ->
+                    ( Ranking, NoOp )
+
                 "stand" :: uuid :: _ ->
                     if Uuid.isValidUuid uuid then
                         ( RankingDetailsView, RetrieveRankingDetails uuid )
@@ -421,7 +431,7 @@ update msg model =
 
         -- activities
         FetchedBet bet ->
-            ( model, Cmd.none )
+            ( { model | savedBet = bet }, Cmd.none )
 
         SetCommentMsg newMessage ->
             let
@@ -887,3 +897,10 @@ update msg model =
 
         StoredTopscorerResults results ->
             ( { model | topscorerResults = Fresh results }, Cmd.none )
+
+        BetSelected uuid ->
+            let
+                cmd =
+                    API.Bets.fetchBet uuid
+            in
+            ( model, cmd )
