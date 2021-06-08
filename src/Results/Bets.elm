@@ -70,10 +70,21 @@ view model =
         items =
             Maybe.withDefault []
                 (Maybe.map mkLines mBets)
+                |> Element.column [ paddingXY 0 20 ]
+
+        numberOf =
+            Maybe.withDefault 0
+                (Maybe.map List.length mBets)
+                |> String.fromInt
+
+        header =
+            UI.Text.displayHeader (numberOf ++ " Inzendingen")
     in
     Element.column
         [ paddingXY 0 20 ]
-        items
+        [ header
+        , items
+        ]
 
 
 viewSummaryLine : WebData Token -> BetSummaryLine -> Element.Element Msg

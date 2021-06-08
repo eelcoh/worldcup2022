@@ -158,7 +158,7 @@ view model =
                     [ Home, Form, Blog, Results, Bets ]
 
                 _ ->
-                    [ Home, Form ]
+                    [ Home, Form, Bets ]
 
         links =
             Element.row [ Element.padding 12, Element.spacing 12 ]
