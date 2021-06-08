@@ -1,4 +1,4 @@
-module UI.Text exposing (boldText, bulletText, dateText, displayHeader, error, labelText, simpleText)
+module UI.Text exposing (boldText, bulletText, dateText, displayHeader, error, labelText, simpleText, style)
 
 import Element exposing (alignLeft, alignTop, spacing, width)
 import Element.Font as Font
@@ -6,6 +6,11 @@ import Element.Input as Input
 import Time exposing (Month(..), Weekday(..))
 import UI.Color
 import UI.Style as Style
+
+
+style : List (Element.Attribute msg)
+style =
+    Style.text []
 
 
 displayHeader : String -> Element.Element msg

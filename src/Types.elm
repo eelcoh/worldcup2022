@@ -4,6 +4,7 @@ module Types exposing
     , Activity(..)
     , ActivityMeta
     , App(..)
+    , BetSummaryLine
     , Card(..)
     , Comment
     , Credentials(..)
@@ -26,6 +27,7 @@ module Types exposing
     , RankingSummaryLine
     , RoundScore
     , TeamRounds
+    , Toggle(..)
     , Token(..)
     , TopscorerResults
     , UUID
@@ -54,6 +56,7 @@ type App
     | Blog
     | Form
     | Login
+    | Bets
     | Ranking
     | RankingDetailsView
     | Results
@@ -127,6 +130,7 @@ init formId sz navKey =
     , app = Home
     , token = NotAsked
     , credentials = Empty
+    , bets = NotAsked
     , ranking = NotAsked
     , rankingDetails = NotAsked
     , matchResults = NotAsked
@@ -150,6 +154,7 @@ type alias Model msg =
     , app : App
     , token : WebData Token
     , credentials : Credentials
+    , bets : WebData Bets
     , ranking : WebData RankingSummary
     , rankingDetails : WebData RankingDetails
     , matchResults : WebData MatchResults
@@ -206,6 +211,11 @@ type Msg
     | SetUsername String
     | SetPassword String
     | Authenticate
+      -- Bets
+    | FetchBets
+    | FetchedBets (WebData Bets)
+    | ToggleBetActiveFlag UUID Toggle
+    | ToggledBetActiveFlag (WebData Bet)
       -- Ranking
     | RecreateRanking
     | FetchedRanking (WebData RankingSummary)
@@ -371,6 +381,26 @@ type alias RankingGroup =
     { pos : Int
     , bets : List RankingSummaryLine
     , total : Int
+    }
+
+
+
+-- Bets
+
+
+type Toggle
+    = ToggleInactive
+    | ToggleActive
+
+
+type alias Bets =
+    List BetSummaryLine
+
+
+type alias BetSummaryLine =
+    { name : String
+    , active : Bool
+    , uuid : String
     }
 
 

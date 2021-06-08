@@ -145,7 +145,7 @@ viewDetails model =
             Element.text "Aan het ophalen..."
 
         Failure err ->
-            UI.Text.error "Oeps. Daar ging iets niet goed."
+            UI.Text.error <| "Oeps. Daar ging iets niet goed."
 
         Success details ->
             Bets.View.viewBet details.bet model.screen
@@ -183,6 +183,15 @@ decodeRoundScore =
         (field "points" Json.Decode.int)
 
 
+
+-- Name      string            `json:"name"`
+-- Rounds    []RoundScore      `json:"rounds"`
+-- Topscorer int               `json:"topscorer"`
+-- Total     int               `json:"total"`
+-- UUID      string            `json:"uuid"`
+-- Bet       OutgoingBetStruct `json:"bet"`
+
+
 decodeRankingDetails : Decoder RankingDetails
 decodeRankingDetails =
     Json.Decode.map6 RankingDetails
@@ -191,7 +200,7 @@ decodeRankingDetails =
         (field "topscorer" Json.Decode.int)
         (field "total" Json.Decode.int)
         (field "uuid" Json.Decode.string)
-        (field "bet" Bets.Bet.decode)
+        (field "bet" Bets.Bet.decodeBet)
 
 
 

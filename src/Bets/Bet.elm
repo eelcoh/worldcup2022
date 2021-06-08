@@ -1,6 +1,7 @@
 module Bets.Bet exposing
     ( cleanThirds
     , decode
+    , decodeBet
     ,  encode
        -- , findAllGroupMatchAnswers
 
@@ -113,7 +114,7 @@ encode bet =
         betObject =
             Json.Encode.object
                 [ ( "answers", A.encode bet.answers )
-                , ( "betId", mIntEnc bet.betId )
+                , ( "betId", mStrEnc bet.betId )
                 , ( "uuid", mStrEnc bet.uuid )
                 , ( "active", Json.Encode.bool bet.active )
                 , ( "participant", Participant.encode bet.participant )
@@ -145,7 +146,7 @@ decodeBet : Decoder Bet
 decodeBet =
     Json.Decode.map5 Bet
         (field "answers" A.decode)
-        (field "betId" (maybe Json.Decode.int))
+        (field "betId" (maybe Json.Decode.string))
         (field "uuid" (maybe Json.Decode.string))
         (field "active" Json.Decode.bool)
         (field "participant" Participant.decode)

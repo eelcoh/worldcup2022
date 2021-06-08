@@ -21,6 +21,7 @@ import Form.View
 import Html.Attributes exposing (property)
 import Json.Encode as Encode
 import RemoteData exposing (RemoteData(..))
+import Results.Bets
 import Results.Knockouts as Knockouts
 import Results.Matches as Matches
 import Results.Ranking as Ranking
@@ -97,6 +98,9 @@ view model =
                         Login ->
                             Authentication.view model
 
+                        Bets ->
+                            Results.Bets.view model
+
                         Ranking ->
                             Ranking.view model
 
@@ -131,6 +135,9 @@ view model =
                         BetsDetailsView ->
                             ( "#inzendingen", "/inzendingen" )
 
+                        Bets ->
+                            ( "#inzendingen", "/inzendingen" )
+
                         Form ->
                             ( "#formulier", "/formulier" )
 
@@ -148,7 +155,7 @@ view model =
         linkList =
             case model.token of
                 RemoteData.Success (Token _) ->
-                    [ Home, Form, Blog, Results ]
+                    [ Home, Form, Blog, Results, Bets ]
 
                 _ ->
                     [ Home, Form ]
@@ -198,17 +205,17 @@ getApp url =
                         ( BetsDetailsView, BetSelected uuid )
 
                     else
-                        ( Ranking, NoOp )
+                        ( Ranking, RefreshRanking )
 
                 "inzendingen" :: _ ->
-                    ( Ranking, NoOp )
+                    ( Bets, FetchBets )
 
                 "stand" :: uuid :: _ ->
                     if Uuid.isValidUuid uuid then
                         ( RankingDetailsView, RetrieveRankingDetails uuid )
 
                     else
-                        ( Ranking, NoOp )
+                        ( Ranking, RefreshRanking )
 
                 "stand" :: _ ->
                     ( Ranking, RefreshRanking )
@@ -677,6 +684,29 @@ update msg model =
                 _ ->
                     ( model, Cmd.none )
 
+        -- Bets
+        FetchBets ->
+            ( model, Results.Bets.fetchBets )
+
+        FetchedBets bets ->
+            ( { model | bets = bets }, Cmd.none )
+
+        ToggleBetActiveFlag uid toggle ->
+            let
+                cmd =
+                    case model.token of
+                        RemoteData.Success token ->
+                            Results.Bets.toggleActive token uid toggle
+
+                        _ ->
+                            Cmd.none
+            in
+            ( model, cmd )
+
+        ToggledBetActiveFlag _ ->
+            ( model, Results.Bets.fetchBets )
+
+        -- Ranking
         RecreateRanking ->
             let
                 cmd =
@@ -689,10 +719,18 @@ update msg model =
             in
             ( model, cmd )
 
+        RefreshRanking ->
+            case model.ranking of
+                Success _ ->
+                    ( model, Cmd.none )
+
+                _ ->
+                    ( model, Ranking.fetchRanking )
+
         FetchedRanking ranking ->
             ( { model | ranking = ranking }, Cmd.none )
 
-        --
+        -- Ranking Details
         ViewRankingDetails uuid ->
             let
                 url =
@@ -713,14 +751,7 @@ update msg model =
         FetchedRankingDetails results ->
             ( { model | rankingDetails = results }, Cmd.none )
 
-        RefreshRanking ->
-            case model.ranking of
-                Success _ ->
-                    ( model, Cmd.none )
-
-                _ ->
-                    ( model, Ranking.fetchRanking )
-
+        -- Matches
         FetchedMatchResults results ->
             let
                 nwModel =
