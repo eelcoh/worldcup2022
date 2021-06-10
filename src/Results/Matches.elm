@@ -4,7 +4,7 @@ import Authentication
 import Bets.Types exposing (Match, Score)
 import Bets.Types.Score as S
 import Bets.Types.Team
-import Element exposing (height, padding, paddingXY, px, spacing, width)
+import Element exposing (centerX, height, padding, paddingXY, px, spacing, spacingXY, width)
 import Element.Border as Border
 import Element.Events as Events
 import Http
@@ -16,7 +16,8 @@ import Types exposing (Access(..), Activity(..), MatchResult, MatchResults, Mode
 import UI.Button
 import UI.Button.Score
 import UI.Color
-import UI.Style
+import UI.Font
+import UI.Style exposing (ButtonSemantics(..))
 import UI.Team
 import UI.Text
 
@@ -47,30 +48,68 @@ updateMatchResults (Token token) match =
     Web.putWithConfig config url StoredMatchResult decodeMatchResult json
 
 
+initialise : Token -> Cmd Msg
+initialise (Token token) =
+    -- Web.post "/bets/ranking/initial/" FetchedRanking decode Json.Encode.null
+    let
+        bearer =
+            "Bearer " ++ token
+
+        header =
+            Http.header "Authorization" bearer
+
+        config =
+            { defaultConfig | headers = [ header ] }
+    in
+    Web.postWithConfig config "/bets/results/matches/initial/" FetchedMatchResults decode Json.Encode.null
+
+
 view : Model Msg -> Element.Element Msg
 view model =
-    case model.matchResults of
-        Success results ->
-            displayMatches (Authentication.isAuthorised model) results.results
+    let
+        access =
+            Authentication.isAuthorised model
 
-        NotAsked ->
-            Element.text "nog niet opgevraagd"
+        hdr =
+            UI.Text.displayHeader "Resultaten Wedstrijden"
 
-        Loading ->
-            Element.text "aan het ophalen..."
+        mainView =
+            case model.matchResults of
+                Success results ->
+                    displayMatches access results.results
 
-        Failure e ->
-            Element.column
-                []
-                [ UI.Text.error "oei, oei, oei, daar ging iets niet helemaal goed"
-                , Element.paragraph [] [ Element.text "(Basics.toString e) " ]
-                ]
+                NotAsked ->
+                    Element.text "nog niet opgevraagd"
+
+                Loading ->
+                    Element.text "aan het ophalen..."
+
+                Failure e ->
+                    Element.column
+                        []
+                        [ UI.Text.error "oei, oei, oei, daar ging iets niet helemaal goed"
+                        ]
+
+        initialiseButton =
+            case access of
+                Authorised ->
+                    UI.Button.pill Wrong InitialiseMatchResults "initialiseer"
+
+                Unauthorised ->
+                    Element.none
+    in
+    Element.column
+        [ paddingXY 0 20 ]
+        [ hdr
+        , mainView
+        , initialiseButton
+        ]
 
 
 displayMatches : Access -> List MatchResult -> Element.Element Msg
 displayMatches access matches =
     Element.wrappedRow
-        [ padding 10, spacing 7 ]
+        [ padding 10, spacingXY 20 40, centerX ]
         (List.map (displayMatch access) matches)
 
 
@@ -85,7 +124,7 @@ displayMatch access match =
                 Nothing ->
                     Nothing
 
-        click =
+        handler =
             case access of
                 Authorised ->
                     Events.onClick (EditMatch match)
@@ -116,11 +155,35 @@ displayMatch access match =
                 _ ->
                     [ Border.color UI.Color.grey, Border.solid ]
 
+        semantics =
+            case pts of
+                Just 3 ->
+                    UI.Style.Right
+
+                Just 1 ->
+                    UI.Style.Active
+
+                Just 0 ->
+                    UI.Style.Wrong
+
+                _ ->
+                    UI.Style.Perhaps
+
+        style =
+            UI.Style.matchRow semantics
+                [ handler
+                , UI.Font.button
+                , Element.centerY
+                , width (px 160)
+                , height (px 100)
+                , Border.width 5
+                ]
+
         css =
-            pointsStyle ++ [ Border.width 5, click, paddingXY 10 5, spacing 7, width (px 150), height (px 70) ]
+            pointsStyle ++ [ Border.width 5, handler, paddingXY 10 5, spacing 7, width (px 150), height (px 70) ]
     in
     Element.row
-        css
+        style
         [ home, sc, away ]
 
 
@@ -152,7 +215,7 @@ edit model =
                 _ ->
                     [ UI.Text.error "dit is niet de bedoeling" ]
     in
-    Element.row [] items
+    Element.column [ paddingXY 0 20 ] items
 
 
 viewKeyboard : MatchResult -> Element.Element Msg

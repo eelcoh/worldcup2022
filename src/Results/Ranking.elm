@@ -4,7 +4,7 @@ import API.Date as Date
 import Bets.Bet
 import Bets.View
 import Date
-import Element exposing (alignRight, column, fill, paddingEach, paddingXY, px, width)
+import Element exposing (Length, alignRight, alignTop, column, fill, paddingEach, paddingXY, pointer, px, spaceEvenly, spacingXY, width)
 import Element.Events as Events
 import Http
 import Json.Decode exposing (Decoder, field)
@@ -13,6 +13,7 @@ import RemoteData exposing (RemoteData(..))
 import RemoteData.Http as Web exposing (defaultConfig)
 import Types exposing (Activity(..), Model, Msg(..), RankingDetails, RankingGroup, RankingSummary, RankingSummaryLine, RoundScore, Token(..))
 import UI.Button
+import UI.Screen as Screen
 import UI.Style
 import UI.Text
 
@@ -46,15 +47,21 @@ recreate (Token token) =
 view : Model Msg -> Element.Element Msg
 view model =
     let
+        h =
+            UI.Text.displayHeader "Stand"
+
         items =
             case model.token of
                 Success _ ->
-                    [ adminBox model
+                    [ h
+                    , adminBox model
                     , viewRankingGroups model
                     ]
 
                 _ ->
-                    [ viewRankingGroups model ]
+                    [ h
+                    , viewRankingGroups model
+                    ]
     in
     Element.column
         []
@@ -68,25 +75,29 @@ adminBox _ =
 
 viewRankingGroups : Model Msg -> Element.Element Msg
 viewRankingGroups model =
+    let
+        screenWidth =
+            px <| Screen.maxWidth model.screen
+    in
     case model.ranking of
         Success ranking ->
             let
                 header =
-                    viewRankingHeader
+                    viewRankingHeader screenWidth
 
                 rank =
-                    List.map viewRankingGroup ranking.summary
+                    List.map (viewRankingGroup screenWidth) ranking.summary
 
                 datetxt =
                     Element.el
-                        [ alignRight, paddingXY 0 10 ]
+                        (UI.Style.attribution [ alignRight, paddingXY 0 10 ])
                         (Element.text ("bijgewerkt op " ++ UI.Text.dateText model.timeZone ranking.time))
 
                 column =
-                    (header :: rank) ++ [ datetxt ]
+                    rank ++ [ datetxt ]
             in
             Element.column
-                [ pad 0 0 50 0 ]
+                [ paddingXY 0 20, spacingXY 0 20, width screenWidth ]
                 column
 
         NotAsked ->
@@ -99,31 +110,36 @@ viewRankingGroups model =
             UI.Text.error "oei, daar ging iets niet helemaal goed"
 
 
-viewRankingHeader : Element.Element msg
-viewRankingHeader =
+viewRankingHeader : Length -> Element.Element msg
+viewRankingHeader screenWidth =
     Element.row
-        [ paddingXY 0 5 ]
+        [ paddingXY 0 5, width screenWidth, spaceEvenly ]
         [ Element.el [ width (px 40), pad 0 10 0 0 ] (Element.text "#")
         , Element.el [ width fill, pad 0 10 0 10 ] (Element.text "Naam")
-        , Element.el [ width (px 100), pad 0 20 0 10 ] (Element.text "Punten")
+        , Element.el [ width (px 100), pad 0 20 0 10, alignRight ] (Element.text "Punten")
         ]
 
 
-viewRankingGroup : RankingGroup -> Element.Element Msg
-viewRankingGroup grp =
+viewRankingGroup : Length -> RankingGroup -> Element.Element Msg
+viewRankingGroup screenWidth grp =
     Element.row
-        [ paddingXY 0 5 ]
-        [ Element.el [ width (px 40), pad 0 10 0 0 ] (Element.text (String.fromInt grp.pos))
-        , viewRankingLines grp.bets
-        , Element.el [ width (px 55), pad 0 20 0 10 ] (Element.text (String.fromInt grp.total))
+        (UI.Style.darkBox [ paddingXY 0 20, Screen.className "commentBox", width screenWidth ])
+        [ Element.el [ alignTop, width (px 40), pad 0 10 0 0 ] (UI.Text.simpleText (String.fromInt grp.pos))
+        , viewRankingLines screenWidth grp.bets
+        , Element.el [ alignTop, width (px 55), pad 0 20 0 10, alignRight ] (UI.Text.simpleText (String.fromInt grp.total))
         ]
 
 
-viewRankingLines : List RankingSummaryLine -> Element.Element Msg
-viewRankingLines lines =
-    Element.column
-        [ width fill, pad 0 10 4 10 ]
-        (List.map viewRankingLine lines)
+viewRankingLines : Length -> List RankingSummaryLine -> Element.Element Msg
+viewRankingLines screenWidth lines =
+    List.map viewRankingLine lines
+        |> Element.column [ Screen.className "ranking-line", spacingXY 0 20, paddingXY 0 0 ]
+
+
+
+-- Element.column
+-- [ width fill, pad 0 10 4 10 ]
+-- (List.map viewRankingLine lines)
 
 
 viewRankingLine : RankingSummaryLine -> Element.Element Msg
@@ -132,7 +148,7 @@ viewRankingLine line =
         click =
             Events.onClick (ViewRankingDetails line.uuid)
     in
-    Element.el [ click ] (Element.text line.name)
+    Element.el [ click, pointer ] (UI.Text.simpleText line.name)
 
 
 viewDetails : Model Msg -> Element.Element Msg

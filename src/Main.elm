@@ -33,6 +33,7 @@ import Types.DataStatus as DataStatus
 import UI.Button
 import UI.Screen as Screen
 import UI.Style
+import UI.Text
 import Url
 import Uuid.Barebones as Uuid
 
@@ -130,39 +131,41 @@ view model =
                 ( linkUrl, linkText ) =
                     case app of
                         Home ->
-                            ( "#home", "/home" )
+                            ( "#home", "home" )
 
                         BetsDetailsView ->
-                            ( "#inzendingen", "/inzendingen" )
+                            ( "#inzendingen", "inzendingen" )
 
                         Bets ->
-                            ( "#inzendingen", "/inzendingen" )
+                            ( "#inzendingen", "inzendingen" )
 
                         Form ->
-                            ( "#formulier", "/formulier" )
+                            ( "#formulier", "formulier" )
 
                         Ranking ->
-                            ( "#stand", "/stand" )
+                            ( "#stand", "stand" )
 
                         Results ->
-                            ( "#wedstrijden", "/wedstrijden" )
+                            ( "#wedstrijden", "wedstrijden" )
 
                         _ ->
-                            ( "#blog", "/blog" )
+                            ( "#blog", "blog" )
             in
             UI.Button.navlink semantics linkUrl linkText
 
         linkList =
             case model.token of
                 RemoteData.Success (Token _) ->
-                    [ Home, Form, Blog, Results, Bets ]
+                    [ Home, Form, Ranking, Blog, Results, Bets ]
 
                 _ ->
-                    [ Home, Form, Bets ]
+                    [ Home, Ranking, Results ]
 
         links =
             Element.row [ Element.padding 12, Element.spacing 12 ]
-                (List.map link linkList)
+                (List.map link linkList
+                    |> List.intersperse (UI.Text.simpleText " | ")
+                )
 
         page =
             Element.column
@@ -689,7 +692,11 @@ update msg model =
             ( model, Results.Bets.fetchBets )
 
         FetchedBets bets ->
-            ( { model | bets = bets }, Cmd.none )
+            let
+                rbets =
+                    RemoteData.map List.reverse bets
+            in
+            ( { model | bets = rbets }, Cmd.none )
 
         ToggleBetActiveFlag uid toggle ->
             let
@@ -752,6 +759,18 @@ update msg model =
             ( { model | rankingDetails = results }, Cmd.none )
 
         -- Matches
+        InitialiseMatchResults ->
+            let
+                cmd =
+                    case model.token of
+                        Success t ->
+                            Matches.initialise t
+
+                        _ ->
+                            Cmd.none
+            in
+            ( model, cmd )
+
         FetchedMatchResults results ->
             let
                 nwModel =

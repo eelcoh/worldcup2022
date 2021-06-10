@@ -224,6 +224,7 @@ type Msg
     | ViewRankingDetails String
     | RetrieveRankingDetails String
       -- Match Results
+    | InitialiseMatchResults
     | FetchedMatchResults (WebData MatchResults)
     | RefreshResults
     | EditMatch MatchResult

@@ -549,6 +549,12 @@ matchRow semantics attrs =
                 Active ->
                     Color.white
 
+                Right ->
+                    Color.green
+
+                Wrong ->
+                    Color.red
+
                 _ ->
                     Color.panel
     in
