@@ -38,6 +38,7 @@ module UI.Style exposing
     , scoreColumn
     , scoreInput
     , scoreRow
+    , secondaryText
     , teamBadge
     , teamButton
     , teamButtonTBPotential
@@ -169,6 +170,16 @@ text attrs =
         ++ textBase
             [ Font.hairline
             , Font.color Color.primaryText
+            , Element.spacing 16
+            ]
+
+
+secondaryText : List (Element.Attribute msg) -> List (Element.Attribute msg)
+secondaryText attrs =
+    attrs
+        ++ textBase
+            [ Font.hairline
+            , Font.color Color.secondaryText
             , Element.spacing 16
             ]
 

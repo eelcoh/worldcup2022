@@ -1,4 +1,14 @@
-module UI.Text exposing (boldText, bulletText, dateText, displayHeader, error, labelText, simpleText, style)
+module UI.Text exposing
+    ( boldText
+    , bulletText
+    , dateText
+    , displayHeader
+    , error
+    , labelText
+    , simpleText
+    , style
+    , textSecondary
+    )
 
 import Element exposing (alignLeft, alignTop, spacing, width)
 import Element.Font as Font
@@ -11,6 +21,11 @@ import UI.Style as Style
 style : List (Element.Attribute msg)
 style =
     Style.text []
+
+
+textSecondary : String -> Element.Element msg
+textSecondary txt =
+    Element.el (Style.secondaryText []) (Element.text txt)
 
 
 displayHeader : String -> Element.Element msg

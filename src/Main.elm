@@ -10,7 +10,7 @@ import Bets.View
 import Browser
 import Browser.Events as Events
 import Browser.Navigation as Navigation
-import Element exposing (paddingXY, px, spacing)
+import Element exposing (paddingXY, spacing)
 import Form.Bracket as Bracket
 import Form.Card as Cards
 import Form.GroupMatches as GroupMatches
@@ -18,8 +18,6 @@ import Form.Info
 import Form.Participant as Participant
 import Form.Topscorer as Topscorer
 import Form.View
-import Html.Attributes exposing (property)
-import Json.Encode as Encode
 import RemoteData exposing (RemoteData(..))
 import Results.Bets
 import Results.Knockouts as Knockouts
@@ -33,7 +31,6 @@ import Types.DataStatus as DataStatus
 import UI.Button
 import UI.Screen as Screen
 import UI.Style
-import UI.Text
 import Url
 import Uuid.Barebones as Uuid
 
@@ -151,21 +148,20 @@ view model =
                         _ ->
                             ( "#blog", "blog" )
             in
-            UI.Button.navlink semantics linkUrl linkText
+            -- Element.el [] wrapper for wrapperrow alignment misbehaviour
+            Element.el [] <| UI.Button.navlink semantics linkUrl linkText
 
         linkList =
             case model.token of
                 RemoteData.Success (Token _) ->
-                    [ Home, Form, Ranking, Blog, Results, Bets ]
+                    [ Home, Ranking, Results, Blog, Bets ]
 
                 _ ->
                     [ Home, Ranking, Results ]
 
         links =
-            Element.row [ Element.padding 12, Element.spacing 12 ]
-                (List.map link linkList
-                    |> List.intersperse (UI.Text.simpleText " | ")
-                )
+            Element.wrappedRow [ Element.padding 12, Element.spacing 12 ]
+                (List.map link linkList)
 
         page =
             Element.column
