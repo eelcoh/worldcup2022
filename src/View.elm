@@ -201,7 +201,7 @@ getApp url =
                     ( Login, NoOp )
 
                 _ ->
-                    ( Debug.log "home default _" Home, RefreshActivities )
+                    ( Home, RefreshActivities )
 
         cmd =
             Task.succeed msg

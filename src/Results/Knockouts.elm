@@ -2,11 +2,11 @@ module Results.Knockouts exposing (..)
 
 import Bets.Types exposing (HasQualified(..), Round(..), Team)
 import Bets.Types.HasQualified as HasQualified
-import Bets.Types.Round as Round exposing (isSameOrANextRound)
+import Bets.Types.Round as Round
 import Bets.Types.Team
-import Element exposing (alignLeft, alignRight, column, height, padding, paddingXY, px, row, spacing, spacingXY, width)
+import Element exposing (padding, px, spacing, spacingXY, width)
 import Http
-import Json.Decode exposing (Decoder, andThen, field, keyValuePairs, maybe)
+import Json.Decode exposing (Decoder, field, keyValuePairs)
 import Json.Encode
 import RemoteData exposing (RemoteData(..), WebData)
 import RemoteData.Http as Web exposing (defaultConfig)
@@ -165,12 +165,8 @@ view model =
                     , UI.Button.pill UI.Style.Potential InitialiseKnockoutsResults "Initialiseer"
                     ]
 
-                ( Authorised, err ) ->
-                    let
-                        e =
-                            Debug.toString err
-                    in
-                    [ Element.text e
+                ( Authorised, _ ) ->
+                    [ Element.text "err"
                     , UI.Button.pill UI.Style.Inactive UpdateKnockoutsResults "Update"
                     , UI.Button.pill UI.Style.Potential InitialiseKnockoutsResults "Initialiseer"
                     ]
