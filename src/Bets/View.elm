@@ -111,9 +111,13 @@ topscorerIntro =
 
 displayMatches : List ( MatchID, AnswerGroupMatch ) -> Element.Element Msg
 displayMatches answers =
+    let
+        sortedMatches =
+            List.sortBy Tuple.first answers
+    in
     Element.wrappedRow
         [ padding 10, spacingXY 20 40, centerX ]
-        (List.map displayMatch answers)
+        (List.map displayMatch sortedMatches)
 
 
 displayMatch : ( MatchID, AnswerGroupMatch ) -> Element.Element Msg
