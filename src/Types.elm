@@ -66,17 +66,6 @@ type App
     | BetsDetailsView
 
 
-
--- | Ranking
--- | RankingDetailsView
--- | Bets String
--- | Login
--- | Results
--- | EditMatchResult
--- | KOResults
--- | TSResults
-
-
 type alias Flags =
     { formId : Maybe String
     , width : Int

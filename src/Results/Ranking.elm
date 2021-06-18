@@ -203,15 +203,6 @@ decodeRoundScore =
         (field "points" Json.Decode.int)
 
 
-
--- Name      string            `json:"name"`
--- Rounds    []RoundScore      `json:"rounds"`
--- Topscorer int               `json:"topscorer"`
--- Total     int               `json:"total"`
--- UUID      string            `json:"uuid"`
--- Bet       OutgoingBetStruct `json:"bet"`
-
-
 decodeRankingDetails : Decoder RankingDetails
 decodeRankingDetails =
     Json.Decode.map6 RankingDetails

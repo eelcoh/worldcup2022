@@ -1,7 +1,6 @@
 module Results.Knockouts exposing (..)
 
 import Bets.Types exposing (HasQualified(..), Round(..), Team)
-import Bets.Types.Bracket
 import Bets.Types.HasQualified as HasQualified
 import Bets.Types.Round as Round exposing (isSameOrANextRound)
 import Bets.Types.Team
@@ -286,15 +285,6 @@ encode results =
         ]
 
 
-
--- Json.Encode.object
---     [ ( "teams", Json.Encode.object (List.map encodeTeamQ results.teams) )
---     ]
--- encodeTeamQs : List ( String, TeamRounds ) -> Json.Encode.Value
--- encodeTeamQs ( teamId, teamrounds ) =
---     Json.Encode.list encodeTeamQ
-
-
 encodeTeamQ : ( String, TeamRounds ) -> ( String, Json.Encode.Value )
 encodeTeamQ ( teamId, teamrounds ) =
     ( teamId, encodeTeamRounds teamrounds )
@@ -319,19 +309,6 @@ roundQualifiedToString ( r, rQ ) =
     ( String.fromInt <| Round.toInt r, HasQualified.encode rQ )
 
 
-
--- encodeKnockouts : Knockouts -> Json.Encode.Value
--- encodeKnockouts kos =
---     Json.Encode.object
---         [ ( "teamsIn", teamsEncode kos.teamsIn )
---         , ( "teamsOut", teamsEncode kos.teamsOut )
---         ]
--- teamsEncode : List Team -> Json.Encode.Value
--- teamsEncode teams =
---     List.map Bets.Types.Team.encode teams
---         |> Json.Encode.list
-
-
 decode : Decoder KnockoutsResults
 decode =
     Json.Decode.map KnockoutsResults
@@ -353,72 +330,3 @@ decodeTeamRounds =
     Json.Decode.map2 TeamRounds
         (field "team" Bets.Types.Team.decode)
         (field "roundsQualified" decoder_)
-
-
-
--- (field "roundsQualified" decodeRoundsQualified)
--- decodeRoundsQualified : Decoder (List ( Round, HasQualified ))
--- decodeRoundsQualified =
---     Json.Decode.map2 Tuple.pair
---         (Json.Decode.index 0 Round.decode)
---         (Json.Decode.index 0 HasQualified.decode)
---         |> Json.Decode.list
--- let
---     Json.Decode.list
--- in
--- Json.Decode.keyValuePairs HasQualified.decode
---     |> Json.Decode.map mkRoundsQualified
--- mkRoundsQualified : List ( Int, HasQualified ) -> List ( Round, HasQualified )
--- mkRoundsQualified list =
---     List.filterMap parseRoundQualifiedPair list
--- parseRoundQualifiedPair : ( Int, HasQualified ) -> Maybe ( Round, HasQualified )
--- parseRoundQualifiedPair ( rStr, hasQ ) =
---     Round.fromInt rStr
---         |> Maybe.map (\r -> ( r, hasQ ))
--- decoder : Decoder (List (Foo, Bar))
--- decoder =
---   keyValuePairs barDecoder
---     |> Decode.map parseKeys
--- NORMAL FUNCTIONS BELOW
--- parseKeys : List (String, Bar) -> List (Foo, Bar)
--- parseKeys list =
---   List.filterMap parseKVPair list
--- parseKVPair : (String, Bar) -> Maybe (Foo, Bar)
--- parseKVPair (str, value) =
---   parseKey str
---     |> Maybe.map (\key -> (key, value))
--- parseKey : String -> Maybe Foo
--- parseKey str =
---   case str of
---     "afoo" -> Just AFoo
---     "bfoo" -> Just BFoo
---     _ -> Nothing
--- Decoder (List (String, Bar)) -> Decoder (List (Foo, Bar))
--- decodeRoundQualified : Decoder ( Round, HasQualified )
--- decodeRoundQualified =
---     decodeRound
---         |> Json.Decode.andThen decodeRoundHasQualified
--- decodeRoundHasQualified : Round -> Decoder ( Round, HasQualified )
--- decodeRoundHasQualified r =
---     Bets.Types.Bracket.decodeHasQualified
---         |> Json.Decode.andThen (decodeRoundHasQualified2 r)
--- decodeRoundHasQualified2 : Round -> HasQualified -> Decoder ( Round, HasQualified )
--- decodeRoundHasQualified2 r q =
---     Json.Decode.succeed ( r, q )
--- decodeRound : String -> Decoder Round
--- decodeRound str =
---     case str of
---         "I" ->
---             Json.Decode.succeed I
---         "II" ->
---             Json.Decode.succeed II
---         "III" ->
---             Json.Decode.succeed III
---         "IV" ->
---             Json.Decode.succeed IV
---         "V" ->
---             Json.Decode.succeed V
---         "VI" ->
---             Json.Decode.succeed VI
---         s ->
---             Json.Decode.fail ("Expected a Round, got : " ++ s)
