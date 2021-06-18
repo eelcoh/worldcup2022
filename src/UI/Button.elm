@@ -1,4 +1,4 @@
-module UI.Button exposing (Size(..), button, maybeTeamBadge, maybeTeamBadgeSmall, maybeTeamButton, navlink, pill, submit, teamButton)
+module UI.Button exposing (Size(..), button, maybeTeamBadge, maybeTeamBadgeSmall, maybeTeamBadgeVerySmall, maybeTeamButton, navlink, pill, submit, teamButton)
 
 import Bets.Types
 import Element exposing (Element, centerX, centerY, fill, height, padding, px, text, width)
@@ -126,3 +126,18 @@ maybeTeamBadgeSmall semantics team =
             Style.teamButton semantics [ w, h, centerX, centerY ]
     in
     Element.column buttonLayout [ UI.Team.viewTeamSmall team ]
+
+
+maybeTeamBadgeVerySmall : ButtonSemantics -> Maybe Bets.Types.Team -> Element msg
+maybeTeamBadgeVerySmall semantics team =
+    let
+        w =
+            width (px 32)
+
+        h =
+            height (px 38)
+
+        buttonLayout =
+            Style.teamBadgeVerySmall semantics [ w, h, centerX, centerY ]
+    in
+    Element.column buttonLayout [ UI.Team.viewTeamVerySmall team ]

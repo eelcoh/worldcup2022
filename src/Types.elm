@@ -60,6 +60,8 @@ type App
     | Ranking
     | RankingDetailsView
     | Results
+    | TSResults
+    | KOResults
     | EditMatchResult
     | BetsDetailsView
 

@@ -7,7 +7,7 @@ import Bets.Types.Round as Round exposing (isSameOrANextRound)
 import Bets.Types.Team
 import Element exposing (alignLeft, alignRight, column, height, padding, paddingXY, px, row, spacing, spacingXY, width)
 import Http
-import Json.Decode exposing (Decoder, andThen, field, maybe)
+import Json.Decode exposing (Decoder, andThen, field, keyValuePairs, maybe)
 import Json.Encode
 import RemoteData exposing (RemoteData(..), WebData)
 import RemoteData.Http as Web exposing (defaultConfig)
@@ -166,8 +166,12 @@ view model =
                     , UI.Button.pill UI.Style.Potential InitialiseKnockoutsResults "Initialiseer"
                     ]
 
-                ( Authorised, _ ) ->
-                    [ Element.text "Nog niet bekend"
+                ( Authorised, err ) ->
+                    let
+                        e =
+                            Debug.toString err
+                    in
+                    [ Element.text e
                     , UI.Button.pill UI.Style.Inactive UpdateKnockoutsResults "Update"
                     , UI.Button.pill UI.Style.Potential InitialiseKnockoutsResults "Initialiseer"
                     ]
@@ -205,8 +209,7 @@ viewKnockoutsPerTeam { team, roundsQualified } =
             UI.Team.viewTeam (Just team)
 
         roundButtons =
-            List.reverse roundsQualified
-                |> List.map (viewRoundButtons team)
+            List.map (viewRoundButtons team) roundsQualified
     in
     Element.row
         [ padding 20, spacing 20 ]
@@ -249,7 +252,7 @@ viewRoundButtons team ( rnd, qualified ) =
     in
     Element.column
         [ spacing 20 ]
-        [ Element.el [ width (px 40) ] (Element.text (Round.toString rnd))
+        [ Element.el [ width (px 40) ] (UI.Text.simpleText (Round.toString rnd))
         , UI.Button.pill (btnSemantic Did) succeeded "In"
         , UI.Button.pill (btnSemantic NotYet) unknown "TBD"
         , UI.Button.pill (btnSemantic DidNot) failed "Out"
@@ -284,6 +287,9 @@ encode results =
 
 
 
+-- Json.Encode.object
+--     [ ( "teams", Json.Encode.object (List.map encodeTeamQ results.teams) )
+--     ]
 -- encodeTeamQs : List ( String, TeamRounds ) -> Json.Encode.Value
 -- encodeTeamQs ( teamId, teamrounds ) =
 --     Json.Encode.list encodeTeamQ
@@ -308,8 +314,9 @@ encodeRoundSQualified teamrounds =
         |> Json.Encode.object
 
 
+roundQualifiedToString : ( Round, HasQualified ) -> ( String, Json.Encode.Value )
 roundQualifiedToString ( r, rQ ) =
-    ( Round.toString r, HasQualified.encode rQ )
+    ( String.fromInt <| Round.toInt r, HasQualified.encode rQ )
 
 
 
@@ -333,20 +340,29 @@ decode =
 
 decodeTeamRounds : Decoder TeamRounds
 decodeTeamRounds =
+    let
+        roundFromString r =
+            String.toInt r
+                |> Maybe.withDefault 6
+                |> Round.fromInt
+
+        decoder_ =
+            keyValuePairs HasQualified.decode
+                |> Json.Decode.map (List.map (\( a, b ) -> ( roundFromString a, b )))
+    in
     Json.Decode.map2 TeamRounds
         (field "team" Bets.Types.Team.decode)
-        (field "roundsQualified" decodeRoundsQualified)
-
-
-decodeRoundsQualified : Decoder (List ( Round, HasQualified ))
-decodeRoundsQualified =
-    Json.Decode.map2 Tuple.pair
-        (Json.Decode.index 0 Round.decode)
-        (Json.Decode.index 0 HasQualified.decode)
-        |> Json.Decode.list
+        (field "roundsQualified" decoder_)
 
 
 
+-- (field "roundsQualified" decodeRoundsQualified)
+-- decodeRoundsQualified : Decoder (List ( Round, HasQualified ))
+-- decodeRoundsQualified =
+--     Json.Decode.map2 Tuple.pair
+--         (Json.Decode.index 0 Round.decode)
+--         (Json.Decode.index 0 HasQualified.decode)
+--         |> Json.Decode.list
 -- let
 --     Json.Decode.list
 -- in

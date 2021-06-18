@@ -82,8 +82,12 @@ viewRankingGroups model =
     case model.ranking of
         Success ranking ->
             let
-                header =
-                    viewRankingHeader screenWidth
+                introtext =
+                    [ Element.text "Klik op een naam om de voorspellingen in te zien."
+                    ]
+
+                introduction =
+                    Element.paragraph (UI.Style.introduction []) introtext
 
                 rank =
                     List.map (viewRankingGroup screenWidth) ranking.summary
@@ -94,7 +98,7 @@ viewRankingGroups model =
                         (Element.text ("bijgewerkt op " ++ UI.Text.dateText model.timeZone ranking.time))
 
                 column =
-                    rank ++ [ datetxt ]
+                    introduction :: rank ++ [ datetxt ]
             in
             Element.column
                 [ paddingXY 0 20, spacingXY 0 20, width screenWidth ]
@@ -125,13 +129,13 @@ viewRankingGroup screenWidth grp =
     Element.row
         (UI.Style.darkBox [ paddingXY 0 20, Screen.className "commentBox", width screenWidth ])
         [ Element.el [ alignTop, width (px 40), pad 0 10 0 0 ] (UI.Text.simpleText (String.fromInt grp.pos))
-        , viewRankingLines screenWidth grp.bets
+        , viewRankingLines <| List.sortBy (.name >> String.toUpper) grp.bets
         , Element.el [ alignTop, width (px 55), pad 0 20 0 10, alignRight ] (UI.Text.simpleText (String.fromInt grp.total))
         ]
 
 
-viewRankingLines : Length -> List RankingSummaryLine -> Element.Element Msg
-viewRankingLines screenWidth lines =
+viewRankingLines : List RankingSummaryLine -> Element.Element Msg
+viewRankingLines lines =
     List.map viewRankingLine lines
         |> Element.column [ Screen.className "ranking-line", spacingXY 0 20, paddingXY 0 0 ]
 

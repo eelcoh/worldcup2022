@@ -26,6 +26,7 @@ module UI.Style exposing
     , introduction
     , link
     , matchRow
+    , matchRowVerySmall
     , matches
     , menu
     , none
@@ -40,6 +41,7 @@ module UI.Style exposing
     , scoreRow
     , secondaryText
     , teamBadge
+    , teamBadgeVerySmall
     , teamButton
     , teamButtonTBPotential
     , teamButtonTBSelected
@@ -56,6 +58,7 @@ import Element.Font as Font
 import Html.Attributes
 import UI.Color as Color
 import UI.Font exposing (scaled)
+import UI.Screen as Screen
 
 
 type ButtonSemantics
@@ -442,6 +445,37 @@ teamBadge semantics attrs =
     , Element.pointer
     , UI.Font.button
     , Element.centerY
+    , Screen.className "teamBadge"
+    ]
+        ++ attrs
+
+
+teamBadgeVerySmall : ButtonSemantics -> List (Element.Attribute msg) -> List (Element.Attribute msg)
+teamBadgeVerySmall semantics attrs =
+    let
+        borderColor =
+            case semantics of
+                Selected ->
+                    Color.right
+
+                Perhaps ->
+                    Color.orange
+
+                _ ->
+                    Color.panel
+    in
+    [ Background.color Color.panel
+    , Font.color Color.primaryText
+    , Border.color borderColor
+    , Border.width 1
+    , Element.spacing 3
+    , Element.padding 3
+    , Border.rounded 3
+    , Font.center
+    , Font.size 8
+    , Element.pointer
+    , UI.Font.button
+    , Element.centerY
     ]
         ++ attrs
 
@@ -553,6 +587,38 @@ matchRow semantics attrs =
             , Border.color border
             , Border.width 1
             , Border.rounded 10
+            ]
+
+        border =
+            case semantics of
+                Active ->
+                    Color.white
+
+                Right ->
+                    Color.green
+
+                Wrong ->
+                    Color.red
+
+                _ ->
+                    Color.panel
+    in
+    attrs ++ styles
+
+
+matchRowVerySmall : ButtonSemantics -> List (Element.Attribute msg) -> List (Element.Attribute msg)
+matchRowVerySmall semantics attrs =
+    let
+        styles =
+            [ Background.color Color.panel
+            , Font.color Color.primaryText
+            , Font.size 8
+            , Font.center
+            , Element.pointer
+            , UI.Font.match
+            , Border.color border
+            , Border.width 1
+            , Border.rounded 3
             ]
 
         border =

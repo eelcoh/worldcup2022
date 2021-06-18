@@ -2,7 +2,6 @@ module Bets.View exposing (view, viewBet)
 
 import Bets.Types exposing (..)
 import Bets.Types.Bracket as B
-import Bets.Types.Match as M
 import Bets.Types.Score as S
 import Bets.Types.StringField as StringField
 import Element exposing (Element, alignRight, centerX, centerY, height, padding, paddingXY, px, spacing, spacingXY, width)
@@ -18,7 +17,7 @@ import UI.Button
 import UI.Color as Color
 import UI.Font exposing (scaled)
 import UI.Match
-import UI.Screen as Screen
+import UI.Screen as Screen exposing (Device(..))
 import UI.Style exposing (ButtonSemantics(..))
 import UI.Team
 import UI.Text
@@ -49,6 +48,9 @@ viewBet bet screenSize =
     let
         w =
             Screen.width screenSize
+
+        device =
+            Screen.device screenSize
     in
     Element.column
         [ spacing 40, w ]
@@ -57,7 +59,7 @@ viewBet bet screenSize =
         , matchesIntro
         , displayMatches bet.answers.matches
         , UI.Text.displayHeader "Het Schema"
-        , displayBracket bet
+        , displayBracket device bet
         , UI.Text.displayHeader "De Topscorer"
         , topscorerIntro
         , displayTopscorer bet.answers.topscorer
@@ -198,8 +200,8 @@ isWinner bracketWinner homeOrAway =
                 No
 
 
-displayBracket : Bet -> Element.Element Msg
-displayBracket bet =
+displayBracket : Device -> Bet -> Element.Element Msg
+displayBracket device bet =
     let
         br =
             bet.answers.bracket
@@ -216,15 +218,15 @@ displayBracket bet =
     Element.column
         [ spacing 20 ]
         [ introduction
-        , viewBracket bet br
+        , viewBracket device bet br
         ]
 
 
-viewBracket : Bet -> Answer Bracket -> Element.Element Msg
-viewBracket bet (Answer bracket _) =
+viewBracket : Device -> Bet -> Answer Bracket -> Element.Element Msg
+viewBracket device bet (Answer bracket _) =
     let
         v mb =
-            viewMatchWinner bet mb
+            viewMatchWinner device bet mb
 
         final =
             B.get bracket "m51"
@@ -272,22 +274,30 @@ viewBracket bet (Answer bracket _) =
             v <| B.get bracket "m37"
 
         champion =
-            mkButtonChamp final
+            mkButtonChamp device final
+
+        ( spaceH, spaceV ) =
+            case device of
+                Phone ->
+                    ( 6, 6 )
+
+                Computer ->
+                    ( 12, 24 )
     in
     Element.column
-        [ spacing 10, width (px 700) ]
-        [ Element.row [ spacing 30, centerX ] [ m38, m40, m43, m44 ]
-        , Element.row [ spacing 100, centerX ] [ m47, m48 ]
+        [ spacing spaceV ]
+        [ Element.row [ spacing (2 * spaceH), centerX ] [ m38, m40, m43, m44 ]
+        , Element.row [ spacing (16 * spaceH), centerX ] [ m47, m48 ]
         , Element.row [ centerX ] [ m50 ]
-        , Element.row [ centerX, spacing 44 ] [ v final, champion ]
+        , Element.row [ centerX, spacing (4 * spaceH) ] [ v final, champion ]
         , Element.row [ centerX ] [ m49 ]
-        , Element.row [ spacing 100, centerX ] [ m45, m46 ]
-        , Element.row [ spacing 30, centerX ] [ m41, m42, m37, m39 ]
+        , Element.row [ spacing (16 * spaceH), centerX ] [ m45, m46 ]
+        , Element.row [ spacing (2 * spaceH), centerX ] [ m41, m42, m37, m39 ]
         ]
 
 
-viewMatchWinner : Bet -> Maybe Bracket -> Element.Element Msg
-viewMatchWinner bet mBracket =
+viewMatchWinner : Device -> Bet -> Maybe Bracket -> Element.Element Msg
+viewMatchWinner device bet mBracket =
     case mBracket of
         Just (MatchNode slot winner home away rd hasQ) ->
             let
@@ -298,10 +308,10 @@ viewMatchWinner bet mBracket =
                     didQualify away
 
                 homeButton =
-                    mkButton HomeTeam slot homeHasQ home
+                    mkButton device HomeTeam slot homeHasQ home
 
                 awayButton =
-                    mkButton AwayTeam slot awayHasQ away
+                    mkButton device AwayTeam slot awayHasQ away
 
                 dash =
                     Element.text " - "
@@ -316,12 +326,21 @@ viewMatchWinner bet mBracket =
                 --     Element.text " - "
                 -- in
                 -- Element.row [ spacing 7 ] [ homeButton, awayButton ]
+                ( rowStyle, w, h ) =
+                    case device of
+                        Phone ->
+                            ( UI.Style.matchRowVerySmall, px 80, px 50 )
+
+                        Computer ->
+                            ( UI.Style.matchRow, px 160, px 100 )
+
                 style =
-                    UI.Style.matchRow UI.Style.Perhaps
+                    rowStyle UI.Style.Perhaps
                         [ UI.Font.button
                         , Element.centerY
-                        , width (px 160)
-                        , height (px 100)
+                        , width w
+                        , height h
+                        , Screen.className "matchrow very small"
                         ]
             in
             Element.row style
@@ -341,8 +360,8 @@ didQualify b =
             hasQ
 
 
-mkButton : Winner -> Slot -> HasQualified -> Bracket -> Element.Element Msg
-mkButton wnnr slot hasQualified bracket =
+mkButton : Device -> Winner -> Slot -> HasQualified -> Bracket -> Element.Element Msg
+mkButton device wnnr slot hasQualified bracket =
     let
         s =
             case hasQualified of
@@ -360,12 +379,20 @@ mkButton wnnr slot hasQualified bracket =
 
         team =
             B.qualifier bracket
+
+        btn =
+            case device of
+                Phone ->
+                    UI.Button.maybeTeamBadgeVerySmall
+
+                Computer ->
+                    UI.Button.maybeTeamBadgeSmall
     in
-    UI.Button.maybeTeamBadgeSmall s team
+    btn s team
 
 
-mkButtonChamp : Maybe Bracket -> Element.Element msg
-mkButtonChamp mBracket =
+mkButtonChamp : Device -> Maybe Bracket -> Element.Element msg
+mkButtonChamp device mBracket =
     let
         mTeam =
             mBracket
@@ -387,12 +414,15 @@ mkButtonChamp mBracket =
 
                 TBD ->
                     Potential
-
-        attrs =
-            []
     in
-    UI.Button.maybeTeamBadgeSmall qualified mTeam
-        |> badge
+    case device of
+        Phone ->
+            UI.Button.maybeTeamBadgeVerySmall qualified mTeam
+                |> badgeVerySmall
+
+        Computer ->
+            UI.Button.maybeTeamBadgeSmall qualified mTeam
+                |> badge
 
 
 displayTopscorer : Answer Topscorer -> Element.Element Msg
@@ -425,6 +455,23 @@ badge el =
         , Element.pointer
         , UI.Font.match
         , Border.rounded 10
+        , spacing 0
+        ]
+        el
+
+
+badgeVerySmall el =
+    Element.el
+        [ height (px 50)
+        , width (px 40)
+        , Background.color Color.panel
+        , Font.color Color.primaryText
+        , Font.size (scaled 1)
+        , Font.center
+        , centerY
+        , Element.pointer
+        , UI.Font.match
+        , Border.rounded 3
         , spacing 0
         ]
         el

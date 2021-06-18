@@ -1,23 +1,18 @@
 module Main exposing (main)
 
--- import Html exposing (Html)
-
 import API.Bets
 import Activities
 import Authentication
 import Bets.Init
-import Bets.View
 import Browser
 import Browser.Events as Events
 import Browser.Navigation as Navigation
-import Element exposing (paddingXY, spacing)
 import Form.Bracket as Bracket
 import Form.Card as Cards
 import Form.GroupMatches as GroupMatches
 import Form.Info
 import Form.Participant as Participant
 import Form.Topscorer as Topscorer
-import Form.View
 import RemoteData exposing (RemoteData(..))
 import Results.Bets
 import Results.Knockouts as Knockouts
@@ -28,11 +23,9 @@ import Task
 import Time
 import Types exposing (App(..), Card(..), Credentials(..), DataStatus(..), Flags, InputState(..), Model, Msg(..), Token(..))
 import Types.DataStatus as DataStatus
-import UI.Button
 import UI.Screen as Screen
-import UI.Style
 import Url
-import Uuid.Barebones as Uuid
+import View exposing (getApp, view)
 
 
 
@@ -72,200 +65,6 @@ main =
         , onUrlRequest = UrlRequest
         , onUrlChange = UrlChange
         }
-
-
-view : Model Msg -> Browser.Document Msg
-view model =
-    let
-        contents =
-            let
-                contents_ =
-                    case model.app of
-                        Home ->
-                            viewHome model
-
-                        Form ->
-                            Form.View.view model
-
-                        BetsDetailsView ->
-                            Bets.View.view model
-
-                        Blog ->
-                            viewBlog model
-
-                        Login ->
-                            Authentication.view model
-
-                        Bets ->
-                            Results.Bets.view model
-
-                        Ranking ->
-                            Ranking.view model
-
-                        RankingDetailsView ->
-                            Ranking.viewDetails model
-
-                        Results ->
-                            Matches.view model
-
-                        EditMatchResult ->
-                            Matches.edit model
-            in
-            Element.el [ Element.padding 24 ] contents_
-
-        title =
-            "Voetbalpool - Corona Editie"
-
-        link app =
-            let
-                semantics =
-                    if app == model.app then
-                        UI.Style.Active
-
-                    else
-                        UI.Style.Potential
-
-                ( linkUrl, linkText ) =
-                    case app of
-                        Home ->
-                            ( "#home", "home" )
-
-                        BetsDetailsView ->
-                            ( "#inzendingen", "inzendingen" )
-
-                        Bets ->
-                            ( "#inzendingen", "inzendingen" )
-
-                        Form ->
-                            ( "#formulier", "formulier" )
-
-                        Ranking ->
-                            ( "#stand", "stand" )
-
-                        Results ->
-                            ( "#wedstrijden", "wedstrijden" )
-
-                        _ ->
-                            ( "#blog", "blog" )
-            in
-            -- Element.el [] wrapper for wrapperrow alignment misbehaviour
-            Element.el [] <| UI.Button.navlink semantics linkUrl linkText
-
-        linkList =
-            case model.token of
-                RemoteData.Success (Token _) ->
-                    [ Home, Ranking, Results, Blog, Bets ]
-
-                _ ->
-                    [ Home, Ranking, Results ]
-
-        links =
-            Element.wrappedRow [ Element.padding 12, Element.spacing 12 ]
-                (List.map link linkList)
-
-        page =
-            Element.column
-                [ Element.padding 24
-                , Element.spacing 24
-                , Element.centerX
-                ]
-                [ links
-                , contents
-                ]
-
-        body =
-            Element.layout (UI.Style.body []) page
-    in
-    { title = title, body = [ body ] }
-
-
-getApp : Url.Url -> ( App, Cmd Msg )
-getApp url =
-    let
-        -- emptyFunc =
-        --     \_ -> Cmd.none
-        ( app, msg ) =
-            Maybe.map inspect url.fragment
-                |> Maybe.withDefault ( Home, RefreshActivities )
-
-        inspect hash =
-            case String.split "/" hash of
-                "home" :: _ ->
-                    ( Home, RefreshActivities )
-
-                "blog" :: _ ->
-                    ( Blog, RefreshActivities )
-
-                "formulier" :: _ ->
-                    ( Form, NoOp )
-
-                "inzendingen" :: uuid :: _ ->
-                    if Uuid.isValidUuid uuid then
-                        ( BetsDetailsView, BetSelected uuid )
-
-                    else
-                        ( Ranking, RefreshRanking )
-
-                "inzendingen" :: _ ->
-                    ( Bets, FetchBets )
-
-                "stand" :: uuid :: _ ->
-                    if Uuid.isValidUuid uuid then
-                        ( RankingDetailsView, RetrieveRankingDetails uuid )
-
-                    else
-                        ( Ranking, RefreshRanking )
-
-                "stand" :: _ ->
-                    ( Ranking, RefreshRanking )
-
-                "wedstrijden" :: "wedstrijd" :: _ ->
-                    ( EditMatchResult, NoOp )
-
-                "wedstrijden" :: [] ->
-                    ( Results, RefreshResults )
-
-                -- "#knockouts" :: [] ->
-                --     ( KOResults, RefreshKnockoutsResults )
-                -- "#topscorer" :: [] ->
-                --     ( TSResults, RefreshTopscorerResults )
-                "login" :: _ ->
-                    ( Login, NoOp )
-
-                _ ->
-                    ( Home, RefreshActivities )
-
-        cmd =
-            Task.succeed msg
-                |> Task.perform identity
-    in
-    ( app, cmd )
-
-
-viewHome : Model Msg -> Element.Element Msg
-viewHome model =
-    Element.column
-        [ paddingXY 0 20
-        , spacing 30
-        , Screen.width model.screen
-        , Screen.className "home"
-        ]
-        [ Activities.viewCommentInput model.activities
-        , Activities.view model
-        ]
-
-
-viewBlog : Model Msg -> Element.Element Msg
-viewBlog model =
-    Element.column
-        [ paddingXY 0 20
-        , spacing 30
-        , Screen.width model.screen
-        , Screen.className "blog"
-        ]
-        [ Activities.viewPostInput model.activities
-        , Activities.view model
-        ]
 
 
 
