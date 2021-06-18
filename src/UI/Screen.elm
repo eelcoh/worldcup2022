@@ -1,4 +1,4 @@
-module UI.Screen exposing (Size, className, elementId, maxWidth, size, width)
+module UI.Screen exposing (Device(..), Size, className, device, elementId, maxWidth, size, width)
 
 import Element
 import Html.Attributes exposing (property)
@@ -11,6 +11,11 @@ type alias Size =
     }
 
 
+type Device
+    = Phone
+    | Computer
+
+
 size : Int -> Int -> Size
 size w h =
     Size (toFloat w) (toFloat h)
@@ -19,6 +24,15 @@ size w h =
 maxWidth : Size -> Int
 maxWidth screen =
     round <| (80 * screen.width) / 100
+
+
+device : Size -> Device
+device screen =
+    if screen.width < 500 then
+        Phone
+
+    else
+        Computer
 
 
 width : Size -> Element.Attribute msg

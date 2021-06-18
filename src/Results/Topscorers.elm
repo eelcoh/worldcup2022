@@ -199,27 +199,6 @@ viewTopscorer ( hasQualified, topscorer ) =
         ]
 
 
-
--- badge : HasQualified -> Topscorer -> Msg -> Element Msg
--- badge hasQualified topscorer msg =
---     let
---         semantics =
---             case hasQualified of
---                 TBD ->
---                     NotYet
---                 In ->
---                     Did
---                 Out ->
---                     DidNot
---     in
---     Element.row
---         [ spacing 20, padding 10, onClick msg ]
---         [ teamBadge
---         , Element.text topscorer.topscorer
---         ]
--- json
-
-
 encode : TopscorerResults -> Json.Encode.Value
 encode results =
     Json.Encode.object
@@ -242,15 +221,6 @@ encodeTopscorerResult ( hasQualified, topscorer ) =
         ]
 
 
-
--- encodeTopscorer : Topscorer -> Json.Encode.Value
--- encodeTopscorer { team, topscorer } =
---     Json.Encode.object
---         [ ( "team", Bets.Types.Team.encode team )
---         , ( "name", Json.Encode.string topscorer )
---         ]
-
-
 decode : Decoder TopscorerResults
 decode =
     Json.Decode.map TopscorerResults
@@ -262,16 +232,3 @@ decodeTopscorerResult =
     Json.Decode.map2 Tuple.pair
         (field "hasQualified" Bets.Types.HasQualified.decode)
         (field "topscorer" Topscorer.decode)
-
-
-
--- decodeTopscorerResult : Decoder ( HasQualified, Topscorer )
--- decodeTopscorerResult =
---     Json.Decode.map2 (,)
---         (field "hasQualified" Bets.Types.HasQualified.decode)
---         (field "topscorer" decodeTopscorer)
--- decodeTopscorer : Decoder Topscorer
--- decodeTopscorer =
---     Json.Decode.map2 Topscorer
---         (field "team" Bets.Types.Team.decode)
---         (field "name" Json.Decode.string)

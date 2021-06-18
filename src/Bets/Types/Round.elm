@@ -3,6 +3,7 @@ module Bets.Types.Round exposing
     , decode
     , encode
     , fromInt
+    , fromRoman
     , isSameOrANextRound
     , nextRound
     , toInt
@@ -16,6 +17,50 @@ import Json.Encode
 
 
 -- MODEL
+
+
+fromRoman : String -> Round
+fromRoman r =
+    case String.toUpper r of
+        "I" ->
+            I
+
+        "II" ->
+            II
+
+        "III" ->
+            III
+
+        "IV" ->
+            IV
+
+        "V" ->
+            V
+
+        _ ->
+            VI
+
+
+toRoman : Round -> String
+toRoman r =
+    case r of
+        I ->
+            "I"
+
+        II ->
+            "II"
+
+        III ->
+            "III"
+
+        IV ->
+            "IV"
+
+        V ->
+            "V"
+
+        VI ->
+            " VI"
 
 
 toInt : Round -> Int

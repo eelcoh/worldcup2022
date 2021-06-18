@@ -157,12 +157,6 @@ viewCommentInput model =
             in
             Input.multiline [ height (px 120) ] area
 
-        -- commentInputTrap_ =
-        --     Element.paragraph
-        --         [ padding 0, spacing 0 ]
-        --         [ Element.text "Schrijf vooral iets op "
-        --         , UI.Button.pill UI.Style.Active ShowCommentInput "het prikbord"
-        --         ]
         commentInputTrap =
             let
                 area =

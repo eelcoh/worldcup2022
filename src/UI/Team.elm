@@ -1,8 +1,8 @@
-module UI.Team exposing (viewTeam, viewTeamFull, viewTeamSmall)
+module UI.Team exposing (teamBoxVerySmall, teamNameVerySmall, viewTeam, viewTeamFull, viewTeamSmall, viewTeamVerySmall)
 
 import Bets.Types exposing (Team)
 import Bets.Types.Team as T
-import Element exposing (Element, column, height, image, px, row, width)
+import Element exposing (Element, column, height, image, px, row, spacingXY, width)
 import Element.Font as Font
 import UI.Color as Color
 import UI.Font
@@ -66,6 +66,35 @@ viewTeamSmall mTeam =
         ]
 
 
+viewTeamVerySmall : Maybe Team -> Element msg
+viewTeamVerySmall mTeam =
+    let
+        teamNameTxt =
+            Maybe.map T.display mTeam
+                |> Maybe.withDefault "..."
+
+        flagUrl =
+            T.flagUrl mTeam
+
+        img =
+            { src = flagUrl
+            , description =
+                teamNameTxt
+            }
+    in
+    column teamBoxVerySmall
+        [ row [ Element.centerX, spacingXY 0 4 ]
+            [ image
+                [ height (px 15)
+                , width (px 15)
+                ]
+                img
+            ]
+        , row teamNameVerySmall
+            [ Element.el [ height (px 14) ] (Element.text teamNameTxt) ]
+        ]
+
+
 viewTeamFull : Maybe Team -> Element msg
 viewTeamFull team =
     let
@@ -115,11 +144,30 @@ teamBoxSmall =
     ]
 
 
+teamBoxVerySmall : List (Element.Attribute msg)
+teamBoxVerySmall =
+    [ Font.color Color.primaryText
+    , Font.center
+    , Element.centerX
+    , Element.spacingXY 0 5
+    ]
+
+
 teamName : List (Element.Attribute msg)
 teamName =
     [ Element.centerX
     , Element.centerY
     , Element.spacing 20
     , Font.size (UI.Font.scaled 1)
+    , Font.center
+    ]
+
+
+teamNameVerySmall : List (Element.Attribute msg)
+teamNameVerySmall =
+    [ Element.centerX
+    , Element.centerY
+    , Element.spacing 2
+    , Font.size 12
     , Font.center
     ]

@@ -25,8 +25,6 @@ authenticate uid pw =
 view : Model Msg -> Element.Element Msg
 view model =
     let
-        -- placeholder p =
-        --     Input.placeholder { text = p, label = Input.hiddenLabel p }
         username v =
             let
                 area =

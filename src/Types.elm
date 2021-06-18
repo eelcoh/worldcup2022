@@ -60,19 +60,10 @@ type App
     | Ranking
     | RankingDetailsView
     | Results
+    | TSResults
+    | KOResults
     | EditMatchResult
     | BetsDetailsView
-
-
-
--- | Ranking
--- | RankingDetailsView
--- | Bets String
--- | Login
--- | Results
--- | EditMatchResult
--- | KOResults
--- | TSResults
 
 
 type alias Flags =

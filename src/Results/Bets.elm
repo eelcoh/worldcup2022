@@ -21,7 +21,6 @@ fetchBets =
 
 toggleActive : Token -> UUID -> Toggle -> Cmd Msg
 toggleActive (Token token) uid toggle =
-    -- Web.post "/bets/ranking/initial/" FetchedRanking decode Json.Encode.null
     let
         bearer =
             "Bearer " ++ token
