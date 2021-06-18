@@ -83,6 +83,9 @@ view model =
                         Home ->
                             ( "#home", "home" )
 
+                        Blog ->
+                            ( "#blog", "blog" )
+
                         BetsDetailsView ->
                             ( "#inzendingen", "inzendingen" )
 
