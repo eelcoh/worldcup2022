@@ -8,6 +8,7 @@ module Bets.Types.Bracket exposing
     , get
     , getFreeSlots
     , getQualifiers
+    , hasQualified
     , isComplete
     , isCompleteQualifiers
     , proceed
@@ -29,6 +30,16 @@ import Dict
 import Json.Decode exposing (Decoder, fail, field, lazy, maybe)
 import Json.Encode
 import Maybe.Extra as M
+
+
+hasQualified : Bracket -> HasQualified
+hasQualified br =
+    case br of
+        MatchNode slot w home away rnd hasQ ->
+            hasQ
+
+        TeamNode slot pos qual hasQ ->
+            hasQ
 
 
 reset : Bracket -> Qualifier -> Bracket
