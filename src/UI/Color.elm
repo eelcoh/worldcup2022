@@ -1,5 +1,6 @@
 module UI.Color exposing
-    ( background
+    ( asHex
+    , background
     , black
     , green
     , grey
@@ -22,6 +23,34 @@ module UI.Color exposing
     )
 
 import Element exposing (Color, rgb255)
+import Hex
+
+
+asHex : Color -> String
+asHex clr =
+    let
+        color =
+            Element.toRgb clr
+
+        to255 f =
+            (255 * f)
+                |> Basics.round
+                |> Basics.modBy 255
+                |> Hex.toString
+
+        r =
+            to255 color.red
+
+        g =
+            to255 color.green
+
+        b =
+            to255 color.blue
+
+        a =
+            to255 color.alpha
+    in
+    "#" ++ r ++ g ++ b
 
 
 red : Color
