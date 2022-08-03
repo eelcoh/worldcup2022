@@ -1,6 +1,6 @@
 module Bets.Types.Candidate exposing (decode, encode, get, sort, toSortable)
 
-import Bets.Init.Euro2020.Tournament as Tournament
+import Bets.Init.WorldCup2022.Tournament as Tournament
 import Bets.Types exposing (Bracket(..), Candidate(..), Group, Team)
 import Bets.Types.Group as Group
 import Json.Decode exposing (Decoder, andThen, field)
