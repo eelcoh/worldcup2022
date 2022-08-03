@@ -853,7 +853,7 @@ japan =
     { team = { teamID = "JPN", teamName = "Japan" }
     , players =
         []
-    , group = D
+    , group = E
     }
 
 
