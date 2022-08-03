@@ -144,54 +144,54 @@ viewMatchRings bet bracket state =
         v mb =
             viewLeaf bet state mb UI.Style.Potential
 
-        m37 =
-            v <| B.get bracket "m37"
-
-        m38 =
-            v <| B.get bracket "m38"
-
-        m39 =
-            v <| B.get bracket "m39"
-
-        m40 =
-            v <| B.get bracket "m40"
-
-        m41 =
-            v <| B.get bracket "m41"
-
-        m42 =
-            v <| B.get bracket "m42"
-
-        m43 =
-            v <| B.get bracket "m43"
-
-        m44 =
-            v <| B.get bracket "m44"
-
-        -- quarter finals
-        m45 =
-            v <| B.get bracket "m45"
-
-        m46 =
-            v <| B.get bracket "m46"
-
-        m47 =
-            v <| B.get bracket "m47"
-
-        m48 =
-            v <| B.get bracket "m48"
-
-        -- semi final
         m49 =
             v <| B.get bracket "m49"
 
         m50 =
-            v <|
-                B.get bracket "m50"
+            v <| B.get bracket "m50"
 
-        -- final
         m51 =
             v <| B.get bracket "m51"
+
+        m52 =
+            v <| B.get bracket "m52"
+
+        m53 =
+            v <| B.get bracket "m53"
+
+        m54 =
+            v <| B.get bracket "m54"
+
+        m55 =
+            v <| B.get bracket "m55"
+
+        m56 =
+            v <| B.get bracket "m56"
+
+        -- quarter finals
+        m57 =
+            v <| B.get bracket "m57"
+
+        m58 =
+            v <| B.get bracket "m58"
+
+        m59 =
+            v <| B.get bracket "m59"
+
+        m60 =
+            v <| B.get bracket "m60"
+
+        -- semi final
+        m61 =
+            v <| B.get bracket "m61"
+
+        m62 =
+            v <|
+                B.get bracket "m62"
+
+        -- final4
+        m64 =
+            v <| B.get bracket "m64"
 
         -- List.map (Tuple.pair segmentAngleSize) matches
         mkRingData : Float -> Float -> List (Float -> Float -> Float -> Svg Msg) -> Svg Msg
@@ -204,10 +204,10 @@ viewMatchRings bet bracket state =
                 |> Svg.g []
 
         ringData =
-            [ ( 4, [ m41, m42, m37, m39, m38, m40, m43, m44 ] )
-            , ( 3, [ m45, m46, m47, m48 ] )
-            , ( 2, [ m49, m50 ] )
-            , ( 1, [ m51 ] )
+            [ ( 4, [ m49, m50, m53, m54, m51, m52, m55, m56 ] )
+            , ( 3, [ m57, m58, m59, m60 ] )
+            , ( 2, [ m61, m62 ] )
+            , ( 1, [ m64 ] )
             ]
 
         ringViews d =

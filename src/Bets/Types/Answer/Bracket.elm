@@ -9,7 +9,7 @@ module Bets.Types.Answer.Bracket exposing
     , summary
     )
 
-import Bets.Init.Euro2020.Tournament exposing (groupMembers)
+import Bets.Init.WorldCup2022.Tournament exposing (groupMembers)
 import Bets.Types exposing (Answer(..), AnswerBracket, Bracket(..), Candidate(..), Group, Qualifier, Slot, Team, Winner)
 import Bets.Types.Bracket
 import Bets.Types.Points

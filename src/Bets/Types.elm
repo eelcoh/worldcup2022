@@ -95,6 +95,8 @@ type Group
     | D
     | E
     | F
+    | G
+    | H
 
 
 type Round

@@ -31,6 +31,12 @@ toString grp =
         F ->
             "F"
 
+        G ->
+            "G"
+
+        H ->
+            "H"
+
 
 toGroup : String -> Group
 toGroup s =
@@ -53,8 +59,14 @@ toGroup s =
         "F" ->
             F
 
+        "G" ->
+            G
+
+        "H" ->
+            H
+
         _ ->
-            F
+            H
 
 
 encode : Group -> Json.Encode.Value
