@@ -249,10 +249,12 @@ initCards sz =
     [ IntroCard Intro
     , GroupMatchesCard <| GroupMatches.init A "m01"
     , GroupMatchesCard <| GroupMatches.init B "m03"
-    , GroupMatchesCard <| GroupMatches.init C "m05"
-    , GroupMatchesCard <| GroupMatches.init D "m07"
-    , GroupMatchesCard <| GroupMatches.init E "m09"
-    , GroupMatchesCard <| GroupMatches.init F "m11"
+    , GroupMatchesCard <| GroupMatches.init C "m08"
+    , GroupMatchesCard <| GroupMatches.init D "m05"
+    , GroupMatchesCard <| GroupMatches.init E "m10"
+    , GroupMatchesCard <| GroupMatches.init F "m12"
+    , GroupMatchesCard <| GroupMatches.init G "m13"
+    , GroupMatchesCard <| GroupMatches.init H "m14"
     , BracketCard <| Bracket.init sz
     , BracketKnockoutsCard <| Bracket.initialKnockouts sz
     , TopscorerCard
