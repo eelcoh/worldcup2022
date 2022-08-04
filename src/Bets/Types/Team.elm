@@ -81,78 +81,106 @@ log t =
 
 flagUrlRound : String -> String
 flagUrlRound teamID =
+    let
+        mkflagurl ctry =
+            "assets/svg/" ++ ctry
+    in
     case teamID of
-        "SUI" ->
-            "assets/svg/switzerland.svg"
+        "ARG" ->
+            mkflagurl "198-argentina.svg"
 
-        "TUR" ->
-            "assets/svg/turkey.svg"
-
-        "ITA" ->
-            "assets/svg/italy.svg"
-
-        "WAL" ->
-            "assets/svg/wales.svg"
-
-        "DEN" ->
-            "assets/svg/denmark.svg"
-
-        "FIN" ->
-            "assets/svg/finland.svg"
+        "AUS" ->
+            mkflagurl "234-australia.svg"
 
         "BEL" ->
-            "assets/svg/belgium.svg"
+            mkflagurl "165-belgium.svg"
 
-        "RUS" ->
-            "assets/svg/russia.svg"
+        "BRA" ->
+            mkflagurl "255-brazil.svg"
 
-        "NED" ->
-            "assets/svg/netherlands.svg"
+        "CAM" ->
+            mkflagurl "105-cameroon.svg"
 
-        "UKR" ->
-            "assets/svg/ukraine.svg"
+        "CAN" ->
+            mkflagurl "243-canada.svg"
 
-        "AUT" ->
-            "assets/svg/austria.svg"
-
-        "ENG" ->
-            "assets/svg/england.svg"
+        "CRC" ->
+            mkflagurl "156-costa-rica.svg"
 
         "CRO" ->
-            "assets/svg/croatia.svg"
+            mkflagurl "164-croatia.svg"
 
-        "CZE" ->
-            "assets/svg/czech-republic.svg"
+        "DEN" ->
+            mkflagurl "174-denmark.svg"
+
+        "ECU" ->
+            mkflagurl "104-ecuador.svg"
+
+        "ENG" ->
+            mkflagurl "216-england.svg"
 
         "ESP" ->
-            "assets/svg/spain.svg"
-
-        "SWE" ->
-            "assets/svg/sweden.svg"
-
-        "POL" ->
-            "assets/svg/republic-of-poland.svg"
-
-        "POR" ->
-            "assets/svg/portugal.svg"
+            mkflagurl "128-spain.svg"
 
         "FRA" ->
-            "assets/svg/france.svg"
+            mkflagurl "195-france.svg"
 
         "GER" ->
-            "assets/svg/germany.svg"
+            mkflagurl "162-germany.svg"
 
-        "SCO" ->
-            "assets/svg/scotland.svg"
+        "GHA" ->
+            mkflagurl "053-ghana.svg"
 
-        "SVK" ->
-            "assets/svg/slovakia.svg"
+        "IRN" ->
+            mkflagurl "136-iran.svg"
 
-        "MAC" ->
-            "assets/svg/republic-of-macedonia.svg"
+        "JPN" ->
+            mkflagurl "063-japan.svg"
 
-        "HUN" ->
-            "assets/svg/hungary.svg"
+        "KOR" ->
+            mkflagurl "094-south-korea.svg"
+
+        "KSA" ->
+            mkflagurl "133-saudi-arabia.svg"
+
+        "MAR" ->
+            mkflagurl "166-morocco.svg"
+
+        "MEX" ->
+            mkflagurl "252-mexico.svg"
+
+        "NED" ->
+            mkflagurl "237-netherlands.svg"
+
+        "POL" ->
+            mkflagurl "211-poland.svg"
+
+        "POR" ->
+            mkflagurl "224-portugal.svg"
+
+        "QAT" ->
+            mkflagurl "026-qatar.svg"
+
+        "SEN" ->
+            mkflagurl "227-senegal.svg"
+
+        "SRB" ->
+            mkflagurl "071-serbia.svg"
+
+        "SUI" ->
+            mkflagurl "205-switzerland.svg"
+
+        "TUN" ->
+            mkflagurl "049-tunisia.svg"
+
+        "URU" ->
+            mkflagurl "088-uruguay.svg"
+
+        "USA" ->
+            mkflagurl "226-united-states.svg"
+
+        "WAL" ->
+            mkflagurl "014-wales.svg"
 
         _ ->
             "assets/svg/404.svg"
