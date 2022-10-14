@@ -1,7 +1,7 @@
 module Form.Topscorer exposing (isComplete, update, view)
 
 import Bets.Bet exposing (getTopscorer, setTopscorer)
-import Bets.Init.Euro2020.Tournament exposing (initTeamData)
+import Bets.Init.WorldCup2022.Tournament exposing (initTeamData)
 import Bets.Types exposing (Answer(..), Bet, Team, TeamDatum, Topscorer)
 import Bets.Types.Answer.Topscorer
 import Bets.Types.Topscorer as TS
