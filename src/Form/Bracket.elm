@@ -114,7 +114,7 @@ view bet state =
                     ]
 
                 ShowSecondRoundSelection _ _ ->
-                    [ Element.text "Selecteer de landen voor de tweede ronde. Nummers 1 en 2 van elke poule gaan door. Van de 6 nummers 3 gaan er 4 door. De plaatsing daarvan is wat ingewikkeld; ga ik niet uitleggen. Maar van sommige groepen kan de nummer drie in meer plekken in het schema terecht komen dan van andere groepen. "
+                    [ Element.text "Selecteer de landen voor de tweede ronde. De winnaar en de nummer 2 van elke poule gaan door."
                     ]
 
         introduction =

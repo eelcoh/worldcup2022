@@ -1070,7 +1070,9 @@ uruguay : TeamDatum
 uruguay =
     { team = { teamID = "URU", teamName = "Uruguay" }
     , players =
-        []
+        [ "Fernando Muslera" 
+        , "Sergio Rochet"
+        , "Sebastián Sosa" , "Guillermo de Amores" , "Santiago Mele" , "Gastón Olveira" , "Diego Godín" , "Martín Cáceres" , "José Giménez" , "Sebastián Coates" , "Matías Viña" , "Giovanni González" , "Ronald Araújo" , "Guillermo Varela" , "Mathías Olivera" , "Joaquín Piquerez" , "Damián Suárez" , "Sebastián Cáceres" , "Bruno Méndez" , "Agustín Rogel" , "Gastón Álvarez" , "Santiago Bueno" , "Leandro Cabrera" , "Alfonso Espino" , "Lucas Olaza" , "Federico Pereira" , "José Luis Rodríguez" , "Matías Vecino" , "Rodrigo Bentancur" , "Federico Valverde" , "Giorgian de Arrascaeta" , "Lucas Torreira" , "Nicolás de la Cruz" , "Mauro Arambarri" , "Fernando Gorriarán" , "Manuel Ugarte" , "César Araújo" , "Maximiliano Araújo" , "Felipe Carballo" , "Fabricio Díaz" , "Luis Suárez" , "Edinson Cavani" , "Jonathan Rodríguez" , "Maxi Gómez" , "Darwin Núñez" , "Facundo Torres" , "Facundo Pellistri" , "Agustín Álvarez Martínez" , "Diego Rossi" , "Agustín Canobbio" , "David Terans" , "Brian Ocampo" , "Martín Satriano" , "Thiago Borbas" , "Nicolás López" ]
     , group = H
     }
 
