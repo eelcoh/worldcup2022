@@ -19,7 +19,7 @@ authenticate uid pw =
         credentials =
             encodeCredentials uid pw
     in
-    Web.post "/authentications/" FetchedToken decode credentials
+    Web.post "/authentication/authentications/" FetchedToken decode credentials
 
 
 view : Model Msg -> Element.Element Msg
