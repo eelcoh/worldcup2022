@@ -67,7 +67,7 @@ view model =
             Element.el [ Element.padding 24 ] contents_
 
         title =
-            "Voetbalpool - Corona Editie"
+            "Voetbalpool - Boycott Editie"
 
         link app =
             let
