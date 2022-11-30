@@ -54,14 +54,14 @@ viewBet bet screenSize =
     Element.column
         [ spacing 40, w ]
         [ displayParticipant bet.participant
-        , UI.Text.displayHeader "De wedstrijden"
-        , matchesIntro
-        , displayMatches bet.answers.matches
         , UI.Text.displayHeader "Het Schema"
         , displayBracket screenSize bet
         , UI.Text.displayHeader "De Topscorer"
         , topscorerIntro
         , displayTopscorer bet.answers.topscorer
+        , UI.Text.displayHeader "De wedstrijden"
+        , matchesIntro
+        , displayMatches bet.answers.matches
         ]
 
 
