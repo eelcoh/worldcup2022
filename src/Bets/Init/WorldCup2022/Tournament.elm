@@ -387,22 +387,6 @@ matches =
 
 
 
--- Group A: Turkey, Italy, Wales, Switzerland.
--- Group B: Denmark, Finland, Belgium, Russia.
--- Group C: Netherlands, Ukraine, Austria, North Macedonia.
--- Group D: England, Croatia, Scotland, Czech Republic.
--- Group E: Spain, Sweden, Poland, Slovakia.
--- Group F: Hungary, Portugal, France, Germany.
--- Group A: qatar , ecuador , senegal , netherlands
--- Group B: england , iran , usa , wales
--- Group C: argentina , saoudi_arabia , mexico , poland
--- Group D: france , australia , denmark , tunisia
--- Group E: spain , costa_rica , germany , japan
--- Group F: belgium, canada, morocco, croatia
--- Group G: brazil , serbia , switzerland , cameroon
--- Group H: portugal , ghana , uruguay , south_korea
-
-
 initTeamData : TeamData
 initTeamData =
     [ --
