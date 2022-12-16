@@ -105,7 +105,7 @@ view model =
                             ( "#knockouts", "knockouts" )
 
                         TSResults ->
-                            ( "#topscorers", "topscorer" )
+                            ( "#topscorer", "topscorer" )
 
                         _ ->
                             ( "#home", "home" )

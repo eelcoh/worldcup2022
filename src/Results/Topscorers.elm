@@ -13,6 +13,7 @@ import RemoteData.Http as Web exposing (defaultConfig)
 import Types exposing (Access(..), Activity(..), DataStatus(..), Model, Msg(..), Qualified(..), Token(..), TopscorerResults)
 import UI.Button
 import UI.Style
+import UI.Text
 
 
 fetchTopscorerResults : Cmd Msg
@@ -187,7 +188,7 @@ viewTopscorer ( hasQualified, topscorer ) =
                     UI.Style.Potential
 
                 In ->
-                    UI.Style.Right
+                    UI.Style.Selected
 
                 Out ->
                     UI.Style.Wrong
@@ -195,7 +196,7 @@ viewTopscorer ( hasQualified, topscorer ) =
     Element.row
         [ spacing 20, padding 10, onClick msg ]
         [ teamBadge
-        , Element.text name
+        , UI.Text.simpleText name
         ]
 
 
